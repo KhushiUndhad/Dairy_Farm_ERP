@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Times, Helvetica, sans-serif;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}

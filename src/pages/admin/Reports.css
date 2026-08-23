@@ -1,0 +1,512 @@
+.reports-page {
+  min-height: calc(100vh - 70px);
+  padding: 28px;
+  background: #f7f8fa;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.reports-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.reports-header h1 {
+  margin: 0 0 6px;
+  color: #1f2937;
+  font-size: 30px;
+}
+
+.reports-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.report-print-btn {
+  padding: 11px 17px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-print-btn:hover {
+  background: #f3f4f6;
+}
+
+/* ==========================================
+   FILTER
+========================================== */
+
+.reports-filter-card {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 18px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.report-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.report-filter-group label {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.report-filter-group select {
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  outline: none;
+}
+
+.report-search {
+  position: relative;
+  width: 300px;
+}
+
+.report-search span {
+  position: absolute;
+  left: 12px;
+  top: 7px;
+  color: #9ca3af;
+  font-size: 20px;
+}
+
+.report-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px 10px 38px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+
+.report-search input:focus,
+.report-filter-group select:focus {
+  border-color: #16834b;
+}
+
+/* ==========================================
+   SUMMARY
+========================================== */
+
+.report-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.report-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.report-card-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  font-size: 21px;
+}
+
+.report-card-icon.milk {
+  background: #eff6ff;
+}
+
+.report-card-icon.sales {
+  background: #ecfdf5;
+  color: #16834b;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.report-card-icon.cows {
+  background: #fff7ed;
+}
+
+.report-card-icon.inventory {
+  background: #f5f3ff;
+}
+
+.report-summary-card span {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.report-summary-card strong {
+  display: block;
+  color: #111827;
+  font-size: 21px;
+}
+
+.report-summary-card small {
+  display: block;
+  margin-top: 4px;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* ==========================================
+   TWO COLUMNS
+========================================== */
+
+.report-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* ==========================================
+   PANEL
+========================================== */
+
+.report-panel {
+  margin-bottom: 24px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.report-two-column .report-panel {
+  margin-bottom: 0;
+}
+
+.report-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.report-panel-header h2 {
+  margin: 0 0 5px;
+  color: #1f2937;
+  font-size: 18px;
+}
+
+.report-panel-header p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.report-total {
+  color: #16834b;
+  font-size: 20px;
+}
+
+.chart-total {
+  color: #16834b;
+}
+
+/* ==========================================
+   FINANCIAL
+========================================== */
+
+.financial-list {
+  padding: 8px 20px 15px;
+}
+
+.financial-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.financial-list > div:last-child {
+  border-bottom: none;
+}
+
+.financial-list span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.financial-list strong {
+  color: #111827;
+  font-size: 14px;
+}
+
+.positive {
+  color: #16834b !important;
+}
+
+.warning {
+  color: #d97706 !important;
+}
+
+/* ==========================================
+   QUICK STATS
+========================================== */
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 20px;
+}
+
+.quick-stats > div {
+  padding: 15px;
+  border: 1px solid #f0f1f2;
+  border-radius: 9px;
+  background: #fafafa;
+}
+
+.quick-stats span {
+  display: block;
+  margin-bottom: 7px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.quick-stats strong {
+  color: #111827;
+  font-size: 20px;
+}
+
+/* ==========================================
+   MILK CHART
+========================================== */
+
+.milk-chart-panel {
+  padding-bottom: 25px;
+}
+
+.milk-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  height: 260px;
+  padding: 25px 35px 0;
+}
+
+.chart-column {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.chart-value {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.chart-bar-wrapper {
+  width: 100%;
+  max-width: 55px;
+  height: 190px;
+  display: flex;
+  align-items: flex-end;
+  background: #f3f4f6;
+  border-radius: 7px 7px 0 0;
+  overflow: hidden;
+}
+
+.chart-bar {
+  width: 100%;
+  min-height: 5px;
+  border-radius: 7px 7px 0 0;
+  background: #16834b;
+}
+
+.chart-column > span {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* ==========================================
+   TABLE
+========================================== */
+
+.report-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 750px;
+}
+
+.report-table th {
+  padding: 13px 18px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.report-table td {
+  padding: 15px 18px;
+  border-bottom: 1px solid #f0f1f2;
+  color: #4b5563;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.report-table tbody tr:hover {
+  background: #fafdfb;
+}
+
+.report-table td strong {
+  color: #111827;
+}
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.report-status {
+  display: inline-flex;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.report-status.success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.report-status.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.report-status.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1100px) {
+  .report-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .report-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-filter-card {
+    flex-wrap: wrap;
+  }
+
+  .report-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .reports-page {
+    padding: 18px;
+  }
+
+  .reports-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .report-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-filter-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-filter-group select {
+    width: 100%;
+  }
+
+  .report-search {
+    width: 100%;
+  }
+
+  .milk-chart {
+    gap: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* ==========================================
+   PRINT
+========================================== */
+
+@media print {
+  .reports-page {
+    padding: 0;
+    background: white;
+  }
+
+  .reports-filter-card,
+  .report-print-btn {
+    display: none;
+  }
+
+  .report-panel,
+  .report-summary-card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .reports-header {
+    margin-bottom: 20px;
+  }
+}

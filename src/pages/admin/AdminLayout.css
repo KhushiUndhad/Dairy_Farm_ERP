@@ -1,0 +1,93 @@
+/* =========================================
+   MAIN ADMIN LAYOUT
+========================================= */
+
+.admin-layout {
+  min-height: 100vh;
+  width: 100%;
+  background: #f4f8f4;
+}
+
+
+/* =========================================
+   MAIN CONTENT - SIDEBAR OPEN
+========================================= */
+
+.admin-content {
+  min-height: 100vh;
+
+  margin-left: 260px;
+
+  background: #f4f8f4;
+
+  transition: margin-left 0.3s ease;
+}
+
+
+/* =========================================
+   MAIN CONTENT - SIDEBAR CLOSED
+========================================= */
+
+.admin-layout.sidebar-closed .admin-content {
+  margin-left: 80px;
+}
+
+
+/* =========================================
+   PAGE CONTENT
+========================================= */
+
+.admin-page-content {
+  min-height: calc(100vh - 72px);
+
+  padding-top: 72px;
+
+  background: #f4f8f4;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   TOPBAR WHEN SIDEBAR OPEN
+========================================= */
+
+.admin-layout.sidebar-open .admin-topbar {
+  left: 260px;
+
+  width: calc(100% - 260px);
+}
+
+
+/* =========================================
+   TOPBAR WHEN SIDEBAR CLOSED
+========================================= */
+
+.admin-layout.sidebar-closed .admin-topbar {
+  left: 80px;
+
+  width: calc(100% - 80px);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .admin-content {
+    margin-left: 0;
+  }
+
+  .admin-layout.sidebar-closed .admin-content {
+    margin-left: 0;
+  }
+
+  .admin-layout.sidebar-open .admin-topbar,
+  .admin-layout.sidebar-closed .admin-topbar {
+    left: 0;
+    width: 100%;
+  }
+
+}

@@ -1,0 +1,33 @@
+.admin-dashboard {
+  padding: 30px;
+}
+
+.admin-dashboard h1 {
+  margin: 0 0 10px;
+  font-size: 30px;
+}
+
+.admin-dashboard p {
+  margin-bottom: 30px;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.dashboard-card {
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h3 {
+  margin: 0 0 15px;
+}
+
+.dashboard-card strong {
+  font-size: 28px;
+}
