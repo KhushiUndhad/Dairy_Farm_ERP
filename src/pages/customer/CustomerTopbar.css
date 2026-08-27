@@ -1,0 +1,323 @@
+/* =========================================================
+   CUSTOMER TOPBAR
+   ========================================================= */
+
+.customer-topbar {
+  height: 72px;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 28px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================================
+   LEFT
+   ========================================================= */
+
+.customer-topbar-left {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   MENU BUTTON
+   ========================================================= */
+
+.customer-menu-button {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: #f0fdf4;
+
+  color: #166534;
+
+  border-radius: 10px;
+
+  font-size: 23px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.customer-menu-button:hover {
+  background: #dcfce7;
+
+  transform: scale(1.04);
+}
+
+.customer-menu-button:active {
+  transform: scale(0.96);
+}
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
+
+.customer-page-title {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.customer-page-title h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.customer-page-title span {
+  margin-top: 2px;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RIGHT
+   ========================================================= */
+
+.customer-topbar-right {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+   ========================================================= */
+
+.customer-topbar-icon-button {
+  width: 40px;
+  height: 40px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: #f9fafb;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.customer-topbar-icon-button:hover {
+  background: #f0fdf4;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   NOTIFICATION DOT
+   ========================================================= */
+
+.notification-dot {
+  width: 7px;
+  height: 7px;
+
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  background: #ef4444;
+
+  border: 2px solid #ffffff;
+
+  border-radius: 50%;
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.customer-topbar-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 5px 8px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease;
+}
+
+.customer-topbar-profile:hover {
+  background: #f9fafb;
+}
+
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+.customer-topbar-avatar {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #dcfce7;
+
+  border-radius: 50%;
+
+  font-size: 20px;
+}
+
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.customer-topbar-user {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-topbar-user strong {
+  color: #111827;
+
+  font-size: 13px;
+}
+
+.customer-topbar-user span {
+  margin-top: 2px;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.customer-profile-arrow {
+  margin-left: 3px;
+
+  color: #9ca3af;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .customer-topbar {
+    padding: 0 20px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+  .customer-topbar {
+    height: 64px;
+
+    padding: 0 15px;
+  }
+
+  .customer-menu-button {
+    width: 38px;
+    height: 38px;
+
+    font-size: 21px;
+  }
+
+  .customer-page-title h2 {
+    font-size: 15px;
+  }
+
+  .customer-page-title span {
+    display: none;
+  }
+
+  .customer-topbar-right {
+    gap: 7px;
+  }
+
+  .customer-topbar-user,
+  .customer-profile-arrow {
+    display: none;
+  }
+
+  .customer-topbar-avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .customer-topbar-icon-button {
+    width: 38px;
+    height: 38px;
+  }
+
+}

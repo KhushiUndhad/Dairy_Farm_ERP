@@ -1,9 +1,18 @@
+
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Layout
+
+// ========================================
+// ADMIN LAYOUT
+// ========================================
+
 import AdminLayout from "./pages/admin/AdminLayout";
 
-// Pages
+
+// ========================================
+// ADMIN PAGES
+// ========================================
+
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CowManagement from "./pages/admin/CowManagement";
 import MilkProduction from "./pages/admin/MilkProduction";
@@ -13,8 +22,20 @@ import Sales from "./pages/admin/Sales";
 import Inventory from "./pages/admin/Inventory";
 import Reports from "./pages/admin/Reports";
 
-// Login
+
+// ========================================
+// ADMIN LOGIN
+// ========================================
+
 import AdminLogin from "./pages/admin/AdminLogin";
+
+
+// ========================================
+// CUSTOMER PAGES
+// ========================================
+
+import CustomerLogin from "./pages/customer/CustomerLogin";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
 
 
 // ========================================
@@ -22,28 +43,69 @@ import AdminLogin from "./pages/admin/AdminLogin";
 // ========================================
 
 function ProtectedAdmin({ children }) {
+
   const isLoggedIn =
     localStorage.getItem("adminLoggedIn") === "true";
 
   return isLoggedIn ? (
     children
   ) : (
-    <Navigate to="/admin/login" replace />
+    <Navigate
+      to="/admin/login"
+      replace
+    />
   );
 }
 
 
 // ========================================
-// ADMIN LAYOUT
+// ADMIN PAGE
 // ========================================
 
 function AdminPage({ children }) {
+
   return (
     <ProtectedAdmin>
+
       <AdminLayout>
         {children}
       </AdminLayout>
+
     </ProtectedAdmin>
+  );
+}
+
+
+// ========================================
+// PROTECTED CUSTOMER
+// ========================================
+
+function ProtectedCustomer({ children }) {
+
+  const isLoggedIn =
+    localStorage.getItem("customerLoggedIn") === "true";
+
+  return isLoggedIn ? (
+    children
+  ) : (
+    <Navigate
+      to="/customer/login"
+      replace
+    />
+  );
+}
+
+
+// ========================================
+// CUSTOMER PAGE
+// ========================================
+
+function CustomerPage({ children }) {
+
+  return (
+    <ProtectedCustomer>
+      {children}
+    </ProtectedCustomer>
   );
 }
 
@@ -53,31 +115,56 @@ function AdminPage({ children }) {
 // ========================================
 
 function App() {
+
   return (
+
     <Routes>
 
-      {/* ===============================
-          LOGIN
-      =============================== */}
+
+      {/* =================================
+          CUSTOMER LOGIN
+      ================================= */}
 
       <Route
-        path="/admin/login"
-        element={<AdminLogin />}
+        path="/customer/login"
+        element={
+          <CustomerLogin />
+        }
       />
 
 
-      {/* ===============================
-          DASHBOARD
-      =============================== */}
+      {/* =================================
+          ADMIN LOGIN
+      ================================= */}
+
+      <Route
+        path="/admin/login"
+        element={
+          <AdminLogin />
+        }
+      />
+
+
+      {/* =================================
+          DEFAULT URL
+          
+          "/" → CUSTOMER LOGIN
+      ================================= */}
 
       <Route
         path="/"
         element={
-          <AdminPage>
-            <AdminDashboard />
-          </AdminPage>
+          <Navigate
+            to="/customer/login"
+            replace
+          />
         }
       />
+
+
+      {/* =================================
+          ADMIN DASHBOARD
+      ================================= */}
 
       <Route
         path="/admin"
@@ -89,9 +176,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           COW MANAGEMENT
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/cows"
@@ -103,9 +190,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           MILK PRODUCTION
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/milk-production"
@@ -117,9 +204,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           EMPLOYEE MANAGEMENT
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/employees"
@@ -131,9 +218,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           CUSTOMER MANAGEMENT
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/customers"
@@ -145,9 +232,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           SALES
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/sales"
@@ -159,9 +246,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           INVENTORY
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/inventory"
@@ -173,9 +260,9 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
           REPORTS
-      =============================== */}
+      ================================= */}
 
       <Route
         path="/admin/reports"
@@ -187,15 +274,31 @@ function App() {
       />
 
 
-      {/* ===============================
+      {/* =================================
+          CUSTOMER DASHBOARD
+      ================================= */}
+
+      <Route
+        path="/customer"
+        element={
+          <CustomerPage>
+            <CustomerDashboard />
+          </CustomerPage>
+        }
+      />
+
+
+      {/* =================================
           UNKNOWN URL
-      =============================== */}
+          
+          → CUSTOMER LOGIN
+      ================================= */}
 
       <Route
         path="*"
         element={
           <Navigate
-            to="/admin"
+            to="/customer/login"
             replace
           />
         }
@@ -205,4 +308,6 @@ function App() {
   );
 }
 
+
 export default App;
+

@@ -1,0 +1,370 @@
+/* =========================================================
+   CUSTOMER SIDEBAR
+   ========================================================= */
+
+.customer-sidebar {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 250px;
+  height: 100vh;
+
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border-right: 1px solid #e5e7eb;
+
+  box-sizing: border-box;
+
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.06);
+
+  transition: transform 0.3s ease;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   OPEN
+   ========================================================= */
+
+.customer-sidebar-open {
+  transform: translateX(0);
+}
+
+
+/* =========================================================
+   CLOSED
+   ========================================================= */
+
+.customer-sidebar-closed {
+  transform: translateX(-100%);
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.customer-sidebar-logo {
+  height: 72px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 18px;
+
+  border-bottom: 1px solid #f0f0f0;
+
+  box-sizing: border-box;
+}
+
+
+/* LOGO ICON */
+
+.customer-logo-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #dcfce7;
+
+  border-radius: 11px;
+
+  font-size: 23px;
+}
+
+
+/* LOGO TEXT */
+
+.customer-logo-text {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.customer-logo-text strong {
+  color: #166534;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.customer-logo-text span {
+  margin-top: 3px;
+
+  color: #9ca3af;
+
+  font-size: 10px;
+
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.customer-sidebar-nav {
+  flex: 1;
+
+  padding: 18px 12px;
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NAVIGATION LINK
+   ========================================================= */
+
+.customer-nav-link {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px 13px;
+
+  margin-bottom: 5px;
+
+  box-sizing: border-box;
+
+  border-radius: 10px;
+
+  color: #6b7280;
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* HOVER */
+
+.customer-nav-link:hover {
+  background: #f0fdf4;
+
+  color: #166534;
+
+  transform: translateX(2px);
+}
+
+
+/* ACTIVE */
+
+.customer-nav-link.active {
+  background: #dcfce7;
+
+  color: #166534;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   NAV ICON
+   ========================================================= */
+
+.customer-nav-icon {
+  width: 25px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   NAV TEXT
+   ========================================================= */
+
+.customer-nav-text {
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.customer-sidebar-footer {
+  flex-shrink: 0;
+
+  padding: 14px;
+
+  border-top: 1px solid #f0f0f0;
+
+  background: #ffffff;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SUPPORT BOX
+   ========================================================= */
+
+.customer-support-box {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px;
+
+  margin-bottom: 10px;
+
+  background: #f0fdf4;
+
+  border-radius: 10px;
+}
+
+.support-icon {
+  width: 30px;
+  height: 30px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #dcfce7;
+
+  border-radius: 8px;
+
+  font-size: 15px;
+}
+
+.customer-support-box div {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.customer-support-box strong {
+  color: #166534;
+
+  font-size: 11px;
+}
+
+.customer-support-box div span {
+  margin-top: 2px;
+
+  color: #6b7280;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   LOGOUT BUTTON
+   ========================================================= */
+
+.customer-logout-button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px 13px;
+
+  background: transparent;
+
+  border: none;
+
+  border-radius: 9px;
+
+  color: #dc2626;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease;
+}
+
+.customer-logout-button:hover {
+  background: #fef2f2;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.customer-sidebar-nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.customer-sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.customer-sidebar-nav::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .customer-sidebar {
+    width: 270px;
+
+    box-shadow:
+      5px 0 25px rgba(0, 0, 0, 0.18);
+  }
+
+}

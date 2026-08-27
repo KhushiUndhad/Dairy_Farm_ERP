@@ -1,0 +1,473 @@
+
+/* ========================================
+   CUSTOMER LOGIN PAGE
+======================================== */
+
+.customer-login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f0fdf4 0%,
+      #ecfdf5 50%,
+      #f8fafc 100%
+    );
+
+  font-family:
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
+
+/* ========================================
+   LOGIN CARD
+======================================== */
+
+.customer-login-card {
+  width: 100%;
+  max-width: 450px;
+
+  padding: 40px;
+
+  background: #ffffff;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.10);
+
+  border: 1px solid #e5e7eb;
+}
+
+
+/* ========================================
+   LOGO
+======================================== */
+
+.customer-login-logo {
+  width: 75px;
+  height: 75px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+
+  background: #dcfce7;
+
+  font-size: 38px;
+
+  box-shadow:
+    0 8px 20px rgba(22, 163, 74, 0.15);
+}
+
+
+/* ========================================
+   HEADING
+======================================== */
+
+.customer-login-heading {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.customer-login-heading h1 {
+  margin: 0 0 8px;
+
+  color: #166534;
+
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.customer-login-heading p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* ========================================
+   ERROR MESSAGE
+======================================== */
+
+.customer-login-error {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+
+  border-radius: 10px;
+
+  color: #dc2626;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+
+/* ========================================
+   FORM GROUP
+======================================== */
+
+.customer-form-group {
+  margin-bottom: 20px;
+}
+
+.customer-form-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #374151;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* ========================================
+   INPUT WRAPPER
+======================================== */
+
+.customer-input-wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* ========================================
+   INPUT ICON
+======================================== */
+
+.customer-input-icon {
+  position: absolute;
+
+  left: 14px;
+
+  font-size: 18px;
+
+  pointer-events: none;
+}
+
+
+/* ========================================
+   INPUT
+======================================== */
+
+.customer-input-wrapper input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px 45px 13px 45px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 10px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-size: 15px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.customer-input-wrapper input::placeholder {
+  color: #9ca3af;
+}
+
+.customer-input-wrapper input:focus {
+  border-color: #16a34a;
+
+  box-shadow:
+    0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+
+/* ========================================
+   PASSWORD TOGGLE
+======================================== */
+
+.customer-password-toggle {
+  position: absolute;
+
+  right: 10px;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  border-radius: 8px;
+
+  font-size: 17px;
+
+  transition:
+    background 0.2s ease;
+}
+
+.customer-password-toggle:hover {
+  background: #f3f4f6;
+}
+
+
+/* ========================================
+   LOGIN OPTIONS
+======================================== */
+
+.customer-login-options {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 10px;
+
+  margin: 5px 0 25px;
+}
+
+
+/* ========================================
+   REMEMBER ME
+======================================== */
+
+.customer-remember-me {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #4b5563;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.customer-remember-me input {
+  width: 16px;
+  height: 16px;
+
+  accent-color: #16a34a;
+
+  cursor: pointer;
+}
+
+
+/* ========================================
+   FORGOT PASSWORD
+======================================== */
+
+.customer-forgot-password {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #16a34a;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.customer-forgot-password:hover {
+  color: #15803d;
+
+  text-decoration: underline;
+}
+
+
+/* ========================================
+   LOGIN BUTTON
+======================================== */
+
+.customer-login-button {
+  width: 100%;
+
+  padding: 14px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #16a34a;
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.customer-login-button:hover {
+  background: #15803d;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 18px rgba(22, 163, 74, 0.22);
+}
+
+.customer-login-button:active {
+  transform: translateY(0);
+}
+
+
+/* ========================================
+   REGISTER SECTION
+======================================== */
+
+.customer-register-section {
+  margin-top: 25px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #e5e7eb;
+
+  text-align: center;
+}
+
+.customer-register-section p {
+  margin: 0 0 8px;
+
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.customer-register-button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #16a34a;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.customer-register-button:hover {
+  color: #15803d;
+
+  text-decoration: underline;
+}
+
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.customer-login-footer {
+  margin-top: 25px;
+
+  text-align: center;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 500px) {
+
+  .customer-login-page {
+    padding: 20px 15px;
+  }
+
+  .customer-login-card {
+    padding: 30px 22px;
+
+    border-radius: 16px;
+  }
+
+  .customer-login-heading h1 {
+    font-size: 26px;
+  }
+
+  .customer-login-options {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .customer-forgot-password {
+    align-self: flex-end;
+  }
+}
+
+
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 360px) {
+
+  .customer-login-card {
+    padding: 25px 18px;
+  }
+
+  .customer-login-logo {
+    width: 65px;
+    height: 65px;
+
+    font-size: 32px;
+  }
+
+  .customer-login-heading h1 {
+    font-size: 24px;
+  }
+}
