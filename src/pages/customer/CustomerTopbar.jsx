@@ -5,19 +5,26 @@ const CustomerTopbar = ({ onMenuClick }) => {
   return (
     <header className="customer-topbar">
 
-      {/* LEFT SIDE */}
+      {/* =====================================
+          LEFT SIDE
+      ===================================== */}
 
       <div className="customer-topbar-left">
+
+        {/* MENU BUTTON */}
 
         <button
           type="button"
           className="customer-menu-button"
           onClick={onMenuClick}
           aria-label="Toggle sidebar"
+          title="Toggle Sidebar"
         >
           ☰
         </button>
 
+
+        {/* TITLE */}
 
         <div className="customer-page-title">
 
@@ -34,36 +41,22 @@ const CustomerTopbar = ({ onMenuClick }) => {
       </div>
 
 
-      {/* RIGHT SIDE */}
+      {/* =====================================
+          RIGHT SIDE
+      ===================================== */}
 
       <div className="customer-topbar-right">
 
-
-        {/* NOTIFICATION */}
-
-        <button
-          type="button"
-          className="customer-topbar-icon-button"
-          aria-label="Notifications"
-          onClick={() =>
-            alert("No new notifications")
-          }
-        >
-          🔔
-
-          <span className="notification-dot">
-          </span>
-
-        </button>
-
-
-        {/* PROFILE */}
-
         <div className="customer-topbar-profile">
+
+          {/* AVATAR */}
 
           <div className="customer-topbar-avatar">
             👤
           </div>
+
+
+          {/* USER */}
 
           <div className="customer-topbar-user">
 
@@ -76,6 +69,9 @@ const CustomerTopbar = ({ onMenuClick }) => {
             </span>
 
           </div>
+
+
+          {/* ARROW */}
 
           <span className="customer-profile-arrow">
             ▼

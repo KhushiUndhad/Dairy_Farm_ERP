@@ -1,21 +1,40 @@
 import { NavLink, useNavigate } from "react-router-dom";
+
 import "./CustomerSidebar.css";
 
 const CustomerSidebar = ({ isOpen, onClose }) => {
+
   const navigate = useNavigate();
 
+
+  /* =========================================
+     CLOSE SIDEBAR ON MOBILE
+  ========================================= */
+
   const handleLinkClick = () => {
+
     if (window.innerWidth <= 900) {
       onClose();
     }
+
   };
+
+
+  /* =========================================
+     LOGOUT
+  ========================================= */
 
   const handleLogout = () => {
+
     localStorage.removeItem("customerLoggedIn");
+
     navigate("/customer/login");
+
   };
 
+
   return (
+
     <aside
       className={`customer-sidebar ${
         isOpen
@@ -23,7 +42,11 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           : "customer-sidebar-closed"
       }`}
     >
-      {/* LOGO */}
+
+      {/* =====================================
+          LOGO
+      ===================================== */}
+
       <div className="customer-sidebar-logo">
 
         <div className="customer-logo-icon">
@@ -31,14 +54,24 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
         </div>
 
         <div className="customer-logo-text">
-          <strong>Dairy Farm</strong>
-          <span>Customer Panel</span>
+
+          <strong>
+            Dairy Farm
+          </strong>
+
+          <span>
+            Customer Panel
+          </span>
+
         </div>
 
       </div>
 
 
-      {/* NAVIGATION */}
+      {/* =====================================
+          NAVIGATION
+      ===================================== */}
+
       <nav className="customer-sidebar-nav">
 
         <NavLink
@@ -51,6 +84,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
             }`
           }
         >
+
           <span className="customer-nav-icon">
             🏠
           </span>
@@ -58,6 +92,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           <span className="customer-nav-text">
             Dashboard
           </span>
+
         </NavLink>
 
 
@@ -70,6 +105,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
             }`
           }
         >
+
           <span className="customer-nav-icon">
             🥛
           </span>
@@ -77,6 +113,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           <span className="customer-nav-text">
             Products
           </span>
+
         </NavLink>
 
 
@@ -89,6 +126,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
             }`
           }
         >
+
           <span className="customer-nav-icon">
             📦
           </span>
@@ -96,27 +134,11 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           <span className="customer-nav-text">
             My Orders
           </span>
+
         </NavLink>
 
 
-        <NavLink
-          to="/customer/subscription"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `customer-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-          <span className="customer-nav-icon">
-            🔄
-          </span>
-
-          <span className="customer-nav-text">
-            Subscription
-          </span>
-        </NavLink>
-
+        
 
         <NavLink
           to="/customer/payments"
@@ -127,6 +149,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
             }`
           }
         >
+
           <span className="customer-nav-icon">
             💳
           </span>
@@ -134,6 +157,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           <span className="customer-nav-text">
             Payments
           </span>
+
         </NavLink>
 
 
@@ -146,6 +170,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
             }`
           }
         >
+
           <span className="customer-nav-icon">
             👤
           </span>
@@ -153,12 +178,16 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           <span className="customer-nav-text">
             My Profile
           </span>
+
         </NavLink>
 
       </nav>
 
 
-      {/* SIDEBAR BOTTOM */}
+      {/* =====================================
+          FOOTER
+      ===================================== */}
+
       <div className="customer-sidebar-footer">
 
         <div className="customer-support-box">
@@ -168,8 +197,15 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           </span>
 
           <div>
-            <strong>Need Help?</strong>
-            <span>Contact support</span>
+
+            <strong>
+              Need Help?
+            </strong>
+
+            <span>
+              Contact support
+            </span>
+
           </div>
 
         </div>
@@ -180,13 +216,19 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
           className="customer-logout-button"
           onClick={handleLogout}
         >
-          <span>🚪</span>
+
+          <span>
+            🚪
+          </span>
+
           Logout
+
         </button>
 
       </div>
 
     </aside>
+
   );
 };
 

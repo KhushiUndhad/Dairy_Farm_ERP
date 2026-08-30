@@ -1,123 +1,104 @@
 /* =========================================================
    CUSTOMER DASHBOARD
-   ========================================================= */
+========================================================= */
 
-.customer-dashboard {
-  min-height: 100vh;
-  display: flex;
-  background: #f5f7f6;
-  color: #1f2937;
-  font-family:
-    "Inter",
-    "Segoe UI",
-    Arial,
-    sans-serif;
-}
-
-
-/* =========================================================
-   MAIN CONTENT
-   ========================================================= */
-
-.customer-dashboard-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  margin-left: 250px;
-}
-
-
-/* =========================================================
-   MAIN
-   ========================================================= */
-
-.customer-main {
-  flex: 1;
+.customer-dashboard-page {
+  width: 100%;
+  min-height: calc(100vh - 78px);
   padding: 30px;
+  box-sizing: border-box;
+  background: #f5f7f6;
+  color: #111827;
 }
 
 
 /* =========================================================
    WELCOME SECTION
-   ========================================================= */
+========================================================= */
 
 .customer-welcome-section {
+  width: 100%;
+  min-height: 135px;
+  padding: 28px 32px;
+  margin-bottom: 25px;
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-
-  padding: 28px 30px;
-  margin-bottom: 25px;
+  gap: 25px;
 
   background: linear-gradient(
     135deg,
-    #ffffff,
-    #f0fdf4
+    #f0fdf4 0%,
+    #ffffff 100%
   );
 
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dbeafe;
   border-radius: 18px;
 
-  box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
 }
 
-.customer-welcome-section h1 {
-  margin: 0 0 8px;
 
+/* Welcome text */
+
+.customer-welcome-section h1 {
+  margin: 0 0 8px 0;
+
+  font-family: Arial, sans-serif;
   font-size: 28px;
   font-weight: 700;
 
   color: #166534;
 }
 
+
 .customer-welcome-section p {
   margin: 0;
 
-  color: #6b7280;
-  font-size: 15px;
-  line-height: 1.6;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+
+  color: #64748b;
 }
 
 
 /* =========================================================
-   NEW ORDER BUTTON
-   ========================================================= */
+   PLACE ORDER BUTTON
+========================================================= */
 
 .customer-order-button {
   border: none;
   outline: none;
 
-  padding: 13px 20px;
+  padding: 13px 22px;
 
   background: #16a34a;
-  color: white;
+  color: #ffffff;
 
-  border-radius: 10px;
+  border-radius: 9px;
 
+  font-family: Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-
   white-space: nowrap;
+
+  transition: all 0.2s ease;
 }
+
 
 .customer-order-button:hover {
   background: #15803d;
 
   transform: translateY(-2px);
 
-  box-shadow:
-    0 6px 15px rgba(22, 163, 74, 0.25);
+  box-shadow: 0 5px 12px rgba(22, 163, 74, 0.20);
 }
+
 
 .customer-order-button:active {
   transform: translateY(0);
@@ -126,187 +107,36 @@
 
 /* =========================================================
    STATISTICS GRID
-   ========================================================= */
+========================================================= */
 
 .customer-stats-grid {
+  width: 100%;
+
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 20px;
 
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 
 /* =========================================================
    STAT CARD
-   ========================================================= */
+========================================================= */
 
 .customer-stat-card {
-  display: flex;
-  align-items: center;
-
-  gap: 16px;
+  min-height: 130px;
 
   padding: 22px;
 
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.04);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.customer-stat-card:hover {
-  transform: translateY(-3px);
-
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-
-/* =========================================================
-   STAT ICON
-   ========================================================= */
-
-.customer-stat-icon {
-  width: 55px;
-  height: 55px;
-
-  flex-shrink: 0;
+  box-sizing: border-box;
 
   display: flex;
   align-items: center;
-  justify-content: center;
 
-  border-radius: 14px;
-
-  font-size: 25px;
-}
-
-
-/* ICON BACKGROUNDS */
-
-.orders-icon {
-  background: #ecfdf5;
-}
-
-.milk-icon {
-  background: #eff6ff;
-}
-
-.money-icon {
-  background: #fefce8;
-}
-
-.delivery-icon {
-  background: #fff7ed;
-}
-
-
-/* =========================================================
-   STAT TEXT
-   ========================================================= */
-
-.customer-stat-card span {
-  display: block;
-
-  margin-bottom: 5px;
-
-  color: #6b7280;
-
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.customer-stat-card h2 {
-  margin: 0 0 5px;
-
-  color: #111827;
-
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.customer-stat-card small {
-  color: #16a34a;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-
-/* =========================================================
-   SECTION
-   ========================================================= */
-
-.customer-section {
-  margin-bottom: 30px;
-}
-
-.customer-section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 18px;
-}
-
-.customer-section-header h2 {
-  margin: 0 0 5px;
-
-  color: #111827;
-
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.customer-section-header p {
-  margin: 0;
-
-  color: #6b7280;
-
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   QUICK ACTIONS
-   ========================================================= */
-
-.customer-quick-actions {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
-  gap: 18px;
-}
-
-
-/* =========================================================
-   ACTION CARD
-   ========================================================= */
-
-.customer-action-card {
-  width: 100%;
-
-  padding: 22px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  text-align: left;
+  gap: 17px;
 
   background: #ffffff;
 
@@ -314,83 +144,101 @@
 
   border-radius: 15px;
 
-  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
 
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.customer-action-card:hover {
+
+.customer-stat-card:hover {
   transform: translateY(-3px);
 
-  border-color: #86efac;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
 
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.07);
+  border-color: #bbf7d0;
 }
 
-.customer-action-card .action-icon {
-  width: 48px;
-  height: 48px;
+
+/* =========================================================
+   STAT ICON
+========================================================= */
+
+.customer-stat-icon {
+  width: 52px;
+  height: 52px;
+
+  min-width: 52px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 15px;
+  background: #ecfdf5;
 
-  background: #f0fdf4;
+  border-radius: 13px;
 
-  border-radius: 12px;
-
-  font-size: 23px;
+  font-size: 24px;
 }
 
-.customer-action-card strong {
-  margin-bottom: 7px;
+
+/* =========================================================
+   STAT TEXT
+========================================================= */
+
+.customer-stat-card span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #64748b;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+.customer-stat-card h2 {
+  margin: 0;
 
   color: #111827;
 
-  font-size: 15px;
-}
+  font-family: Arial, sans-serif;
 
-.customer-action-card small {
-  color: #6b7280;
-
-  font-size: 12px;
-
-  line-height: 1.5;
+  font-size: 24px;
+  font-weight: 700;
 }
 
 
-/* =========================================================
-   CONTENT GRID
-   ========================================================= */
+.customer-stat-card small {
+  display: block;
 
-.customer-content-grid {
-  display: grid;
+  margin-top: 6px;
 
-  grid-template-columns:
-    minmax(0, 1.7fr)
-    minmax(280px, 0.8fr);
+  color: #16a34a;
 
-  gap: 22px;
+  font-family: Arial, sans-serif;
 
-  margin-bottom: 25px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 
 /* =========================================================
-   ORDERS SECTION
-   ========================================================= */
+   COMMON SECTION
+========================================================= */
 
+.customer-section,
 .customer-orders-section,
 .customer-profile-section {
-  min-width: 0;
+  width: 100%;
 
-  padding: 24px;
+  padding: 25px;
+
+  margin-bottom: 25px;
+
+  box-sizing: border-box;
 
   background: #ffffff;
 
@@ -398,14 +246,148 @@
 
   border-radius: 16px;
 
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.customer-section-header {
+  width: 100%;
+
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.customer-section-header h2 {
+  margin: 0 0 5px 0;
+
+  color: #111827;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 19px;
+  font-weight: 700;
+}
+
+
+.customer-section-header p {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.customer-quick-actions {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+
+/* Action card */
+
+.customer-action-card {
+  width: 100%;
+  min-height: 145px;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 7px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 13px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition: all 0.2s ease;
+}
+
+
+.customer-action-card:hover {
+  background: #f0fdf4;
+
+  border-color: #86efac;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.06);
+}
+
+
+/* Action icon */
+
+.action-icon {
+  width: 45px;
+  height: 45px;
+
+  margin-bottom: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ecfdf5;
+
+  border-radius: 11px;
+
+  font-size: 21px;
+}
+
+
+.customer-action-card strong {
+  color: #111827;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+.customer-action-card small {
+  color: #94a3b8;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+
+  line-height: 1.4;
 }
 
 
 /* =========================================================
    VIEW ALL BUTTON
-   ========================================================= */
+========================================================= */
 
 .view-all-button {
   border: none;
@@ -413,29 +395,25 @@
 
   color: #16a34a;
 
+  font-family: Arial, sans-serif;
+
   font-size: 13px;
   font-weight: 600;
 
   cursor: pointer;
-
-  padding: 7px 10px;
-
-  border-radius: 7px;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
 }
 
+
 .view-all-button:hover {
-  background: #f0fdf4;
-  color: #15803d;
+  color: #166534;
+
+  text-decoration: underline;
 }
 
 
 /* =========================================================
    ORDERS TABLE
-   ========================================================= */
+========================================================= */
 
 .customer-orders-table-wrapper {
   width: 100%;
@@ -443,317 +421,301 @@
   overflow-x: auto;
 }
 
+
 .customer-orders-table {
   width: 100%;
 
+  min-width: 750px;
+
   border-collapse: collapse;
 
-  min-width: 700px;
+  font-family: Arial, sans-serif;
 }
 
+
+.customer-orders-table thead tr {
+  background: #f8fafc;
+}
+
+
 .customer-orders-table th {
-  padding: 13px 12px;
+  padding: 13px 15px;
 
-  background: #f9fafb;
+  color: #64748b;
 
-  border-bottom: 1px solid #e5e7eb;
-
-  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
 
   text-align: left;
 
-  font-size: 11px;
-  font-weight: 700;
-
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  border-bottom: 1px solid #e5e7eb;
 }
+
 
 .customer-orders-table td {
-  padding: 15px 12px;
+  padding: 15px;
 
-  border-bottom: 1px solid #f0f0f0;
-
-  color: #4b5563;
+  color: #475569;
 
   font-size: 13px;
+
+  border-bottom: 1px solid #f1f5f9;
 }
+
 
 .customer-orders-table tbody tr {
-  transition:
-    background 0.2s ease;
+  transition: background 0.2s ease;
 }
+
 
 .customer-orders-table tbody tr:hover {
-  background: #f9fafb;
+  background: #f8fafc;
 }
 
-.customer-orders-table tbody tr:last-child td {
-  border-bottom: none;
-}
 
 .customer-orders-table td strong {
-  color: #111827;
+  color: #166534;
 
-  font-size: 13px;
+  font-weight: 700;
 }
 
 
 /* =========================================================
    ORDER STATUS
-   ========================================================= */
+========================================================= */
 
 .order-status {
   display: inline-flex;
   align-items: center;
 
-  padding: 6px 9px;
+  padding: 6px 11px;
 
   border-radius: 20px;
 
+  font-family: Arial, sans-serif;
+
   font-size: 11px;
   font-weight: 600;
-
-  white-space: nowrap;
 }
 
 
-/* DELIVERED */
-
 .order-status.delivered {
   background: #dcfce7;
+
   color: #166534;
 }
 
 
-/* OUT FOR DELIVERY */
-
 .order-status.out-for-delivery {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-
-/* PROCESSING */
-
-.order-status.processing {
   background: #fef3c7;
+
   color: #92400e;
 }
 
 
-/* =========================================================
-   PROFILE CARD
-   ========================================================= */
+.order-status.processing {
+  background: #dbeafe;
 
-.customer-profile-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  text-align: center;
+  color: #1d4ed8;
 }
 
 
 /* =========================================================
-   PROFILE AVATAR
-   ========================================================= */
+   BOTTOM GRID
+========================================================= */
+
+.customer-bottom-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: 1.2fr 1fr;
+
+  gap: 25px;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.customer-profile-section {
+  margin-bottom: 0;
+}
+
+
+.customer-profile-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+}
+
 
 .customer-profile-avatar {
-  width: 80px;
-  height: 80px;
+  width: 58px;
+  height: 58px;
+
+  min-width: 58px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin: 5px 0 20px;
-
-  background: #f0fdf4;
-
-  border: 4px solid #dcfce7;
+  background: #dcfce7;
 
   border-radius: 50%;
 
-  font-size: 34px;
+  font-size: 26px;
 }
 
-
-/* =========================================================
-   PROFILE INFORMATION
-   ========================================================= */
 
 .customer-profile-info {
-  width: 100%;
+  flex: 1;
 
   display: flex;
   flex-direction: column;
 
-  text-align: left;
-
-  margin-bottom: 18px;
-}
-
-.profile-info-item {
-  display: flex;
-  flex-direction: column;
-
-  gap: 3px;
-
-  padding: 10px 0;
-
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.profile-info-item:last-child {
-  border-bottom: none;
-}
-
-.profile-info-item span {
-  color: #9ca3af;
-
-  font-size: 11px;
-}
-
-.profile-info-item strong {
-  color: #374151;
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  word-break: break-word;
+  gap: 4px;
 }
 
 
-/* =========================================================
-   EDIT PROFILE BUTTON
-   ========================================================= */
+.customer-profile-info strong {
+  color: #111827;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+.customer-profile-info span {
+  color: #64748b;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+}
+
+
+/* Edit button */
 
 .edit-profile-button {
-  width: 100%;
+  padding: 9px 14px;
 
-  padding: 11px;
+  border: 1px solid #86efac;
 
-  background: #ffffff;
+  border-radius: 8px;
 
-  border: 1px solid #16a34a;
+  background: #f0fdf4;
 
-  border-radius: 9px;
+  color: #166534;
 
-  color: #16a34a;
+  font-family: Arial, sans-serif;
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
+
 .edit-profile-button:hover {
-  background: #16a34a;
-  color: #ffffff;
+  background: #dcfce7;
 }
 
 
 /* =========================================================
-   NEXT DELIVERY
-   ========================================================= */
+   DELIVERY CARD
+========================================================= */
 
 .customer-delivery-card {
+  min-height: 160px;
+
+  padding: 25px;
+
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
 
-  gap: 18px;
+  gap: 16px;
 
-  padding: 22px 25px;
-
-  background: linear-gradient(
-    135deg,
-    #ecfdf5,
-    #f0fdf4
-  );
-
-  border: 1px solid #bbf7d0;
+  background: #166534;
 
   border-radius: 16px;
+
+  color: #ffffff;
+
+  box-shadow: 0 5px 15px rgba(22, 101, 52, 0.15);
 }
 
 
-/* =========================================================
-   DELIVERY ICON
-   ========================================================= */
-
 .customer-delivery-icon {
-  width: 55px;
-  height: 55px;
+  width: 52px;
+  height: 52px;
 
-  flex-shrink: 0;
+  min-width: 52px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
 
-  border-radius: 14px;
+  border-radius: 12px;
 
-  font-size: 25px;
-
-  box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.05);
+  font-size: 24px;
 }
 
-
-/* =========================================================
-   DELIVERY CONTENT
-   ========================================================= */
 
 .customer-delivery-content {
   flex: 1;
 }
 
-.customer-delivery-content h2 {
-  margin: 0 0 5px;
 
-  color: #166534;
+.customer-delivery-content h2 {
+  margin: 0 0 7px 0;
+
+  color: #ffffff;
+
+  font-family: Arial, sans-serif;
 
   font-size: 17px;
+  font-weight: 700;
 }
+
 
 .customer-delivery-content p {
-  margin: 0 0 5px;
+  margin: 0 0 5px 0;
 
-  color: #374151;
+  color: #dcfce7;
+
+  font-family: Arial, sans-serif;
 
   font-size: 13px;
-  font-weight: 600;
 }
+
 
 .customer-delivery-content span {
-  color: #6b7280;
+  color: #bbf7d0;
 
-  font-size: 12px;
+  font-family: Arial, sans-serif;
+
+  font-size: 11px;
 }
 
 
-/* =========================================================
-   DELIVERY STATUS
-   ========================================================= */
-
 .customer-delivery-status {
-  padding: 8px 12px;
+  color: #ffffff;
 
-  background: #dcfce7;
+  font-family: Arial, sans-serif;
 
-  border-radius: 20px;
-
-  color: #166534;
-
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 
   white-space: nowrap;
@@ -761,123 +723,109 @@
 
 
 /* =========================================================
-   FOOTER
-   ========================================================= */
-
-.customer-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 15px;
-
-  padding: 18px 30px;
-
-  border-top: 1px solid #e5e7eb;
-
-  background: #ffffff;
-}
-
-.customer-footer p {
-  margin: 0;
-
-  color: #9ca3af;
-
-  font-size: 11px;
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
+   RESPONSIVE - 1200px
+========================================================= */
 
 @media (max-width: 1200px) {
 
   .customer-stats-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
+
 
   .customer-quick-actions {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .customer-content-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
 }
 
 
 /* =========================================================
-   TABLET / SMALL LAPTOP
-   ========================================================= */
+   RESPONSIVE - 900px
+========================================================= */
 
 @media (max-width: 900px) {
 
-  .customer-dashboard-content {
-    margin-left: 0;
+  .customer-dashboard-page {
+    padding: 24px 20px;
   }
 
-  .customer-main {
-    padding: 20px;
+
+  .customer-bottom-grid {
+    grid-template-columns: 1fr;
   }
 
-  .customer-welcome-section {
-    padding: 22px;
+
+  .customer-profile-section {
+    margin-bottom: 0;
   }
 
 }
 
 
 /* =========================================================
-   MOBILE
-   ========================================================= */
+   RESPONSIVE - 600px
+========================================================= */
 
-@media (max-width: 650px) {
+@media (max-width: 600px) {
 
-  .customer-main {
-    padding: 15px;
+  .customer-dashboard-page {
+    padding: 18px 14px;
   }
 
 
-  /* WELCOME */
+  /* Welcome */
 
   .customer-welcome-section {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 22px;
 
-    padding: 20px;
+    flex-direction: column;
+
+    align-items: flex-start;
   }
+
 
   .customer-welcome-section h1 {
     font-size: 22px;
   }
 
+
   .customer-welcome-section p {
     font-size: 13px;
+
+    line-height: 1.5;
   }
+
 
   .customer-order-button {
     width: 100%;
   }
 
 
-  /* STATS */
+  /* Statistics */
 
   .customer-stats-grid {
     grid-template-columns: 1fr;
 
-    gap: 12px;
+    gap: 14px;
   }
+
 
   .customer-stat-card {
-    padding: 18px;
+    min-height: 110px;
   }
 
 
-  /* QUICK ACTIONS */
+  /* Sections */
+
+  .customer-section,
+  .customer-orders-section,
+  .customer-profile-section {
+    padding: 19px;
+  }
+
+
+  /* Quick actions */
 
   .customer-quick-actions {
     grid-template-columns: 1fr;
@@ -885,84 +833,74 @@
     gap: 12px;
   }
 
+
   .customer-action-card {
-    padding: 18px;
+    min-height: 125px;
   }
 
 
-  /* SECTIONS */
+  /* Profile */
 
-  .customer-orders-section,
-  .customer-profile-section {
-    padding: 18px;
-  }
+  .customer-profile-card {
+    flex-wrap: wrap;
 
-
-  .customer-section-header {
     align-items: flex-start;
   }
 
-  .customer-section-header h2 {
-    font-size: 18px;
+
+  .edit-profile-button {
+    width: 100%;
   }
 
 
-  /* DELIVERY */
+  /* Delivery */
 
   .customer-delivery-card {
+    padding: 20px;
+
+    align-items: flex-start;
+
     flex-wrap: wrap;
-
-    padding: 18px;
   }
 
-  .customer-delivery-content {
-    min-width: 180px;
-  }
 
   .customer-delivery-status {
-    margin-left: 73px;
-  }
-
-
-  /* FOOTER */
-
-  .customer-footer {
-    flex-direction: column;
-
-    text-align: center;
-
-    padding: 18px;
+    width: 100%;
   }
 
 }
 
 
 /* =========================================================
-   SMALL MOBILE
-   ========================================================= */
+   VERY SMALL MOBILE
+========================================================= */
 
 @media (max-width: 400px) {
+
+  .customer-dashboard-page {
+    padding: 14px 10px;
+  }
+
+
+  .customer-welcome-section {
+    padding: 18px;
+  }
+
 
   .customer-welcome-section h1 {
     font-size: 20px;
   }
 
-  .customer-stat-card h2 {
-    font-size: 21px;
+
+  .customer-stat-card {
+    padding: 17px;
   }
 
-  .customer-stat-icon {
-    width: 48px;
-    height: 48px;
 
-    font-size: 21px;
-  }
-
-  .customer-delivery-icon {
-    width: 48px;
-    height: 48px;
-
-    font-size: 21px;
+  .customer-section,
+  .customer-orders-section,
+  .customer-profile-section {
+    padding: 16px;
   }
 
 }

@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 
 
@@ -35,7 +34,12 @@ import AdminLogin from "./pages/admin/AdminLogin";
 // ========================================
 
 import CustomerLogin from "./pages/customer/CustomerLogin";
+import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import CustomerProducts from "./pages/customer/CustomerProducts";
+import CustomerOrders from "./pages/customer/CustomerOrders";
+import CustomerPayments from "./pages/customer/CustomerPayments";
+import CustomerProfile from "./pages/customer/CustomerProfile";
 
 
 // ========================================
@@ -97,20 +101,6 @@ function ProtectedCustomer({ children }) {
 
 
 // ========================================
-// CUSTOMER PAGE
-// ========================================
-
-function CustomerPage({ children }) {
-
-  return (
-    <ProtectedCustomer>
-      {children}
-    </ProtectedCustomer>
-  );
-}
-
-
-// ========================================
 // APP
 // ========================================
 
@@ -147,7 +137,7 @@ function App() {
 
       {/* =================================
           DEFAULT URL
-          
+
           "/" → CUSTOMER LOGIN
       ================================= */}
 
@@ -275,22 +265,100 @@ function App() {
 
 
       {/* =================================
-          CUSTOMER DASHBOARD
+          CUSTOMER PANEL
       ================================= */}
 
       <Route
         path="/customer"
         element={
-          <CustomerPage>
-            <CustomerDashboard />
-          </CustomerPage>
+          <ProtectedCustomer>
+            <CustomerLayout />
+          </ProtectedCustomer>
         }
-      />
+      >
+
+
+        {/* =================================
+            CUSTOMER DASHBOARD
+
+            URL:
+            /customer
+        ================================= */}
+
+        <Route
+          index
+          element={
+            <CustomerDashboard />
+          }
+        />
+
+
+        {/* =================================
+            CUSTOMER PRODUCTS
+
+            URL:
+            /customer/products
+        ================================= */}
+
+        <Route
+          path="products"
+          element={
+            <CustomerProducts />
+          }
+        />
+
+
+        {/* =================================
+            CUSTOMER ORDERS
+
+            URL:
+            /customer/orders
+        ================================= */}
+
+        <Route
+          path="orders"
+          element={
+            <CustomerOrders />
+          }
+        />
+
+
+        {/* =================================
+            CUSTOMER PAYMENTS
+
+            URL:
+            /customer/payments
+        ================================= */}
+
+        <Route
+          path="payments"
+          element={
+            <CustomerPayments />
+          }
+        />
+
+
+        {/* =================================
+            CUSTOMER PROFILE
+
+            URL:
+            /customer/profile
+        ================================= */}
+
+        <Route
+          path="profile"
+          element={
+            <CustomerProfile />
+          }
+        />
+
+
+      </Route>
 
 
       {/* =================================
           UNKNOWN URL
-          
+
           → CUSTOMER LOGIN
       ================================= */}
 
@@ -310,4 +378,3 @@ function App() {
 
 
 export default App;
-

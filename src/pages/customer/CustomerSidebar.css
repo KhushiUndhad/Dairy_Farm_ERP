@@ -1,6 +1,6 @@
-/* =========================================================
-   CUSTOMER SIDEBAR
-   ========================================================= */
+/* =========================================
+   SIDEBAR
+========================================= */
 
 .customer-sidebar {
   position: fixed;
@@ -8,85 +8,77 @@
   top: 0;
   left: 0;
 
-  width: 250px;
+  width: 280px;
   height: 100vh;
 
-  z-index: 2000;
+  background: #166534;
 
   display: flex;
   flex-direction: column;
 
-  background: #ffffff;
-
-  border-right: 1px solid #e5e7eb;
-
-  box-sizing: border-box;
-
-  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.06);
+  z-index: 1100;
 
   transition: transform 0.3s ease;
 
-  overflow: hidden;
+  box-sizing: border-box;
+
+  overflow-y: auto;
 }
 
 
-/* =========================================================
+/* =========================================
    OPEN
-   ========================================================= */
+========================================= */
 
 .customer-sidebar-open {
   transform: translateX(0);
 }
 
 
-/* =========================================================
+/* =========================================
    CLOSED
-   ========================================================= */
+========================================= */
 
 .customer-sidebar-closed {
   transform: translateX(-100%);
 }
 
 
-/* =========================================================
+/* =========================================
    LOGO
-   ========================================================= */
+========================================= */
 
 .customer-sidebar-logo {
-  height: 72px;
+  height: 90px;
 
-  flex-shrink: 0;
+  padding: 0 24px;
 
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 13px;
 
-  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 
-  border-bottom: 1px solid #f0f0f0;
-
-  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 
 /* LOGO ICON */
 
 .customer-logo-icon {
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
 
-  flex-shrink: 0;
+  border-radius: 12px;
+
+  background: #ffffff;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #dcfce7;
-
-  border-radius: 11px;
-
-  font-size: 23px;
+  font-size: 25px;
 }
 
 
@@ -96,275 +88,234 @@
   display: flex;
   flex-direction: column;
 
-  min-width: 0;
+  gap: 3px;
 }
+
 
 .customer-logo-text strong {
-  color: #166534;
+  color: #ffffff;
 
-  font-size: 16px;
+  font-size: 18px;
+
   font-weight: 700;
-
-  line-height: 1.2;
 }
+
 
 .customer-logo-text span {
-  margin-top: 3px;
+  color: #bbf7d0;
 
-  color: #9ca3af;
-
-  font-size: 10px;
-
-  line-height: 1.2;
+  font-size: 12px;
 }
 
 
-/* =========================================================
+/* =========================================
    NAVIGATION
-   ========================================================= */
+========================================= */
 
 .customer-sidebar-nav {
+  padding: 22px 15px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
   flex: 1;
-
-  padding: 18px 12px;
-
-  overflow-y: auto;
-
-  box-sizing: border-box;
 }
 
 
-/* =========================================================
-   NAVIGATION LINK
-   ========================================================= */
+/* =========================================
+   NAV LINK
+========================================= */
 
 .customer-nav-link {
-  width: 100%;
+  min-height: 50px;
+
+  padding: 0 15px;
 
   display: flex;
   align-items: center;
 
-  gap: 12px;
-
-  padding: 12px 13px;
-
-  margin-bottom: 5px;
-
-  box-sizing: border-box;
+  gap: 14px;
 
   border-radius: 10px;
 
-  color: #6b7280;
+  color: #dcfce7;
 
   text-decoration: none;
 
-  font-size: 13px;
+  font-size: 14px;
+
   font-weight: 500;
 
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+
+/* ICON */
+
+.customer-nav-icon {
+  width: 26px;
+
+  display: flex;
+  justify-content: center;
+
+  font-size: 19px;
+
+  flex-shrink: 0;
+}
+
+
+/* TEXT */
+
+.customer-nav-text {
+  white-space: nowrap;
 }
 
 
 /* HOVER */
 
 .customer-nav-link:hover {
-  background: #f0fdf4;
+  background: rgba(255, 255, 255, 0.10);
 
-  color: #166534;
-
-  transform: translateX(2px);
+  color: #ffffff;
 }
 
 
 /* ACTIVE */
 
 .customer-nav-link.active {
-  background: #dcfce7;
+  background: #ffffff;
 
   color: #166534;
 
-  font-weight: 600;
+  font-weight: 700;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
 }
 
 
-/* =========================================================
-   NAV ICON
-   ========================================================= */
-
-.customer-nav-icon {
-  width: 25px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 18px;
-}
-
-
-/* =========================================================
-   NAV TEXT
-   ========================================================= */
-
-.customer-nav-text {
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-
-/* =========================================================
+/* =========================================
    SIDEBAR FOOTER
-   ========================================================= */
+========================================= */
 
 .customer-sidebar-footer {
+  padding: 18px 15px 20px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+
   flex-shrink: 0;
-
-  padding: 14px;
-
-  border-top: 1px solid #f0f0f0;
-
-  background: #ffffff;
-
-  box-sizing: border-box;
 }
 
 
-/* =========================================================
-   SUPPORT BOX
-   ========================================================= */
+/* =========================================
+   SUPPORT
+========================================= */
 
 .customer-support-box {
+  padding: 13px;
+
+  margin-bottom: 12px;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.08);
+
   display: flex;
   align-items: center;
 
   gap: 10px;
-
-  padding: 11px;
-
-  margin-bottom: 10px;
-
-  background: #f0fdf4;
-
-  border-radius: 10px;
 }
+
 
 .support-icon {
-  width: 30px;
-  height: 30px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #dcfce7;
-
-  border-radius: 8px;
-
-  font-size: 15px;
+  font-size: 20px;
 }
+
 
 .customer-support-box div {
   display: flex;
   flex-direction: column;
 
-  min-width: 0;
+  gap: 2px;
 }
 
+
 .customer-support-box strong {
-  color: #166534;
+  color: #ffffff;
+
+  font-size: 13px;
+}
+
+
+.customer-support-box span {
+  color: #bbf7d0;
 
   font-size: 11px;
 }
 
-.customer-support-box div span {
-  margin-top: 2px;
 
-  color: #6b7280;
-
-  font-size: 10px;
-}
-
-
-/* =========================================================
-   LOGOUT BUTTON
-   ========================================================= */
+/* =========================================
+   LOGOUT
+========================================= */
 
 .customer-logout-button {
   width: 100%;
-
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 11px 13px;
-
-  background: transparent;
+  height: 46px;
 
   border: none;
 
   border-radius: 9px;
 
-  color: #dc2626;
+  background: rgba(255, 255, 255, 0.10);
 
-  font-family: inherit;
+  color: #ffffff;
 
-  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  font-size: 14px;
+
   font-weight: 600;
-
-  text-align: left;
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease;
+  transition: all 0.2s ease;
 }
+
 
 .customer-logout-button:hover {
-  background: #fef2f2;
+  background: #dc2626;
 }
 
 
-/* =========================================================
+/* =========================================
    SCROLLBAR
-   ========================================================= */
+========================================= */
 
-.customer-sidebar-nav::-webkit-scrollbar {
+.customer-sidebar::-webkit-scrollbar {
   width: 5px;
 }
 
-.customer-sidebar-nav::-webkit-scrollbar-track {
-  background: transparent;
-}
 
-.customer-sidebar-nav::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+.customer-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
 
   border-radius: 10px;
 }
 
 
-/* =========================================================
+/* =========================================
    MOBILE
-   ========================================================= */
+========================================= */
 
 @media (max-width: 900px) {
 
   .customer-sidebar {
-    width: 270px;
-
-    box-shadow:
-      5px 0 25px rgba(0, 0, 0, 0.18);
+    width: 280px;
   }
 
 }
