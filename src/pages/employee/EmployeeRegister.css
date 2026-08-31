@@ -1,0 +1,157 @@
+.employee-register-page {
+  min-height: 100vh;
+  background: #f3f7f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 35px 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.employee-register-card {
+  width: 750px;
+  max-width: 100%;
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+}
+
+.employee-register-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.employee-register-icon {
+  width: 55px;
+  height: 55px;
+  background: #dcfce7;
+  color: #198754;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+}
+
+.employee-register-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 25px;
+}
+
+.employee-register-header p {
+  margin: 4px 0 0;
+  color: #718096;
+  font-size: 13px;
+}
+
+.employee-register-title {
+  margin-bottom: 25px;
+}
+
+.employee-register-title h2 {
+  margin: 0 0 7px;
+  color: #172033;
+}
+
+.employee-register-title p {
+  margin: 0;
+  color: #718096;
+}
+
+.employee-register-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.employee-register-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #243047;
+}
+
+.employee-register-input {
+  height: 50px;
+  border: 1px solid #d9e1e7;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 14px;
+  background: #fafcfd;
+}
+
+.employee-register-input:focus-within {
+  border-color: #198754;
+}
+
+.employee-register-input svg {
+  color: #198754;
+}
+
+.employee-register-input input,
+.employee-register-input select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+.employee-register-button {
+  grid-column: 1 / -1;
+  height: 52px;
+  border: none;
+  border-radius: 9px;
+  background: #198754;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.employee-register-button:hover {
+  background: #157347;
+}
+
+.employee-login-bottom {
+  text-align: center;
+  margin-top: 25px;
+  color: #718096;
+  font-size: 14px;
+}
+
+.employee-login-bottom a {
+  margin-left: 6px;
+  color: #198754;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (max-width: 650px) {
+
+  .employee-register-card {
+    padding: 25px 20px;
+  }
+
+  .employee-register-form {
+    grid-template-columns: 1fr;
+  }
+
+  .employee-register-button {
+    grid-column: auto;
+  }
+
+}

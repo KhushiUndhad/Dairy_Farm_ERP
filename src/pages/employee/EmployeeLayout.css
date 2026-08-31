@@ -1,0 +1,63 @@
+/* =========================================
+   EMPLOYEE LAYOUT
+========================================= */
+
+.employee-layout {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f7f6;
+  overflow-x: hidden;
+}
+
+
+/* =========================================
+   MAIN AREA
+========================================= */
+
+.employee-main-area {
+  min-height: 100vh;
+  margin-left: 300px;
+  transition: margin-left 0.3s ease;
+}
+
+
+/* SIDEBAR OPEN */
+
+.employee-layout.sidebar-open .employee-main-area {
+  margin-left: 300px;
+}
+
+
+/* SIDEBAR CLOSED */
+
+.employee-layout.sidebar-closed .employee-main-area {
+  margin-left: 0;
+}
+
+
+/* =========================================
+   PAGE CONTENT
+========================================= */
+
+.employee-page-content {
+  min-height: calc(100vh - 100px);
+  padding: 32px 40px;
+  background: #f5f7f6;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+  .employee-main-area {
+    margin-left: 0 !important;
+  }
+
+  .employee-page-content {
+    padding: 24px 20px;
+  }
+
+}

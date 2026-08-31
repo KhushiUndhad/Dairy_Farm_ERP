@@ -2,15 +2,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 
 // ========================================
-// ADMIN LAYOUT
+// ADMIN
 // ========================================
 
 import AdminLayout from "./pages/admin/AdminLayout";
-
-
-// ========================================
-// ADMIN PAGES
-// ========================================
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CowManagement from "./pages/admin/CowManagement";
@@ -21,16 +16,11 @@ import Sales from "./pages/admin/Sales";
 import Inventory from "./pages/admin/Inventory";
 import Reports from "./pages/admin/Reports";
 
-
-// ========================================
-// ADMIN LOGIN
-// ========================================
-
 import AdminLogin from "./pages/admin/AdminLogin";
 
 
 // ========================================
-// CUSTOMER PAGES
+// CUSTOMER
 // ========================================
 
 import CustomerLogin from "./pages/customer/CustomerLogin";
@@ -38,8 +28,16 @@ import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import CustomerProducts from "./pages/customer/CustomerProducts";
 import CustomerOrders from "./pages/customer/CustomerOrders";
-import CustomerPayments from "./pages/customer/CustomerPayments";
-import CustomerProfile from "./pages/customer/CustomerProfile";
+
+
+// ========================================
+// EMPLOYEE
+// ========================================
+
+import EmployeeLogin from "./pages/employee/EmployeeLogin";
+import EmployeeRegister from "./pages/employee/EmployeeRegister";
+import EmployeeLayout from "./pages/employee/EmployeeLayout";
+import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 
 
 // ========================================
@@ -69,6 +67,7 @@ function ProtectedAdmin({ children }) {
 function AdminPage({ children }) {
 
   return (
+
     <ProtectedAdmin>
 
       <AdminLayout>
@@ -76,6 +75,7 @@ function AdminPage({ children }) {
       </AdminLayout>
 
     </ProtectedAdmin>
+
   );
 }
 
@@ -101,6 +101,26 @@ function ProtectedCustomer({ children }) {
 
 
 // ========================================
+// PROTECTED EMPLOYEE
+// ========================================
+
+function ProtectedEmployee({ children }) {
+
+  const isLoggedIn =
+    localStorage.getItem("employeeLoggedIn") === "true";
+
+  return isLoggedIn ? (
+    children
+  ) : (
+    <Navigate
+      to="/employee/login"
+      replace
+    />
+  );
+}
+
+
+// ========================================
 // APP
 // ========================================
 
@@ -111,35 +131,9 @@ function App() {
     <Routes>
 
 
-      {/* =================================
-          CUSTOMER LOGIN
-      ================================= */}
-
-      <Route
-        path="/customer/login"
-        element={
-          <CustomerLogin />
-        }
-      />
-
-
-      {/* =================================
-          ADMIN LOGIN
-      ================================= */}
-
-      <Route
-        path="/admin/login"
-        element={
-          <AdminLogin />
-        }
-      />
-
-
-      {/* =================================
-          DEFAULT URL
-
-          "/" → CUSTOMER LOGIN
-      ================================= */}
+      {/* =====================================
+          DEFAULT
+      ===================================== */}
 
       <Route
         path="/"
@@ -152,9 +146,21 @@ function App() {
       />
 
 
-      {/* =================================
+      {/* =====================================
+          ADMIN LOGIN
+      ===================================== */}
+
+      <Route
+        path="/admin/login"
+        element={
+          <AdminLogin />
+        }
+      />
+
+
+      {/* =====================================
           ADMIN DASHBOARD
-      ================================= */}
+      ===================================== */}
 
       <Route
         path="/admin"
@@ -166,10 +172,6 @@ function App() {
       />
 
 
-      {/* =================================
-          COW MANAGEMENT
-      ================================= */}
-
       <Route
         path="/admin/cows"
         element={
@@ -179,10 +181,6 @@ function App() {
         }
       />
 
-
-      {/* =================================
-          MILK PRODUCTION
-      ================================= */}
 
       <Route
         path="/admin/milk-production"
@@ -194,10 +192,6 @@ function App() {
       />
 
 
-      {/* =================================
-          EMPLOYEE MANAGEMENT
-      ================================= */}
-
       <Route
         path="/admin/employees"
         element={
@@ -207,10 +201,6 @@ function App() {
         }
       />
 
-
-      {/* =================================
-          CUSTOMER MANAGEMENT
-      ================================= */}
 
       <Route
         path="/admin/customers"
@@ -222,10 +212,6 @@ function App() {
       />
 
 
-      {/* =================================
-          SALES
-      ================================= */}
-
       <Route
         path="/admin/sales"
         element={
@@ -235,10 +221,6 @@ function App() {
         }
       />
 
-
-      {/* =================================
-          INVENTORY
-      ================================= */}
 
       <Route
         path="/admin/inventory"
@@ -250,10 +232,6 @@ function App() {
       />
 
 
-      {/* =================================
-          REPORTS
-      ================================= */}
-
       <Route
         path="/admin/reports"
         element={
@@ -264,9 +242,21 @@ function App() {
       />
 
 
-      {/* =================================
+      {/* =====================================
+          CUSTOMER LOGIN
+      ===================================== */}
+
+      <Route
+        path="/customer/login"
+        element={
+          <CustomerLogin />
+        }
+      />
+
+
+      {/* =====================================
           CUSTOMER PANEL
-      ================================= */}
+      ===================================== */}
 
       <Route
         path="/customer"
@@ -277,28 +267,12 @@ function App() {
         }
       >
 
-
-        {/* =================================
-            CUSTOMER DASHBOARD
-
-            URL:
-            /customer
-        ================================= */}
-
         <Route
           index
           element={
             <CustomerDashboard />
           }
         />
-
-
-        {/* =================================
-            CUSTOMER PRODUCTS
-
-            URL:
-            /customer/products
-        ================================= */}
 
         <Route
           path="products"
@@ -307,14 +281,6 @@ function App() {
           }
         />
 
-
-        {/* =================================
-            CUSTOMER ORDERS
-
-            URL:
-            /customer/orders
-        ================================= */}
-
         <Route
           path="orders"
           element={
@@ -322,45 +288,61 @@ function App() {
           }
         />
 
+      </Route>
 
-        {/* =================================
-            CUSTOMER PAYMENTS
 
-            URL:
-            /customer/payments
-        ================================= */}
+      {/* =====================================
+          EMPLOYEE LOGIN
+      ===================================== */}
+
+      <Route
+        path="/employee/login"
+        element={
+          <EmployeeLogin />
+        }
+      />
+
+
+      {/* =====================================
+          EMPLOYEE REGISTER
+      ===================================== */}
+
+      <Route
+        path="/employee/register"
+        element={
+          <EmployeeRegister />
+        }
+      />
+
+
+      {/* =====================================
+          EMPLOYEE PANEL
+      ===================================== */}
+
+      <Route
+        path="/employee"
+        element={
+          <ProtectedEmployee>
+            <EmployeeLayout />
+          </ProtectedEmployee>
+        }
+      >
+
+        {/* DASHBOARD */}
 
         <Route
-          path="payments"
+          index
           element={
-            <CustomerPayments />
+            <EmployeeDashboard />
           }
         />
-
-
-        {/* =================================
-            CUSTOMER PROFILE
-
-            URL:
-            /customer/profile
-        ================================= */}
-
-        <Route
-          path="profile"
-          element={
-            <CustomerProfile />
-          }
-        />
-
 
       </Route>
 
 
-      {/* =================================
+      {/* =====================================
           UNKNOWN URL
-
-          → CUSTOMER LOGIN
-      ================================= */}
+      ===================================== */}
 
       <Route
         path="*"
@@ -373,8 +355,8 @@ function App() {
       />
 
     </Routes>
+
   );
 }
-
 
 export default App;
