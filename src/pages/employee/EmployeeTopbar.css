@@ -1,51 +1,104 @@
+/* =========================================================
+   EMPLOYEE TOPBAR
+========================================================= */
+
 .employee-topbar {
-  height: 72px;
+  position: sticky;
+
+  top: 0;
+
+  z-index: 900;
+
+  width: 100%;
+  height: 75px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 28px;
+  padding: 0 30px;
 
   background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
 
-  position: sticky;
-  top: 0;
-  z-index: 900;
+  border-bottom: 1px solid #e2e8e5;
+
+  box-shadow:
+    0 2px 10px rgba(22, 131, 74, 0.06);
 }
+
+
+/* =========================================================
+   LEFT
+========================================================= */
 
 .employee-topbar-left {
+  min-width: 0;
+
   display: flex;
   align-items: center;
-  gap: 16px;
+
+  gap: 15px;
 }
 
+
+/* =========================================================
+   HAMBURGER
+========================================================= */
+
 .employee-menu-button {
-  width: 40px;
-  height: 40px;
+  width: 43px;
+  height: 43px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 0;
-  border-radius: 8px;
+  flex-shrink: 0;
 
-  background: #f8fafc;
-  color: #475569;
+  border: 1px solid #d9e9df;
+
+  border-radius: 10px;
+
+  background: #eaf8ef;
+
+  color: #16834a;
 
   cursor: pointer;
 
-  font-size: 17px;
+  font-size: 18px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .employee-menu-button:hover {
-  background: #f0fdf4;
-  color: #15803d;
+  background: #16834a;
+
+  color: #ffffff;
+
+  border-color: #16834a;
+
+  box-shadow:
+    0 4px 12px rgba(22, 131, 74, 0.22);
+
+  transform: translateY(-1px);
 }
 
+.employee-menu-button:active {
+  transform: scale(0.95);
+}
+
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
 .employee-page-title {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
 }
@@ -53,58 +106,253 @@
 .employee-page-title h2 {
   margin: 0;
 
-  font-size: 18px;
-  color: #111827;
+  color: #173d29;
+
+  font-family: Georgia, serif;
+
+  font-size: 21px;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
 .employee-page-title span {
-  margin-top: 3px;
+  margin-top: 4px;
+
+  color: #718096;
 
   font-size: 12px;
-  color: #94a3b8;
+
+  line-height: 1.2;
 }
 
-.employee-topbar-profile {
+
+/* =========================================================
+   RIGHT
+========================================================= */
+
+.employee-topbar-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+
+  gap: 12px;
+
+  flex-shrink: 0;
 }
 
+
+/* =========================================================
+   PROFILE BUTTON
+========================================================= */
+
+.employee-topbar-profile {
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 4px 8px 4px 5px;
+
+  border: 1px solid transparent;
+
+  border-radius: 11px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.employee-topbar-profile:hover {
+  background: #f0fdf4;
+
+  border-color: #dcfce7;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
 .employee-topbar-avatar {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   border-radius: 50%;
 
-  color: #15803d;
+  background: #e4f8ec;
 
-  font-size: 35px;
+  color: #16834a;
+
+  font-size: 29px;
 }
 
+.employee-topbar-avatar svg {
+  display: block;
+}
+
+
+/* =========================================================
+   USER
+========================================================= */
+
 .employee-topbar-user {
+  min-width: 90px;
+
   display: flex;
   flex-direction: column;
+
+  text-align: left;
 }
 
 .employee-topbar-user strong {
+  color: #173d29;
+
   font-size: 13px;
-  color: #1f2937;
+
+  font-weight: 700;
+
+  line-height: 1.2;
 }
 
 .employee-topbar-user span {
-  margin-top: 2px;
+  margin-top: 3px;
+
+  color: #718096;
 
   font-size: 11px;
-  color: #94a3b8;
+
+  line-height: 1.2;
 }
 
-@media (max-width: 600px) {
+
+/* =========================================================
+   PROFILE ARROW
+========================================================= */
+
+.employee-profile-arrow {
+  margin-left: 2px;
+
+  color: #94a3b8;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.employee-login-button {
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 17px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: #16834a;
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.employee-login-button:hover {
+  background: #116b3a;
+
+  box-shadow:
+    0 4px 12px rgba(22, 131, 74, 0.25);
+
+  transform: translateY(-1px);
+}
+
+.employee-login-button:active {
+  transform: scale(0.97);
+}
+
+.employee-login-button svg {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
   .employee-topbar {
+    height: 70px;
+
+    padding: 0 20px;
+  }
+
+  .employee-page-title h2 {
+    font-size: 19px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+  .employee-topbar {
+    height: 68px;
+
     padding: 0 15px;
+  }
+
+  .employee-topbar-left {
+    gap: 10px;
+  }
+
+  .employee-menu-button {
+    width: 40px;
+    height: 40px;
+
+    font-size: 17px;
+  }
+
+  .employee-page-title h2 {
+    max-width: 180px;
+
+    font-size: 17px;
   }
 
   .employee-page-title span {
@@ -113,5 +361,55 @@
 
   .employee-topbar-user {
     display: none;
+  }
+
+  .employee-profile-arrow {
+    display: none;
+  }
+
+  .employee-topbar-profile {
+    padding: 0;
+
+    border: none;
+  }
+
+  .employee-topbar-avatar {
+    width: 40px;
+    height: 40px;
+
+    font-size: 27px;
+  }
+
+  .employee-login-button {
+    width: 40px;
+    height: 40px;
+
+    padding: 0;
+  }
+
+  .employee-login-button span {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+  .employee-topbar {
+    padding: 0 10px;
+  }
+
+  .employee-page-title h2 {
+    max-width: 135px;
+
+    font-size: 16px;
+  }
+
+  .employee-topbar-right {
+    gap: 7px;
   }
 }

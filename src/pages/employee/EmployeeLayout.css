@@ -1,212 +1,517 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 * {
   box-sizing: border-box;
 }
 
-.employee-layout {
-  display: flex;
-  min-height: 100vh;
-  background: #f5f7fb;
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  min-height: 100%;
 }
 
-/* ================= SIDEBAR ================= */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: #f5f8f6;
+}
+
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.employee-layout {
+  width: 100%;
+  min-height: 100vh;
+
+  background: #f5f8f6;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
 .employee-sidebar {
-  width: 250px;
-  height: 100vh;
   position: fixed;
-  left: 0;
-  top: 0;
 
-  background: #1e293b;
-  color: white;
+  top: 0;
+  left: 0;
+
+  width: 260px;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
 
+  background: #16834a;
+
+  color: #ffffff;
+
   z-index: 1000;
+
+  overflow: hidden;
+
+  transition:
+    width 0.25s ease,
+    transform 0.25s ease;
 }
 
-/* ================= LOGO ================= */
 
-.employee-logo {
+/* COLLAPSED */
+
+.employee-sidebar-closed {
+  width: 80px;
+}
+
+
+/* =========================================================
+   SIDEBAR LOGO
+========================================================= */
+
+.employee-sidebar-logo {
+  width: 100%;
   height: 75px;
 
   display: flex;
   align-items: center;
+
   gap: 12px;
 
-  padding: 0 20px;
+  padding: 0 18px;
 
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+
+  flex-shrink: 0;
 }
 
-.employee-logo h2 {
-  font-size: 19px;
-  margin: 0;
+
+/* LOGO ICON */
+
+.employee-logo-icon {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  color: #16834a;
+
+  font-size: 20px;
 }
 
-.logo-icon {
-  font-size: 27px;
-}
 
-/* ================= NAVIGATION ================= */
+/* LOGO TEXT */
 
-.employee-nav {
+.employee-logo-text {
   display: flex;
   flex-direction: column;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+}
+
+.employee-logo-text strong {
+  color: #ffffff;
+
+  font-family: Georgia, serif;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.employee-logo-text span {
+  margin-top: 3px;
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 10px;
+}
+
+
+/* COLLAPSED LOGO */
+
+.employee-sidebar-closed .employee-logo-text {
+  display: none;
+}
+
+.employee-sidebar-closed .employee-sidebar-logo {
+  justify-content: center;
+
+  padding: 0;
+}
+
+
+/* =========================================================
+   SIDEBAR NAV
+========================================================= */
+
+.employee-sidebar-nav {
+  flex: 1;
 
   padding: 20px 12px;
 
-  gap: 6px;
+  overflow-y: auto;
 }
 
-.nav-item {
+.employee-sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.employee-sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   NAVIGATION LINK
+========================================================= */
+
+.employee-nav-link {
+  width: 100%;
+  height: 48px;
+
   display: flex;
   align-items: center;
+
   gap: 14px;
 
-  padding: 13px 15px;
+  margin-bottom: 6px;
 
-  color: #cbd5e1;
+  padding: 0 14px;
+
+  border-radius: 10px;
+
+  color: rgba(255, 255, 255, 0.92);
 
   text-decoration: none;
 
-  border-radius: 8px;
+  font-size: 14px;
 
-  transition: 0.2s;
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.nav-item svg {
+
+/* HOVER */
+
+.employee-nav-link:hover {
+  background: rgba(255, 255, 255, 0.14);
+
+  color: #ffffff;
+}
+
+
+/* ACTIVE */
+
+.employee-nav-link.active {
+  background: #ffffff;
+
+  color: #16834a;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ICON */
+
+.employee-nav-icon {
+  width: 22px;
+  min-width: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   font-size: 17px;
 }
 
-.nav-item:hover {
-  background: #334155;
-  color: white;
+
+/* TEXT */
+
+.employee-nav-text {
+  white-space: nowrap;
 }
 
-.nav-item.active {
-  background: #2563eb;
-  color: white;
+
+/* COLLAPSED */
+
+.employee-sidebar-closed .employee-nav-text {
+  display: none;
 }
 
-/* ================= LOGOUT ================= */
+.employee-sidebar-closed .employee-nav-link {
+  justify-content: center;
 
-.logout-btn {
-  margin: auto 15px 25px;
+  padding: 0;
+}
 
-  padding: 13px 15px;
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.employee-sidebar-footer {
+  width: 100%;
+
+  padding: 15px 12px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SUPPORT
+========================================================= */
+
+.employee-support-box {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px;
+
+  margin-bottom: 12px;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.employee-support-icon {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #16834a;
+}
+
+.employee-support-text {
+  display: flex;
+  flex-direction: column;
+
+  white-space: nowrap;
+}
+
+.employee-support-text strong {
+  color: #ffffff;
+
+  font-size: 12px;
+}
+
+.employee-support-text span {
+  margin-top: 2px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 10px;
+}
+
+
+/* COLLAPSED SUPPORT */
+
+.employee-sidebar-closed .employee-support-box {
+  display: none;
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.employee-logout-button {
+  width: 100%;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
 
   border: none;
-  border-radius: 8px;
+
+  border-radius: 9px;
 
   background: #dc2626;
 
-  color: white;
-
-  display: flex;
-  align-items: center;
-  gap: 14px;
-
-  font-size: 15px;
+  color: #ffffff;
 
   cursor: pointer;
-}
-
-.logout-btn:hover {
-  background: #b91c1c;
-}
-
-/* ================= MAIN ================= */
-
-.employee-main {
-  margin-left: 250px;
-
-  width: calc(100% - 250px);
-
-  min-height: 100vh;
-}
-
-/* ================= HEADER ================= */
-
-.employee-header {
-  height: 75px;
-
-  background: white;
-
-  border-bottom: 1px solid #e5e7eb;
-
-  padding: 0 30px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.employee-header h3 {
-  margin: 0;
-
-  font-size: 20px;
-  color: #1e293b;
-}
-
-.employee-header p {
-  margin: 4px 0 0;
 
   font-size: 13px;
-  color: #64748b;
+
+  font-weight: 600;
+
+  transition: 0.2s ease;
 }
 
-.header-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.employee-logout-button:hover {
+  background: #b91c1c;
 
-  color: #334155;
-
-  font-weight: 500;
+  transform: translateY(-1px);
 }
 
-.header-profile svg {
-  font-size: 25px;
+
+/* COLLAPSED LOGOUT */
+
+.employee-sidebar-closed .employee-logout-button span {
+  display: none;
 }
 
-/* ================= CONTENT ================= */
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.employee-main {
+  width: calc(100% - 260px);
+
+  min-height: 100vh;
+
+  margin-left: 260px;
+
+  background: #f5f8f6;
+
+  transition:
+    margin-left 0.25s ease,
+    width 0.25s ease;
+}
+
+
+/* COLLAPSED */
+
+.employee-layout.sidebar-collapsed .employee-main {
+  width: calc(100% - 80px);
+
+  margin-left: 80px;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
 
 .employee-content {
+  width: 100%;
+
+  min-height: calc(100vh - 75px);
+
   padding: 30px;
 }
 
-/* ================= RESPONSIVE ================= */
 
-@media (max-width: 768px) {
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.employee-sidebar-overlay {
+  display: none;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
 
   .employee-sidebar {
-    width: 70px;
+    width: 260px;
+
+    transform: translateX(0);
   }
 
-  .employee-logo h2,
-  .nav-item span,
-  .logout-btn span {
-    display: none;
+  .employee-sidebar-closed {
+    width: 260px;
+
+    transform: translateX(-100%);
   }
 
-  .employee-logo {
-    justify-content: center;
-    padding: 0;
+  .employee-sidebar-closed .employee-logo-text,
+  .employee-sidebar-closed .employee-nav-text,
+  .employee-sidebar-closed .employee-support-box,
+  .employee-sidebar-closed .employee-logout-button span {
+    display: block;
   }
 
-  .nav-item {
-    justify-content: center;
+  .employee-sidebar-closed .employee-sidebar-logo {
+    justify-content: flex-start;
+
+    padding: 0 18px;
   }
 
-  .logout-btn {
-    justify-content: center;
-    padding: 13px;
+  .employee-sidebar-closed .employee-nav-link {
+    justify-content: flex-start;
+
+    padding: 0 14px;
   }
 
-  .employee-main {
-    margin-left: 70px;
-    width: calc(100% - 70px);
+  .employee-main,
+  .employee-layout.sidebar-collapsed .employee-main {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .employee-sidebar-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: block;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    z-index: 999;
+  }
+
+  .employee-content {
+    padding: 22px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .employee-content {
+    padding: 15px;
   }
 }

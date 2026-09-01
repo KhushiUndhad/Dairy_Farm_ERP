@@ -1,26 +1,47 @@
+/* =========================================
+   EMPLOYEE LOGIN
+   Customer/Admin Panel Theme
+========================================= */
+
 .employee-login-page {
   min-height: 100vh;
+  width: 100%;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  background: #f1f5f9;
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: #f4f7f5;
 }
+
+/* =========================================
+   LOGIN CARD
+========================================= */
 
 .employee-login-card {
   width: 400px;
-
-  background: white;
+  max-width: 100%;
 
   padding: 40px;
 
-  border-radius: 15px;
+  background: #ffffff;
 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8e3;
+  border-radius: 16px;
+
+  box-shadow: 0 10px 30px rgba(18, 70, 42, 0.10);
 
   text-align: center;
+
+  box-sizing: border-box;
 }
+
+/* =========================================
+   LOGIN ICON
+========================================= */
 
 .login-icon {
   width: 70px;
@@ -28,83 +49,127 @@
 
   margin: 0 auto 20px;
 
-  border-radius: 50%;
-
-  background: #2563eb;
-
-  color: white;
-
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 30px;
+  border-radius: 50%;
+
+  background: #d9f7e6;
+  color: #126b38;
+
+  font-size: 29px;
 }
+
+/* =========================================
+   TITLE
+========================================= */
 
 .employee-login-card h2 {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
 
-  color: #1e293b;
+  color: #17211b;
+
+  font-size: 26px;
+  font-weight: 700;
 }
+
+/* =========================================
+   SUBTITLE
+========================================= */
 
 .login-subtitle {
-  color: #64748b;
+  margin: 0 0 28px;
+
+  color: #7a8790;
 
   font-size: 14px;
-
-  margin-bottom: 25px;
+  line-height: 1.5;
 }
 
-/* INPUT */
+/* =========================================
+   INPUT GROUP
+========================================= */
 
 .input-group {
+  width: 100%;
+  height: 48px;
+
   display: flex;
   align-items: center;
 
-  border: 1px solid #d1d5db;
+  box-sizing: border-box;
 
-  border-radius: 8px;
-
+  margin-bottom: 16px;
   padding: 0 14px;
 
-  margin-bottom: 15px;
+  background: #ffffff;
 
-  background: white;
+  border: 1px solid #d7e0da;
+  border-radius: 8px;
+
+  transition: all 0.2s ease;
 }
+
+/* Input Icon */
 
 .input-group svg {
-  color: #64748b;
+  flex-shrink: 0;
+
+  color: #718078;
+
+  font-size: 15px;
+
+  transition: color 0.2s ease;
 }
+
+/* Input */
 
 .input-group input {
   width: 100%;
+  height: 100%;
+
+  padding: 0 0 0 12px;
 
   border: none;
   outline: none;
 
-  padding: 13px;
+  background: transparent;
+
+  color: #17211b;
 
   font-size: 14px;
+
+  box-sizing: border-box;
 }
 
-/* LOGIN BUTTON */
+/* Placeholder */
+
+.input-group input::placeholder {
+  color: #9aa6a0;
+}
+
+/* Input Focus */
+
+.input-group:focus-within {
+  border-color: #159447;
+
+  box-shadow: 0 0 0 3px rgba(21, 148, 71, 0.10);
+}
+
+.input-group:focus-within svg {
+  color: #159447;
+}
+
+/* =========================================
+   LOGIN BUTTON
+========================================= */
 
 .login-btn {
   width: 100%;
+  height: 48px;
 
-  padding: 13px;
-
-  border: none;
-
-  border-radius: 8px;
-
-  background: #2563eb;
-
-  color: white;
-
-  font-size: 15px;
-
-  cursor: pointer;
+  margin-top: 8px;
 
   display: flex;
   align-items: center;
@@ -112,29 +177,85 @@
 
   gap: 10px;
 
-  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+
+  background: #159f4b;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
 }
+
+/* Hover */
 
 .login-btn:hover {
-  background: #1d4ed8;
+  background: #11853e;
+
+  box-shadow: 0 6px 15px rgba(21, 159, 75, 0.22);
 }
 
-/* REGISTER */
+/* Active */
+
+.login-btn:active {
+  transform: translateY(1px);
+}
+
+/* =========================================
+   REGISTER
+========================================= */
 
 .register-text {
-  margin-top: 22px;
+  margin: 22px 0 0;
 
-  color: #64748b;
+  color: #718078;
 
   font-size: 14px;
 }
 
 .register-text a {
-  color: #2563eb;
-
   margin-left: 5px;
+
+  color: #13783b;
 
   text-decoration: none;
 
   font-weight: 600;
+
+  transition: color 0.2s ease;
+}
+
+.register-text a:hover {
+  color: #0d5e2e;
+  text-decoration: underline;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .employee-login-page {
+    padding: 16px;
+  }
+
+  .employee-login-card {
+    padding: 30px 22px;
+    border-radius: 14px;
+  }
+
+  .login-icon {
+    width: 62px;
+    height: 62px;
+    font-size: 25px;
+  }
+
+  .employee-login-card h2 {
+    font-size: 23px;
+  }
 }
