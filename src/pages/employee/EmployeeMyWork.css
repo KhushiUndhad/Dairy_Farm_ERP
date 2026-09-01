@@ -1,17 +1,22 @@
+/* =========================================================
+   MY WORK PAGE
+========================================================= */
+
 .employee-work-page {
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 
-/* =========================
+/* =========================================================
    HEADER
-========================= */
+========================================================= */
 
 .employee-work-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   margin-bottom: 25px;
 }
@@ -19,54 +24,60 @@
 .employee-work-header h1 {
   margin: 0;
 
-  font-family: Georgia, serif;
+  color: #123c28;
 
   font-size: 30px;
-
-  color: #153223;
+  font-weight: 700;
 }
 
 .employee-work-header p {
   margin: 7px 0 0;
 
-  color: #75858a;
+  color: #718096;
 
   font-size: 14px;
 }
 
+
+/* DATE */
+
 .employee-work-date {
-  background: white;
-
-  border: 1px solid #dce8e2;
-
-  border-radius: 12px;
+  min-width: 150px;
 
   padding: 13px 20px;
 
   display: flex;
   flex-direction: column;
 
-  text-align: center;
+  align-items: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8e5;
+
+  border-radius: 12px;
+
+  box-shadow: 0 3px 12px rgba(22, 131, 74, 0.05);
 }
 
 .employee-work-date span {
-  color: #80909a;
+  color: #718096;
 
   font-size: 12px;
 }
 
 .employee-work-date strong {
-  margin-top: 4px;
+  margin-top: 5px;
 
-  color: #1b2936;
+  color: #16834a;
 
   font-size: 14px;
 }
 
 
-/* =========================
+/* =========================================================
    SUMMARY
-========================= */
+========================================================= */
 
 .employee-work-summary {
   display: grid;
@@ -79,43 +90,71 @@
 }
 
 .work-summary-card {
-  background: white;
-
-  border: 1px solid #e1e8e5;
-
-  border-radius: 15px;
-
-  padding: 22px;
+  min-height: 100px;
 
   display: flex;
   align-items: center;
 
-  box-shadow: 0 5px 18px rgba(0,0,0,0.03);
+  padding: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8e5;
+
+  border-radius: 14px;
+
+  box-shadow: 0 4px 15px rgba(22, 131, 74, 0.05);
+
+  transition: 0.2s ease;
 }
+
+.work-summary-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #b9dfca;
+
+  box-shadow: 0 8px 20px rgba(22, 131, 74, 0.09);
+}
+
+
+/* SUMMARY ICON */
 
 .summary-icon {
   width: 52px;
   height: 52px;
 
-  border-radius: 13px;
-
-  background: #e4f9ed;
-
-  color: #12904c;
-
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 20px;
-
   margin-right: 16px;
+
+  border-radius: 13px;
+
+  background: #e4f8ec;
+
+  color: #16834a;
+
+  font-size: 21px;
 }
+
+.completed-icon {
+  background: #dcfce7;
+  color: #16834a;
+}
+
+.pending-icon {
+  background: #fff4df;
+  color: #c77b00;
+}
+
+
+/* SUMMARY TEXT */
 
 .work-summary-card span {
   display: block;
 
-  color: #7a8a91;
+  color: #718096;
 
   font-size: 13px;
 }
@@ -123,42 +162,48 @@
 .work-summary-card strong {
   display: block;
 
-  color: #16242e;
+  margin-top: 5px;
 
-  font-family: Georgia, serif;
+  color: #173d29;
 
   font-size: 25px;
-
-  margin-top: 4px;
 }
 
 
-/* =========================
+/* =========================================================
    TASK SECTION
-========================= */
+========================================================= */
 
 .employee-task-section {
-  background: white;
+  padding: 25px;
 
-  border: 1px solid #e2e9e6;
+  background: #ffffff;
+
+  border: 1px solid #e2e8e5;
 
   border-radius: 16px;
 
-  padding: 25px;
+  box-shadow: 0 4px 15px rgba(22, 131, 74, 0.04);
 }
 
+
+/* TASK TITLE */
+
 .employee-task-title {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
   margin-bottom: 20px;
 }
 
 .employee-task-title h2 {
   margin: 0;
 
-  font-family: Georgia, serif;
+  color: #173d29;
 
   font-size: 21px;
-
-  color: #182a22;
 }
 
 .employee-task-title p {
@@ -170,25 +215,49 @@
 }
 
 
-/* =========================
+/* TASK COUNT */
+
+.task-count {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 8px 13px;
+
+  background: #e8f8ee;
+
+  color: #16834a;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
    TASK CARD
-========================= */
+========================================================= */
 
 .employee-task-card {
-  min-height: 75px;
+  min-height: 82px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 15px 17px;
+
+  margin-bottom: 12px;
+
+  background: #ffffff;
 
   border: 1px solid #e6ece9;
 
   border-radius: 12px;
 
-  display: flex;
-  align-items: center;
-
-  padding: 14px 16px;
-
-  margin-bottom: 12px;
-
-  transition: 0.2s;
+  transition: all 0.2s ease;
 }
 
 .employee-task-card:last-child {
@@ -198,54 +267,85 @@
 .employee-task-card:hover {
   border-color: #b9dfca;
 
-  box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+  background: #fcfffd;
+
+  box-shadow: 0 5px 15px rgba(22, 131, 74, 0.07);
+
+  transform: translateY(-1px);
 }
 
+
+/* =========================================================
+   TASK ICON
+========================================================= */
+
 .employee-task-icon {
-  width: 45px;
-  height: 45px;
+  width: 46px;
+  height: 46px;
 
-  border-radius: 11px;
-
-  background: #e9faf0;
-
-  color: #159447;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  flex-shrink: 0;
+  border-radius: 11px;
+
+  background: #e8f8ee;
+
+  color: #16834a;
+
+  font-size: 18px;
 }
 
-.employee-task-info {
-  margin-left: 14px;
 
+/* =========================================================
+   TASK INFO
+========================================================= */
+
+.employee-task-info {
   flex: 1;
+
+  margin-left: 15px;
 }
 
 .employee-task-info h3 {
   margin: 0;
 
-  font-family: Georgia, serif;
-
-  color: #17252d;
+  color: #173d29;
 
   font-size: 15px;
+
+  font-weight: 600;
 }
 
 .employee-task-info p {
-  margin: 5px 0 0;
+  margin: 5px 0;
 
-  color: #87949a;
+  color: #7b8990;
 
   font-size: 12px;
 }
 
+.employee-task-info small {
+  display: flex;
+  align-items: center;
 
-/* =========================
+  gap: 5px;
+
+  color: #16834a;
+
+  font-size: 11px;
+}
+
+.employee-task-info small svg {
+  font-size: 10px;
+}
+
+
+/* =========================================================
    STATUS
-========================= */
+========================================================= */
 
 .employee-task-status {
   display: flex;
@@ -260,26 +360,34 @@
   font-size: 12px;
 
   font-weight: 600;
+
+  white-space: nowrap;
 }
+
+
+/* COMPLETED */
 
 .employee-task-status.completed {
-  background: #e0f8ea;
+  background: #dcfce7;
 
-  color: #12904c;
+  color: #16834a;
 }
+
+
+/* PENDING */
 
 .employee-task-status.pending {
-  background: #fff4e5;
+  background: #fff4df;
 
-  color: #d87513;
+  color: #c77b00;
 }
 
 
-/* =========================
+/* =========================================================
    RESPONSIVE
-========================= */
+========================================================= */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
   .employee-work-header {
     align-items: flex-start;
@@ -289,28 +397,92 @@
     gap: 15px;
   }
 
+  .employee-work-date {
+    width: 100%;
+  }
+
   .employee-work-summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
 }
 
-@media (max-width: 550px) {
 
-  .employee-content {
-    padding: 15px;
+@media (max-width: 650px) {
+
+  .employee-work-summary {
+    grid-template-columns: 1fr;
   }
 
   .employee-task-section {
-    padding: 15px;
+    padding: 18px;
+  }
+
+  .employee-task-title {
+    align-items: flex-start;
+
+    gap: 12px;
+
+    flex-direction: column;
+  }
+
+  .task-count {
+    align-self: flex-start;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .employee-work-header h1 {
+    font-size: 25px;
   }
 
   .employee-task-card {
     align-items: flex-start;
   }
 
+  .employee-task-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .employee-task-info {
+    margin-left: 10px;
+  }
+
+  .employee-task-info h3 {
+    font-size: 14px;
+  }
+
   .employee-task-status {
     margin-left: 8px;
+
+    padding: 6px 9px;
+  }
+
+  .employee-task-status svg {
+    display: none;
+  }
+
+}
+
+
+@media (max-width: 400px) {
+
+  .employee-task-card {
+    flex-wrap: wrap;
+
+    gap: 10px;
+  }
+
+  .employee-task-info {
+    width: calc(100% - 55px);
+  }
+
+  .employee-task-status {
+    margin-left: 55px;
   }
 
 }
