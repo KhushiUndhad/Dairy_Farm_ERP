@@ -1,19 +1,56 @@
 import {
   FaBars,
-  FaUser
+  FaUserCircle,
 } from "react-icons/fa";
 
-import "./EmployeeTopbar.css";
+import { useLocation } from "react-router-dom";
 
-const EmployeeTopbar = ({ onMenuClick }) => {
+const EmployeeTopbar = ({
+  onMenuClick,
+}) => {
+  const location = useLocation();
+
+  const employee =
+    JSON.parse(
+      localStorage.getItem("employeeUser") || "null"
+    ) || {
+      name: "Employee",
+      role: "Farm Employee",
+    };
+
+  const getTitle = () => {
+    if (location.pathname === "/employee") {
+      return "Employee Dashboard";
+    }
+
+    if (location.pathname.includes("/work")) {
+      return "My Work";
+    }
+
+    if (location.pathname.includes("/attendance")) {
+      return "Attendance";
+    }
+
+    if (location.pathname.includes("/leave")) {
+      return "Leave Management";
+    }
+
+    if (location.pathname.includes("/salary")) {
+      return "Salary Details";
+    }
+
+    if (location.pathname.includes("/profile")) {
+      return "My Profile";
+    }
+
+    return "Employee Panel";
+  };
 
   return (
     <header className="employee-topbar">
 
-      {/* LEFT */}
       <div className="employee-topbar-left">
 
-        {/* HAMBURGER */}
         <button
           type="button"
           className="employee-menu-button"
@@ -23,46 +60,25 @@ const EmployeeTopbar = ({ onMenuClick }) => {
           <FaBars />
         </button>
 
-        {/* TITLE */}
         <div className="employee-page-title">
-
-          <h2>
-            Employee Dashboard
-          </h2>
-
-          <span>
-            Dairy Farm Management System
-          </span>
-
+          <h2>{getTitle()}</h2>
+          <span>Dairy Farm Management System</span>
         </div>
 
       </div>
 
-
-      {/* RIGHT */}
       <div className="employee-topbar-right">
 
         <div className="employee-topbar-profile">
 
           <div className="employee-topbar-avatar">
-            <FaUser />
+            <FaUserCircle />
           </div>
 
           <div className="employee-topbar-user">
-
-            <strong>
-              John Employee
-            </strong>
-
-            <span>
-              Employee
-            </span>
-
+            <strong>{employee.name}</strong>
+            <span>{employee.role || "Employee"}</span>
           </div>
-
-          <span className="employee-profile-arrow">
-            ▾
-          </span>
 
         </div>
 

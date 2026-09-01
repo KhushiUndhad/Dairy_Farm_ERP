@@ -1,460 +1,134 @@
 import {
-  FaClipboardCheck,
-  FaCircleCheck,
+  FaBriefcase,
   FaCalendarCheck,
-  FaClock,
-  FaArrowRight,
-  FaCheck,
-  FaCow,
-  FaBox,
   FaMoneyBillWave,
-  FaTruck,
-  FaChartLine
-} from "react-icons/fa6";
+  FaClock,
+} from "react-icons/fa";
 
 import "./EmployeeDashboard.css";
 
-
-const EmployeeDashboard = () => {
+function EmployeeDashboard() {
 
   return (
-
     <div className="employee-dashboard">
 
+      <div className="dashboard-title">
 
-      {/* PAGE HEADER */}
+        <h1>Dashboard</h1>
 
-      <div className="employee-welcome">
-
-        <div>
-
-          <h1>
-            Welcome back, John! 👋
-          </h1>
-
-          <p>
-            Manage your daily work and employee activities
-            from your dashboard.
-          </p>
-
-        </div>
-
-        <div className="employee-date-box">
-
-          <span>
-            Today
-          </span>
-
-          <strong>
-            August 30, 2026
-          </strong>
-
-        </div>
+        <p>
+          Welcome back! Here's your work summary.
+        </p>
 
       </div>
 
 
-      {/* STAT CARDS */}
+      {/* ================= CARDS ================= */}
 
-      <div className="employee-stats-grid">
+      <div className="dashboard-cards">
 
+        <div className="dashboard-card">
 
-        {/* TOTAL TASKS */}
-
-        <div className="employee-stat-card">
-
-          <div className="employee-stat-icon">
-            <FaClipboardCheck />
+          <div className="card-icon">
+            <FaBriefcase />
           </div>
 
-          <div className="employee-stat-info">
-
-            <span>
-              Total Tasks
-            </span>
-
-            <strong>
-              18
-            </strong>
-
-            <small>
-              +3 this week
-            </small>
-
+          <div>
+            <h3>12</h3>
+            <p>Total Tasks</p>
           </div>
 
         </div>
 
 
-        {/* COMPLETED */}
+        <div className="dashboard-card">
 
-        <div className="employee-stat-card">
-
-          <div className="employee-stat-icon">
-            <FaCircleCheck />
-          </div>
-
-          <div className="employee-stat-info">
-
-            <span>
-              Completed
-            </span>
-
-            <strong>
-              14
-            </strong>
-
-            <small>
-              78% completion
-            </small>
-
-          </div>
-
-        </div>
-
-
-        {/* ATTENDANCE */}
-
-        <div className="employee-stat-card">
-
-          <div className="employee-stat-icon">
+          <div className="card-icon">
             <FaCalendarCheck />
           </div>
 
-          <div className="employee-stat-info">
-
-            <span>
-              Attendance
-            </span>
-
-            <strong>
-              96%
-            </strong>
-
-            <small>
-              This month
-            </small>
-
+          <div>
+            <h3>24</h3>
+            <p>Present Days</p>
           </div>
 
         </div>
 
 
-        {/* LEAVE */}
+        <div className="dashboard-card">
 
-        <div className="employee-stat-card">
-
-          <div className="employee-stat-icon">
+          <div className="card-icon">
             <FaClock />
           </div>
 
-          <div className="employee-stat-info">
+          <div>
+            <h3>2</h3>
+            <p>Pending Tasks</p>
+          </div>
 
-            <span>
-              Pending Leave
+        </div>
+
+
+        <div className="dashboard-card">
+
+          <div className="card-icon">
+            <FaMoneyBillWave />
+          </div>
+
+          <div>
+            <h3>₹25,000</h3>
+            <p>Monthly Salary</p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* ================= RECENT WORK ================= */}
+
+      <div className="dashboard-section">
+
+        <h2>Recent Work</h2>
+
+        <div className="work-table">
+
+          <div className="table-header">
+            <span>Task</span>
+            <span>Status</span>
+            <span>Date</span>
+          </div>
+
+          <div className="table-row">
+            <span>Milk Collection</span>
+            <span className="status completed">
+              Completed
             </span>
+            <span>01 Sep 2026</span>
+          </div>
 
-            <strong>
-              1
-            </strong>
+          <div className="table-row">
+            <span>Cow Management</span>
+            <span className="status pending">
+              Pending
+            </span>
+            <span>01 Sep 2026</span>
+          </div>
 
-            <small>
-              Awaiting approval
-            </small>
-
+          <div className="table-row">
+            <span>Inventory Check</span>
+            <span className="status completed">
+              Completed
+            </span>
+            <span>31 Aug 2026</span>
           </div>
 
         </div>
 
       </div>
-
-
-      {/* MAIN GRID */}
-
-      <div className="employee-dashboard-grid">
-
-
-        {/* TODAY WORK */}
-
-        <section className="employee-panel">
-
-          <div className="employee-panel-header">
-
-            <div>
-
-              <h2>
-                Today's Work
-              </h2>
-
-              <p>
-                Your assigned tasks for today
-              </p>
-
-            </div>
-
-            <button>
-              View All
-              <FaArrowRight />
-            </button>
-
-          </div>
-
-
-          <div className="employee-task-list">
-
-
-            <div className="employee-task">
-
-              <div className="employee-task-icon">
-                <FaCow />
-              </div>
-
-              <div className="employee-task-info">
-
-                <strong>
-                  Check Cow Health
-                </strong>
-
-                <span>
-                  Animal Care • 08:00 AM
-                </span>
-
-              </div>
-
-              <span className="employee-task-status completed">
-                Completed
-              </span>
-
-            </div>
-
-
-            <div className="employee-task">
-
-              <div className="employee-task-icon">
-                <FaBox />
-              </div>
-
-              <div className="employee-task-info">
-
-                <strong>
-                  Update Inventory
-                </strong>
-
-                <span>
-                  Inventory • 10:30 AM
-                </span>
-
-              </div>
-
-              <span className="employee-task-status pending">
-                Pending
-              </span>
-
-            </div>
-
-
-            <div className="employee-task">
-
-              <div className="employee-task-icon">
-                <FaTruck />
-              </div>
-
-              <div className="employee-task-info">
-
-                <strong>
-                  Milk Delivery
-                </strong>
-
-                <span>
-                  Delivery • 02:00 PM
-                </span>
-
-              </div>
-
-              <span className="employee-task-status pending">
-                Pending
-              </span>
-
-            </div>
-
-          </div>
-
-        </section>
-
-
-        {/* ATTENDANCE */}
-
-        <section className="employee-panel">
-
-          <div className="employee-panel-header">
-
-            <div>
-
-              <h2>
-                Attendance
-              </h2>
-
-              <p>
-                This month's attendance
-              </p>
-
-            </div>
-
-            <FaChartLine className="employee-chart-icon" />
-
-          </div>
-
-
-          <div className="employee-attendance">
-
-            <div className="employee-attendance-circle">
-
-              <strong>
-                96%
-              </strong>
-
-              <span>
-                Attendance
-              </span>
-
-            </div>
-
-
-            <div className="employee-attendance-details">
-
-              <div>
-                <FaCheck />
-                <span>
-                  Present
-                </span>
-                <strong>
-                  24 Days
-                </strong>
-              </div>
-
-              <div>
-                <FaClock />
-                <span>
-                  Late
-                </span>
-                <strong>
-                  1 Day
-                </strong>
-              </div>
-
-              <div>
-                <FaCalendarCheck />
-                <span>
-                  Leave
-                </span>
-                <strong>
-                  1 Day
-                </strong>
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-
-      </div>
-
-
-      {/* QUICK ACTIONS */}
-
-      <section className="employee-quick-section">
-
-        <div className="employee-section-heading">
-
-          <h2>
-            Quick Actions
-          </h2>
-
-          <p>
-            Frequently used employee services
-          </p>
-
-        </div>
-
-
-        <div className="employee-quick-grid">
-
-
-          <div className="employee-quick-card">
-
-            <div>
-              <FaCalendarCheck />
-            </div>
-
-            <h3>
-              Mark Attendance
-            </h3>
-
-            <p>
-              Check in or check out for today
-            </p>
-
-          </div>
-
-
-          <div className="employee-quick-card">
-
-            <div>
-              <FaClipboardCheck />
-            </div>
-
-            <h3>
-              My Tasks
-            </h3>
-
-            <p>
-              View and manage assigned tasks
-            </p>
-
-          </div>
-
-
-          <div className="employee-quick-card">
-
-            <div>
-              <FaClock />
-            </div>
-
-            <h3>
-              Apply Leave
-            </h3>
-
-            <p>
-              Submit a new leave request
-            </p>
-
-          </div>
-
-
-          <div className="employee-quick-card">
-
-            <div>
-              <FaMoneyBillWave />
-            </div>
-
-            <h3>
-              Salary Details
-            </h3>
-
-            <p>
-              View your salary information
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
 
     </div>
-
   );
-};
+}
 
 export default EmployeeDashboard;

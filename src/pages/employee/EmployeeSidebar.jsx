@@ -7,280 +7,157 @@ import {
   FaUser,
   FaQuestionCircle,
   FaSignOutAlt,
-  FaTractor
+  FaTractor,
 } from "react-icons/fa";
 
 import {
   NavLink,
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
-
-import "./EmployeeSidebar.css";
 
 const EmployeeSidebar = ({
   isOpen,
-  onClose
+  onClose,
 }) => {
-
   const navigate = useNavigate();
 
-
-  /* =========================================
-     CLOSE SIDEBAR ON MOBILE
-  ========================================= */
-
   const handleLinkClick = () => {
-
     if (window.innerWidth <= 900) {
       onClose();
     }
-
   };
-
-
-  /* =========================================
-     LOGOUT
-  ========================================= */
 
   const handleLogout = () => {
-
     localStorage.removeItem("employeeLoggedIn");
-
-    navigate("/employee/login");
-
+    navigate("/employee/login", {
+      replace: true,
+    });
   };
 
+  const menuItems = [
+    {
+      path: "/employee",
+      label: "Dashboard",
+      icon: <FaTachometerAlt />,
+      end: true,
+    },
+    {
+      path: "/employee/work",
+      label: "My Work",
+      icon: <FaClipboardCheck />,
+    },
+    {
+      path: "/employee/attendance",
+      label: "Attendance",
+      icon: <FaCalendarCheck />,
+    },
+    {
+      path: "/employee/leave",
+      label: "Leave",
+      icon: <FaCalendarMinus />,
+    },
+    {
+      path: "/employee/salary",
+      label: "Salary",
+      icon: <FaMoneyBillWave />,
+    },
+    {
+      path: "/employee/profile",
+      label: "My Profile",
+      icon: <FaUser />,
+    },
+  ];
 
   return (
+    <>
+      {isOpen && (
+        <div
+          className="employee-sidebar-overlay"
+          onClick={onClose}
+        />
+      )}
 
-    <aside
-      className={`employee-sidebar ${
-        isOpen
-          ? "employee-sidebar-open"
-          : "employee-sidebar-closed"
-      }`}
-    >
+      <aside
+        className={`employee-sidebar ${
+          isOpen
+            ? "employee-sidebar-open"
+            : "employee-sidebar-closed"
+        }`}
+      >
 
-      {/* =====================================
-          LOGO
-      ===================================== */}
+        {/* LOGO */}
 
-      <div className="employee-sidebar-logo">
+        <div className="employee-sidebar-logo">
 
-        <div className="employee-logo-icon">
-          <FaTractor />
-        </div>
-
-        <div className="employee-logo-text">
-
-          <strong>
-            Dairy Farm
-          </strong>
-
-          <span>
-            Employee Panel
-          </span>
-
-        </div>
-
-      </div>
-
-
-      {/* =====================================
-          NAVIGATION
-      ===================================== */}
-
-      <nav className="employee-sidebar-nav">
-
-        {/* DASHBOARD */}
-
-        <NavLink
-          to="/employee"
-          end
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `employee-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-
-          <span className="employee-nav-icon">
-            <FaTachometerAlt />
-          </span>
-
-          <span className="employee-nav-text">
-            Dashboard
-          </span>
-
-        </NavLink>
-
-
-        {/* MY WORK */}
-
-        <NavLink
-          to="/employee/work"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `employee-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-
-          <span className="employee-nav-icon">
-            <FaClipboardCheck />
-          </span>
-
-          <span className="employee-nav-text">
-            My Work
-          </span>
-
-        </NavLink>
-
-
-        {/* ATTENDANCE */}
-
-        <NavLink
-          to="/employee/attendance"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `employee-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-
-          <span className="employee-nav-icon">
-            <FaCalendarCheck />
-          </span>
-
-          <span className="employee-nav-text">
-            Attendance
-          </span>
-
-        </NavLink>
-
-
-        {/* LEAVE */}
-
-        <NavLink
-          to="/employee/leave"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `employee-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-
-          <span className="employee-nav-icon">
-            <FaCalendarMinus />
-          </span>
-
-          <span className="employee-nav-text">
-            Leave
-          </span>
-
-        </NavLink>
-
-
-        {/* SALARY */}
-
-        <NavLink
-          to="/employee/salary"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `employee-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-
-          <span className="employee-nav-icon">
-            <FaMoneyBillWave />
-          </span>
-
-          <span className="employee-nav-text">
-            Salary
-          </span>
-
-        </NavLink>
-
-
-        {/* PROFILE */}
-
-        <NavLink
-          to="/employee/profile"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `employee-nav-link ${
-              isActive ? "active" : ""
-            }`
-          }
-        >
-
-          <span className="employee-nav-icon">
-            <FaUser />
-          </span>
-
-          <span className="employee-nav-text">
-            My Profile
-          </span>
-
-        </NavLink>
-
-      </nav>
-
-
-      {/* =====================================
-          SIDEBAR FOOTER
-      ===================================== */}
-
-      <div className="employee-sidebar-footer">
-
-        {/* HELP */}
-
-        <div className="employee-support-box">
-
-          <div className="employee-support-icon">
-            <FaQuestionCircle />
+          <div className="employee-logo-icon">
+            <FaTractor />
           </div>
 
-          <div className="employee-support-text">
-
-            <strong>
-              Need Help?
-            </strong>
-
-            <span>
-              Contact support
-            </span>
-
+          <div className="employee-logo-text">
+            <strong>Dairy Farm</strong>
+            <span>Employee Panel</span>
           </div>
 
         </div>
 
+        {/* NAVIGATION */}
 
-        {/* LOGOUT */}
+        <nav className="employee-sidebar-nav">
 
-        <button
-          type="button"
-          className="employee-logout-button"
-          onClick={handleLogout}
-        >
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.end}
+              onClick={handleLinkClick}
+              className={({ isActive }) =>
+                `employee-nav-link ${
+                  isActive ? "active" : ""
+                }`
+              }
+            >
+              <span className="employee-nav-icon">
+                {item.icon}
+              </span>
 
-          <FaSignOutAlt />
+              <span className="employee-nav-text">
+                {item.label}
+              </span>
+            </NavLink>
+          ))}
 
-          <span>
-            Logout
-          </span>
+        </nav>
 
-        </button>
+        {/* FOOTER */}
 
-      </div>
+        <div className="employee-sidebar-footer">
 
-    </aside>
+          <div className="employee-support-box">
+
+            <div className="employee-support-icon">
+              <FaQuestionCircle />
+            </div>
+
+            <div className="employee-support-text">
+              <strong>Need Help?</strong>
+              <span>Contact farm administrator</span>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            className="employee-logout-button"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt />
+            <span>Logout</span>
+          </button>
+
+        </div>
+
+      </aside>
+    </>
   );
 };
 

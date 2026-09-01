@@ -1,237 +1,118 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  FaUser,
+  FaEnvelope,
   FaLock,
-  FaEye,
-  FaEyeSlash,
-  FaArrowRight,
-  FaCow
-} from "react-icons/fa6";
+  FaSignInAlt,
+  FaUserTie,
+} from "react-icons/fa";
 
 import "./EmployeeLogin.css";
 
-const EmployeeLogin = () => {
+function EmployeeLogin() {
+
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+  const handleLogin = (e) => {
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
+    if (!email || !password) {
       alert("Please enter email and password");
       return;
     }
 
+    // Login successful
     localStorage.setItem("employeeLoggedIn", "true");
 
-    navigate("/employee");
+    navigate("/employee", {
+      replace: true,
+    });
   };
 
   return (
     <div className="employee-login-page">
 
-      <div className="employee-login-container">
+      <div className="employee-login-card">
 
-        {/* LEFT SIDE */}
-
-        <div className="employee-login-left">
-
-          <div className="employee-brand">
-
-            <div className="employee-brand-icon">
-              <FaCow />
-            </div>
-
-            <div>
-              <h2>Dairy Farm</h2>
-              <p>Employee Panel</p>
-            </div>
-
-          </div>
-
-          <div className="employee-login-intro">
-
-            <h1>
-              Welcome Back!
-            </h1>
-
-            <p>
-              Login to manage your daily work,
-              attendance and employee activities.
-            </p>
-
-          </div>
-
-          <div className="employee-login-features">
-
-            <div>
-              <FaUser />
-              <span>Employee Management</span>
-            </div>
-
-            <div>
-              <FaArrowRight />
-              <span>Track Daily Activities</span>
-            </div>
-
-            <div>
-              <FaLock />
-              <span>Secure Employee Account</span>
-            </div>
-
-          </div>
-
+        <div className="login-icon">
+          <FaUserTie />
         </div>
 
+        <h2>Employee Login</h2>
 
-        {/* RIGHT SIDE */}
+        <p className="login-subtitle">
+          Login to access your employee panel
+        </p>
 
-        <div className="employee-login-right">
+        <form onSubmit={handleLogin}>
 
-          <div className="employee-login-card">
+          {/* EMAIL */}
 
-            <div className="employee-login-title">
+          <div className="input-group">
 
-              <h2>Employee Login</h2>
+            <FaEnvelope />
 
-              <p>
-                Enter your credentials to continue
-              </p>
-
-            </div>
-
-
-            <form onSubmit={handleSubmit}>
-
-              {/* EMAIL */}
-
-              <div className="employee-input-group">
-
-                <label>Email Address</label>
-
-                <div className="employee-input-wrapper">
-
-                  <FaUser />
-
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
-              </div>
-
-
-              {/* PASSWORD */}
-
-              <div className="employee-input-group">
-
-                <label>Password</label>
-
-                <div className="employee-input-wrapper">
-
-                  <FaLock />
-
-                  <input
-                    type={
-                      showPassword
-                        ? "text"
-                        : "password"
-                    }
-                    name="password"
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-
-                  <button
-                    type="button"
-                    className="employee-password-button"
-                    onClick={() =>
-                      setShowPassword(!showPassword)
-                    }
-                  >
-
-                    {showPassword ? (
-                      <FaEyeSlash />
-                    ) : (
-                      <FaEye />
-                    )}
-
-                  </button>
-
-                </div>
-
-              </div>
-
-
-              <div className="employee-login-options">
-
-                <label>
-
-                  <input type="checkbox" />
-
-                  Remember me
-
-                </label>
-
-                <a href="#">
-                  Forgot Password?
-                </a>
-
-              </div>
-
-
-              <button
-                type="submit"
-                className="employee-login-button"
-              >
-
-                Login
-
-                <FaArrowRight />
-
-              </button>
-
-            </form>
-
-
-            <div className="employee-register-link">
-
-              Don't have an account?
-
-              <Link to="/employee/register">
-                Register Now
-              </Link>
-
-            </div>
+            <input
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+            />
 
           </div>
 
-        </div>
+
+          {/* PASSWORD */}
+
+          <div className="input-group">
+
+            <FaLock />
+
+            <input
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* LOGIN */}
+
+          <button
+            type="submit"
+            className="login-btn"
+          >
+            <FaSignInAlt />
+            Login
+          </button>
+
+        </form>
+
+
+        <p className="register-text">
+
+          Don't have an account?
+
+          <Link to="/employee/register">
+            Register
+          </Link>
+
+        </p>
 
       </div>
 
     </div>
   );
-};
+}
 
 export default EmployeeLogin;

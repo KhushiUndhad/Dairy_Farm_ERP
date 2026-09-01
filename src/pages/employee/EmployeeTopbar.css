@@ -1,93 +1,88 @@
 .employee-topbar {
-  height: 86px;
-
-  background: white;
-
-  border-bottom: 1px solid #e6ebef;
+  height: 72px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 30px;
+  padding: 0 28px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
 
   position: sticky;
   top: 0;
-
   z-index: 900;
 }
-
 
 .employee-topbar-left {
   display: flex;
   align-items: center;
-  gap: 17px;
+  gap: 16px;
 }
 
-
 .employee-menu-button {
-  width: 48px;
-  height: 48px;
-
-  border: none;
-  border-radius: 11px;
-
-  background: #dcfce7;
-  color: #198754;
+  width: 40px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 20px;
+  border: 0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+  color: #475569;
 
   cursor: pointer;
+
+  font-size: 17px;
 }
 
 .employee-menu-button:hover {
-  background: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
 }
 
+.employee-page-title {
+  display: flex;
+  flex-direction: column;
+}
 
 .employee-page-title h2 {
   margin: 0;
 
-  font-size: 20px;
-
-  color: #172033;
+  font-size: 18px;
+  color: #111827;
 }
 
 .employee-page-title span {
-  display: block;
-
-  margin-top: 4px;
-
-  color: #8a96a8;
+  margin-top: 3px;
 
   font-size: 12px;
+  color: #94a3b8;
 }
-
 
 .employee-topbar-profile {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .employee-topbar-avatar {
-  width: 46px;
-  height: 46px;
-
-  border-radius: 50%;
-
-  background: #dcfce7;
-  color: #198754;
+  width: 40px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 18px;
+  border-radius: 50%;
+
+  color: #15803d;
+
+  font-size: 35px;
 }
 
 .employee-topbar-user {
@@ -96,27 +91,18 @@
 }
 
 .employee-topbar-user strong {
-  color: #172033;
-  font-size: 14px;
+  font-size: 13px;
+  color: #1f2937;
 }
 
 .employee-topbar-user span {
-  margin-top: 3px;
-
-  color: #8a96a8;
+  margin-top: 2px;
 
   font-size: 11px;
+  color: #94a3b8;
 }
-
-.employee-profile-arrow {
-  color: #9aa4b2;
-  font-size: 11px;
-  margin-left: 5px;
-}
-
 
 @media (max-width: 600px) {
-
   .employee-topbar {
     padding: 0 15px;
   }
@@ -128,5 +114,4 @@
   .employee-topbar-user {
     display: none;
   }
-
 }

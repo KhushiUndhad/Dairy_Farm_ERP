@@ -1,12 +1,8 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-
-// ========================================
 // ADMIN
-// ========================================
-
+import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
-
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CowManagement from "./pages/admin/CowManagement";
 import MilkProduction from "./pages/admin/MilkProduction";
@@ -16,58 +12,71 @@ import Sales from "./pages/admin/Sales";
 import Inventory from "./pages/admin/Inventory";
 import Reports from "./pages/admin/Reports";
 
-import AdminLogin from "./pages/admin/AdminLogin";
+// EMPLOYEE
+import EmployeeLogin from "./pages/employee/EmployeeLogin";
+import EmployeeRegister from "./pages/employee/EmployeeRegister";
+import EmployeeLayout from "./pages/employee/EmployeeLayout";
+import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
+import EmployeeMyWork from "./pages/employee/EmployeeMyWork";
+import EmployeeAttendance from "./pages/employee/EmployeeAttendance";
+import EmployeeLeave from "./pages/employee/EmployeeLeave";
+import EmployeeSalary from "./pages/employee/EmployeeSalary";
+import EmployeeProfile from "./pages/employee/EmployeeProfile";
 
-
-// ========================================
 // CUSTOMER
-// ========================================
-
 import CustomerLogin from "./pages/customer/CustomerLogin";
 import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import CustomerProducts from "./pages/customer/CustomerProducts";
 import CustomerOrders from "./pages/customer/CustomerOrders";
+import CustomerPayments from "./pages/customer/CustomerPayments";
+import CustomerProfile from "./pages/customer/CustomerProfile";
 
 
-// ========================================
-// EMPLOYEE
-// ========================================
-
-import EmployeeLogin from "./pages/employee/EmployeeLogin";
-import EmployeeRegister from "./pages/employee/EmployeeRegister";
-import EmployeeLayout from "./pages/employee/EmployeeLayout";
-import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
-
-
-// ========================================
-// PROTECTED ADMIN
-// ========================================
+// ======================================================
+// PROTECTION
+// ======================================================
 
 function ProtectedAdmin({ children }) {
 
-  const isLoggedIn =
+  const loggedIn =
     localStorage.getItem("adminLoggedIn") === "true";
 
-  return isLoggedIn ? (
-    children
-  ) : (
-    <Navigate
-      to="/admin/login"
-      replace
-    />
-  );
+  return loggedIn
+    ? children
+    : <Navigate to="/admin/login" replace />;
 }
 
 
-// ========================================
+function ProtectedEmployee({ children }) {
+
+  const loggedIn =
+    localStorage.getItem("employeeLoggedIn") === "true";
+
+  return loggedIn
+    ? children
+    : <Navigate to="/employee/login" replace />;
+}
+
+
+function ProtectedCustomer({ children }) {
+
+  const loggedIn =
+    localStorage.getItem("customerLoggedIn") === "true";
+
+  return loggedIn
+    ? children
+    : <Navigate to="/customer/login" replace />;
+}
+
+
+// ======================================================
 // ADMIN PAGE
-// ========================================
+// ======================================================
 
 function AdminPage({ children }) {
 
   return (
-
     <ProtectedAdmin>
 
       <AdminLayout>
@@ -75,54 +84,13 @@ function AdminPage({ children }) {
       </AdminLayout>
 
     </ProtectedAdmin>
-
   );
 }
 
 
-// ========================================
-// PROTECTED CUSTOMER
-// ========================================
-
-function ProtectedCustomer({ children }) {
-
-  const isLoggedIn =
-    localStorage.getItem("customerLoggedIn") === "true";
-
-  return isLoggedIn ? (
-    children
-  ) : (
-    <Navigate
-      to="/customer/login"
-      replace
-    />
-  );
-}
-
-
-// ========================================
-// PROTECTED EMPLOYEE
-// ========================================
-
-function ProtectedEmployee({ children }) {
-
-  const isLoggedIn =
-    localStorage.getItem("employeeLoggedIn") === "true";
-
-  return isLoggedIn ? (
-    children
-  ) : (
-    <Navigate
-      to="/employee/login"
-      replace
-    />
-  );
-}
-
-
-// ========================================
+// ======================================================
 // APP
-// ========================================
+// ======================================================
 
 function App() {
 
@@ -130,37 +98,27 @@ function App() {
 
     <Routes>
 
-
-      {/* =====================================
-          DEFAULT
-      ===================================== */}
+      {/* HOME */}
 
       <Route
         path="/"
         element={
           <Navigate
-            to="/customer/login"
+            to="/employee/login"
             replace
           />
         }
       />
 
 
-      {/* =====================================
-          ADMIN LOGIN
-      ===================================== */}
+      {/* ==================================================
+          ADMIN
+      ================================================== */}
 
       <Route
         path="/admin/login"
-        element={
-          <AdminLogin />
-        }
+        element={<AdminLogin />}
       />
-
-
-      {/* =====================================
-          ADMIN DASHBOARD
-      ===================================== */}
 
       <Route
         path="/admin"
@@ -171,7 +129,6 @@ function App() {
         }
       />
 
-
       <Route
         path="/admin/cows"
         element={
@@ -180,7 +137,6 @@ function App() {
           </AdminPage>
         }
       />
-
 
       <Route
         path="/admin/milk-production"
@@ -191,7 +147,6 @@ function App() {
         }
       />
 
-
       <Route
         path="/admin/employees"
         element={
@@ -200,7 +155,6 @@ function App() {
           </AdminPage>
         }
       />
-
 
       <Route
         path="/admin/customers"
@@ -211,7 +165,6 @@ function App() {
         }
       />
 
-
       <Route
         path="/admin/sales"
         element={
@@ -221,7 +174,6 @@ function App() {
         }
       />
 
-
       <Route
         path="/admin/inventory"
         element={
@@ -230,7 +182,6 @@ function App() {
           </AdminPage>
         }
       />
-
 
       <Route
         path="/admin/reports"
@@ -242,21 +193,71 @@ function App() {
       />
 
 
-      {/* =====================================
-          CUSTOMER LOGIN
-      ===================================== */}
+      {/* ==================================================
+          EMPLOYEE
+      ================================================== */}
 
       <Route
-        path="/customer/login"
-        element={
-          <CustomerLogin />
-        }
+        path="/employee/login"
+        element={<EmployeeLogin />}
+      />
+
+      <Route
+        path="/employee/register"
+        element={<EmployeeRegister />}
       />
 
 
-      {/* =====================================
-          CUSTOMER PANEL
-      ===================================== */}
+      <Route
+        path="/employee"
+        element={
+          <ProtectedEmployee>
+            <EmployeeLayout />
+          </ProtectedEmployee>
+        }
+      >
+
+        <Route
+          index
+          element={<EmployeeDashboard />}
+        />
+
+        <Route
+          path="work"
+          element={<EmployeeMyWork />}
+        />
+
+        <Route
+          path="attendance"
+          element={<EmployeeAttendance />}
+        />
+
+        <Route
+          path="leave"
+          element={<EmployeeLeave />}
+        />
+
+        <Route
+          path="salary"
+          element={<EmployeeSalary />}
+        />
+
+        <Route
+          path="profile"
+          element={<EmployeeProfile />}
+        />
+
+      </Route>
+
+
+      {/* ==================================================
+          CUSTOMER
+      ================================================== */}
+
+      <Route
+        path="/customer/login"
+        element={<CustomerLogin />}
+      />
 
       <Route
         path="/customer"
@@ -269,86 +270,39 @@ function App() {
 
         <Route
           index
-          element={
-            <CustomerDashboard />
-          }
+          element={<CustomerDashboard />}
         />
 
         <Route
           path="products"
-          element={
-            <CustomerProducts />
-          }
+          element={<CustomerProducts />}
         />
 
         <Route
           path="orders"
-          element={
-            <CustomerOrders />
-          }
+          element={<CustomerOrders />}
         />
-
-      </Route>
-
-
-      {/* =====================================
-          EMPLOYEE LOGIN
-      ===================================== */}
-
-      <Route
-        path="/employee/login"
-        element={
-          <EmployeeLogin />
-        }
-      />
-
-
-      {/* =====================================
-          EMPLOYEE REGISTER
-      ===================================== */}
-
-      <Route
-        path="/employee/register"
-        element={
-          <EmployeeRegister />
-        }
-      />
-
-
-      {/* =====================================
-          EMPLOYEE PANEL
-      ===================================== */}
-
-      <Route
-        path="/employee"
-        element={
-          <ProtectedEmployee>
-            <EmployeeLayout />
-          </ProtectedEmployee>
-        }
-      >
-
-        {/* DASHBOARD */}
 
         <Route
-          index
-          element={
-            <EmployeeDashboard />
-          }
+          path="payments"
+          element={<CustomerPayments />}
+        />
+
+        <Route
+          path="profile"
+          element={<CustomerProfile />}
         />
 
       </Route>
 
 
-      {/* =====================================
-          UNKNOWN URL
-      ===================================== */}
+      {/* 404 */}
 
       <Route
         path="*"
         element={
           <Navigate
-            to="/customer/login"
+            to="/employee/login"
             replace
           />
         }

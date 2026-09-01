@@ -1,0 +1,279 @@
+.employee-salary-page {
+  min-height: calc(100vh - 100px);
+  padding: 32px;
+  background: #f5f8f6;
+}
+
+
+/* HEADER */
+
+.salary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.salary-header h1 {
+  margin: 0;
+  color: #123c28;
+  font-size: 30px;
+}
+
+.salary-header p {
+  margin: 7px 0 0;
+  color: #718096;
+  font-size: 14px;
+}
+
+.salary-month {
+  background: white;
+  border: 1px solid #e2e8e5;
+  padding: 12px 17px;
+  border-radius: 9px;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  color: #16834a;
+  font-weight: 600;
+}
+
+
+/* SUMMARY */
+
+.salary-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.salary-card {
+  background: white;
+  border: 1px solid #e2e8e5;
+  border-radius: 14px;
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.salary-card-icon {
+  width: 50px;
+  height: 50px;
+
+  border-radius: 11px;
+
+  background: #e8f8ef;
+  color: #16834a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 21px;
+}
+
+.salary-card div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.salary-card span {
+  color: #718096;
+  font-size: 13px;
+}
+
+.salary-card strong {
+  margin-top: 4px;
+  color: #172b4d;
+  font-size: 21px;
+}
+
+
+/* CURRENT SALARY */
+
+.current-salary-card {
+  background: white;
+  border: 1px solid #e2e8e5;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 25px;
+}
+
+.current-salary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 18px;
+  border-bottom: 1px solid #edf1ef;
+}
+
+.current-salary-header h2 {
+  margin: 0;
+  color: #172b4d;
+  font-size: 21px;
+}
+
+.current-salary-header p {
+  margin: 5px 0 0;
+  color: #8a94a6;
+  font-size: 13px;
+}
+
+.current-salary-header button {
+  border: 1px solid #16834a;
+  background: white;
+  color: #16834a;
+
+  padding: 10px 15px;
+
+  border-radius: 7px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+/* BREAKDOWN */
+
+.salary-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding-top: 22px;
+}
+
+.salary-breakdown div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.salary-breakdown span {
+  color: #718096;
+  font-size: 13px;
+}
+
+.salary-breakdown strong {
+  color: #172b4d;
+  font-size: 18px;
+}
+
+.salary-breakdown .salary-net {
+  background: #e8f8ef;
+  padding: 14px;
+  border-radius: 9px;
+}
+
+.salary-net strong {
+  color: #16834a;
+}
+
+
+/* HISTORY */
+
+.salary-history {
+  background: white;
+  border: 1px solid #e2e8e5;
+  border-radius: 15px;
+  padding: 25px;
+}
+
+.salary-history h2 {
+  margin: 0 0 18px;
+  color: #172b4d;
+  font-size: 21px;
+}
+
+.salary-table-wrapper {
+  overflow-x: auto;
+}
+
+.salary-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.salary-table-wrapper th {
+  padding: 14px;
+  background: #f7faf8;
+  text-align: left;
+  color: #718096;
+  font-size: 13px;
+}
+
+.salary-table-wrapper td {
+  padding: 15px 14px;
+  border-bottom: 1px solid #edf1ef;
+  color: #344054;
+  font-size: 14px;
+}
+
+.salary-paid {
+  background: #dcfce7;
+  color: #16834a;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .employee-salary-page {
+    padding: 22px;
+  }
+
+  .salary-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .salary-breakdown {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .employee-salary-page {
+    padding: 15px;
+  }
+
+  .salary-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .salary-month {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .current-salary-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .salary-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+}
