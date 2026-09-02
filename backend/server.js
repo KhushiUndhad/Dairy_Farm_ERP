@@ -2,9 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-const connectDB = require("./config/db");
-
 dotenv.config();
+
+const connectDB = require("./config/db");
 
 const app = express();
 
@@ -15,12 +15,20 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173",
+
     methods: [
       "GET",
       "POST",
       "PUT",
       "DELETE",
+      "OPTIONS",
     ],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
+
     credentials: true,
   })
 );
@@ -28,22 +36,35 @@ app.use(
 app.use(express.json());
 
 // ========================================
-// DATABASE
+// DATABASE CONNECTION
 // ========================================
 
 connectDB();
 
 // ========================================
-// HOME
+// HOME / SERVER TEST
 // ========================================
 
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
-    message: "Dairy Farm ERP Backend Running",
-    database: "dairy_farm_erp",
+    message:
+      "Dairy Farm ERP Backend Running",
+
+    database:
+      process.env.MONGO_URI ||
+      "MongoDB",
   });
 });
+
+// ========================================
+// AUTHENTICATION
+// ========================================
+
+app.use(
+  "/api/auth",
+  require("./routes/authRoutes")
+);
 
 // ========================================
 // COW MANAGEMENT
@@ -80,33 +101,134 @@ app.use(
   "/api/customers",
   require("./routes/customerRoutes")
 );
-// ========================================
-// INVENTORY MANAGEMENT
-// ========================================
 
-app.use(
-  "/api/inventory",
-  require("./routes/inventoryRoutes")
-);
+// ========================================
+// SALES
+// ========================================
 
 app.use(
   "/api/sales",
   require("./routes/salesRoutes")
 );
+
+// ========================================
+// ATTENDANCE
+// ========================================
+
 app.use(
-  "/api/reports",
-  require("./routes/reportsRoutes")
+  "/api/attendance",
+  require("./routes/attendanceRoutes")
 );
+
+// ========================================
+// LEAVE
+// ========================================
+
+app.use(
+  "/api/leaves",
+  require("./routes/leaveRoutes")
+);
+
+// ========================================
+// SALARY
+// ========================================
+
+app.use(
+  "/api/salaries",
+  require("./routes/salaryRoutes")
+);
+
+// ========================================
+// WORK
+// ========================================
+
+app.use(
+  "/api/work",
+  require("./routes/workRoutes")
+);
+
+// ========================================
+// ORDERS
+// ========================================
+
+app.use(
+  "/api/orders",
+  require("./routes/orderRoutes")
+);
+
+// ========================================
+// PAYMENTS
+// ========================================
+
+app.use(
+  "/api/payments",
+  require("./routes/paymentRoutes")
+);
+
+// ========================================
+// DASHBOARD
+// ========================================
+
 app.use(
   "/api/dashboard",
   require("./routes/dashboardRoutes")
 );
 
 // ========================================
-// SERVER
+// PROFILE
 // ========================================
 
-const PORT = process.env.PORT || 5000;
+app.use(
+  "/api/profile",
+  require("./routes/profileRoutes")
+);
+
+app.use(
+  "/api/salaries",
+  require("./routes/salaryRoutes")
+);
+// ========================================
+// 404 API HANDLER
+// ========================================
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+
+    message:
+      `API route not found: ${req.method} ${req.originalUrl}`,
+  });
+});
+
+// ========================================
+// ERROR HANDLER
+// ========================================
+
+app.use(
+  (err, req, res, next) => {
+    console.error(
+      "SERVER ERROR:",
+      err
+    );
+
+    res.status(500).json({
+      success: false,
+
+      message:
+        "Internal server error",
+
+      error:
+        err.message,
+    });
+  }
+);
+
+// ========================================
+// START SERVER
+// ========================================
+
+const PORT =
+  process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(

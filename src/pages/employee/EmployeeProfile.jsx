@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   FaUserCircle,
   FaEnvelope,
@@ -12,6 +13,11 @@ import {
   FaTimes,
 } from "react-icons/fa";
 
+import {
+  getProfile,
+  updateProfile,
+} from "../../services/api";
+
 import "./EmployeeProfile.css";
 
 const defaultEmployee = {
@@ -20,40 +26,173 @@ const defaultEmployee = {
   phone: "9876543210",
   role: "Farm Employee",
   employeeId: "EMP001",
-  joiningDate: "01 January 2025",
+  joiningDate: "Not provided",
   address: "Dairy Farm",
+  department: "Farm Operations",
 };
 
 const EmployeeProfile = () => {
-  const getEmployeeData = () => {
+  const [employee, setEmployee] =
+    useState(defaultEmployee);
+
+  const [formData, setFormData] =
+    useState(defaultEmployee);
+
+  const [isEditing, setIsEditing] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [saving, setSaving] =
+    useState(false);
+
+  // ========================================
+  // LOAD LOGGED-IN EMPLOYEE
+  // ========================================
+
+  useEffect(() => {
+    loadEmployeeProfile();
+  }, []);
+
+  const loadEmployeeProfile = async () => {
     try {
-      const savedEmployee = localStorage.getItem("employeeUser");
+      setLoading(true);
 
-      if (savedEmployee) {
-        const parsedEmployee = JSON.parse(savedEmployee);
+      // Get logged-in employee from localStorage
+      const savedEmployee =
+        localStorage.getItem("employeeData");
 
-        return {
+      if (!savedEmployee) {
+        console.error(
+          "Employee data not found in localStorage"
+        );
+
+        setLoading(false);
+        return;
+      }
+
+      const loggedInEmployee =
+        JSON.parse(savedEmployee);
+
+      console.log(
+        "Logged in employee:",
+        loggedInEmployee
+      );
+
+      // Employee MongoDB ID
+      const employeeId =
+        loggedInEmployee.id ||
+        loggedInEmployee._id;
+
+      if (!employeeId) {
+        console.error(
+          "Employee ID not found"
+        );
+
+        // Still show local data
+        const localData = {
           ...defaultEmployee,
-          ...parsedEmployee,
+          ...loggedInEmployee,
         };
+
+        setEmployee(localData);
+        setFormData(localData);
+
+        setLoading(false);
+        return;
+      }
+
+      // ========================================
+      // GET PROFILE FROM MONGODB
+      // ========================================
+
+      const response =
+        await getProfile(employeeId);
+
+      console.log(
+        "Profile API response:",
+        response
+      );
+
+      if (
+        response &&
+        response.success &&
+        response.user
+      ) {
+        const profileData = {
+          ...defaultEmployee,
+          ...response.user,
+        };
+
+        setEmployee(profileData);
+        setFormData(profileData);
+
+        // Update localStorage
+        localStorage.setItem(
+          "employeeData",
+          JSON.stringify(profileData)
+        );
+      } else if (response?.user) {
+        const profileData = {
+          ...defaultEmployee,
+          ...response.user,
+        };
+
+        setEmployee(profileData);
+        setFormData(profileData);
+
+        localStorage.setItem(
+          "employeeData",
+          JSON.stringify(profileData)
+        );
+      } else {
+        // Fallback to localStorage
+        const localData = {
+          ...defaultEmployee,
+          ...loggedInEmployee,
+        };
+
+        setEmployee(localData);
+        setFormData(localData);
       }
     } catch (error) {
-      console.error("Error reading employee data:", error);
-    }
+      console.error(
+        "Error loading employee profile:",
+        error
+      );
 
-    return defaultEmployee;
+      // Fallback to localStorage
+      try {
+        const savedEmployee =
+          localStorage.getItem("employeeData");
+
+        if (savedEmployee) {
+          const loggedInEmployee =
+            JSON.parse(savedEmployee);
+
+          const localData = {
+            ...defaultEmployee,
+            ...loggedInEmployee,
+          };
+
+          setEmployee(localData);
+          setFormData(localData);
+        }
+      } catch (localError) {
+        console.error(
+          "Local employee data error:",
+          localError
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const [employee, setEmployee] = useState(getEmployeeData);
-
-  const [formData, setFormData] = useState(getEmployeeData);
-
-  const [isEditing, setIsEditing] = useState(false);
-
-
-  /* =========================
-     INPUT CHANGE
-  ========================= */
+  // ========================================
+  // HANDLE INPUT CHANGE
+  // ========================================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,10 +203,9 @@ const EmployeeProfile = () => {
     }));
   };
 
-
-  /* =========================
-     EDIT
-  ========================= */
+  // ========================================
+  // EDIT PROFILE
+  // ========================================
 
   const handleEdit = () => {
     setFormData({
@@ -77,10 +215,9 @@ const EmployeeProfile = () => {
     setIsEditing(true);
   };
 
-
-  /* =========================
-     CANCEL
-  ========================= */
+  // ========================================
+  // CANCEL EDIT
+  // ========================================
 
   const handleCancel = () => {
     setFormData({
@@ -90,47 +227,202 @@ const EmployeeProfile = () => {
     setIsEditing(false);
   };
 
+  // ========================================
+  // SAVE PROFILE
+  // ========================================
 
-  /* =========================
-     SAVE
-  ========================= */
+  const handleSave = async () => {
+    try {
+      // Basic validation
+      if (!formData.name?.trim()) {
+        alert("Please enter your name.");
+        return;
+      }
 
-  const handleSave = () => {
-    const updatedEmployee = {
-      ...employee,
-      ...formData,
-    };
+      if (!formData.email?.trim()) {
+        alert("Please enter your email.");
+        return;
+      }
 
-    setEmployee(updatedEmployee);
+      if (!formData.phone?.trim()) {
+        alert("Please enter your phone number.");
+        return;
+      }
 
-    localStorage.setItem(
-      "employeeUser",
-      JSON.stringify(updatedEmployee)
-    );
+      if (!formData.department?.trim()) {
+        alert("Please enter your department.");
+        return;
+      }
 
-    setIsEditing(false);
+      // Get employee ID
+      const savedEmployee =
+        localStorage.getItem("employeeData");
 
-    alert("Profile updated successfully!");
+      if (!savedEmployee) {
+        alert(
+          "Employee session not found. Please login again."
+        );
+        return;
+      }
+
+      const loggedInEmployee =
+        JSON.parse(savedEmployee);
+
+      const employeeId =
+        loggedInEmployee.id ||
+        loggedInEmployee._id;
+
+      if (!employeeId) {
+        alert(
+          "Employee ID not found. Please login again."
+        );
+        return;
+      }
+
+      setSaving(true);
+
+      // ========================================
+      // UPDATE PROFILE IN MONGODB
+      // ========================================
+
+      const response =
+        await updateProfile(
+          employeeId,
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            department: formData.department,
+          }
+        );
+
+      console.log(
+        "Update profile response:",
+        response
+      );
+
+      if (
+        response &&
+        response.success &&
+        response.user
+      ) {
+        const updatedEmployee = {
+          ...employee,
+          ...response.user,
+        };
+
+        // Update state
+        setEmployee(updatedEmployee);
+        setFormData(updatedEmployee);
+
+        // Update localStorage
+        localStorage.setItem(
+          "employeeData",
+          JSON.stringify(updatedEmployee)
+        );
+
+        // Notify EmployeeTopbar
+        window.dispatchEvent(
+          new Event("employeeProfileUpdated")
+        );
+
+        setIsEditing(false);
+
+        alert(
+          "Profile updated successfully!"
+        );
+      } else if (response?.user) {
+        const updatedEmployee = {
+          ...employee,
+          ...response.user,
+        };
+
+        setEmployee(updatedEmployee);
+        setFormData(updatedEmployee);
+
+        localStorage.setItem(
+          "employeeData",
+          JSON.stringify(updatedEmployee)
+        );
+
+        window.dispatchEvent(
+          new Event("employeeProfileUpdated")
+        );
+
+        setIsEditing(false);
+
+        alert(
+          "Profile updated successfully!"
+        );
+      } else {
+        alert(
+          response?.message ||
+            "Profile update failed."
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Profile update error:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Unable to update profile."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
+  // ========================================
+  // LOADING
+  // ========================================
+
+  if (loading) {
+    return (
+      <div className="employee-profile-page">
+        <div className="employee-profile-header">
+          <div>
+            <h1>My Profile</h1>
+
+            <p>
+              Manage your personal and employee
+              information
+            </p>
+          </div>
+        </div>
+
+        <div className="employee-profile-card">
+          <p>
+            Loading employee profile...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ========================================
+  // UI
+  // ========================================
 
   return (
     <div className="employee-profile-page">
 
-      {/* =========================
-          PAGE HEADER
-      ========================= */}
-
+      {/* HEADER */}
       <div className="employee-profile-header">
 
         <div>
-          <h1>My Profile</h1>
+
+          <h1>
+            My Profile
+          </h1>
 
           <p>
             Manage your personal and employee information
           </p>
-        </div>
 
+        </div>
 
         {!isEditing ? (
 
@@ -140,7 +432,10 @@ const EmployeeProfile = () => {
             onClick={handleEdit}
           >
             <FaEdit />
-            <span>Edit Profile</span>
+
+            <span>
+              Edit Profile
+            </span>
           </button>
 
         ) : (
@@ -151,19 +446,28 @@ const EmployeeProfile = () => {
               type="button"
               className="profile-cancel-btn"
               onClick={handleCancel}
+              disabled={saving}
             >
               <FaTimes />
-              <span>Cancel</span>
-            </button>
 
+              <span>
+                Cancel
+              </span>
+            </button>
 
             <button
               type="button"
               className="profile-save-btn"
               onClick={handleSave}
+              disabled={saving}
             >
               <FaSave />
-              <span>Save Changes</span>
+
+              <span>
+                {saving
+                  ? "Saving..."
+                  : "Save Changes"}
+              </span>
             </button>
 
           </div>
@@ -172,24 +476,15 @@ const EmployeeProfile = () => {
 
       </div>
 
-
-      {/* =========================
-          PROFILE CARD
-      ========================= */}
-
+      {/* PROFILE CARD */}
       <div className="employee-profile-card">
 
-
-        {/* =========================
-            PROFILE HEADER
-        ========================= */}
-
+        {/* PROFILE TOP */}
         <div className="employee-profile-top">
 
           <div className="employee-profile-avatar">
             <FaUserCircle />
           </div>
-
 
           <div className="employee-profile-name">
 
@@ -198,23 +493,23 @@ const EmployeeProfile = () => {
             </h2>
 
             <span>
-              {employee.role || "Farm Employee"}
+              {employee.role ||
+                employee.department ||
+                "Farm Employee"}
             </span>
 
             <small>
               Employee ID:{" "}
-              {employee.employeeId || "EMP001"}
+              {employee.employeeId ||
+                employee.id ||
+                "EMP001"}
             </small>
 
           </div>
 
         </div>
 
-
-        {/* =========================
-            PERSONAL INFORMATION
-        ========================= */}
-
+        {/* PERSONAL INFORMATION */}
         <div className="employee-profile-section">
 
           <div className="profile-section-title">
@@ -229,12 +524,9 @@ const EmployeeProfile = () => {
 
           </div>
 
-
           <div className="profile-info-grid">
 
-
-            {/* FULL NAME */}
-
+            {/* NAME */}
             <div className="profile-field">
 
               <label>
@@ -255,16 +547,15 @@ const EmployeeProfile = () => {
               ) : (
 
                 <div className="profile-value">
-                  {employee.name || "Employee"}
+                  {employee.name ||
+                    "Employee"}
                 </div>
 
               )}
 
             </div>
 
-
             {/* EMAIL */}
-
             <div className="profile-field">
 
               <label>
@@ -285,16 +576,15 @@ const EmployeeProfile = () => {
               ) : (
 
                 <div className="profile-value">
-                  {employee.email || "Not provided"}
+                  {employee.email ||
+                    "Not provided"}
                 </div>
 
               )}
 
             </div>
 
-
             {/* PHONE */}
-
             <div className="profile-field">
 
               <label>
@@ -315,16 +605,15 @@ const EmployeeProfile = () => {
               ) : (
 
                 <div className="profile-value">
-                  {employee.phone || "Not provided"}
+                  {employee.phone ||
+                    "Not provided"}
                 </div>
 
               )}
 
             </div>
 
-
             {/* ADDRESS */}
-
             <div className="profile-field">
 
               <label>
@@ -345,7 +634,8 @@ const EmployeeProfile = () => {
               ) : (
 
                 <div className="profile-value">
-                  {employee.address || "Not provided"}
+                  {employee.address ||
+                    "Not provided"}
                 </div>
 
               )}
@@ -356,11 +646,7 @@ const EmployeeProfile = () => {
 
         </div>
 
-
-        {/* =========================
-            EMPLOYEE INFORMATION
-        ========================= */}
-
+        {/* EMPLOYEE INFORMATION */}
         <div className="employee-profile-section">
 
           <div className="profile-section-title">
@@ -375,12 +661,9 @@ const EmployeeProfile = () => {
 
           </div>
 
-
           <div className="profile-info-grid">
 
-
             {/* EMPLOYEE ID */}
-
             <div className="profile-field">
 
               <label>
@@ -389,14 +672,14 @@ const EmployeeProfile = () => {
               </label>
 
               <div className="profile-value">
-                {employee.employeeId || "EMP001"}
+                {employee.employeeId ||
+                  employee.id ||
+                  "EMP001"}
               </div>
 
             </div>
 
-
             {/* POSITION */}
-
             <div className="profile-field">
 
               <label>
@@ -405,14 +688,29 @@ const EmployeeProfile = () => {
               </label>
 
               <div className="profile-value">
-                {employee.role || "Farm Employee"}
+                {employee.role ||
+                  employee.department ||
+                  "Farm Employee"}
               </div>
 
             </div>
 
+            {/* DEPARTMENT */}
+            <div className="profile-field">
+
+              <label>
+                <FaBriefcase />
+                Department
+              </label>
+
+              <div className="profile-value">
+                {employee.department ||
+                  "Farm Operations"}
+              </div>
+
+            </div>
 
             {/* JOINING DATE */}
-
             <div className="profile-field">
 
               <label>
@@ -421,7 +719,8 @@ const EmployeeProfile = () => {
               </label>
 
               <div className="profile-value">
-                {employee.joiningDate || "Not provided"}
+                {employee.joiningDate ||
+                  "Not provided"}
               </div>
 
             </div>
@@ -430,17 +729,12 @@ const EmployeeProfile = () => {
 
         </div>
 
-
-        {/* =========================
-            ACCOUNT STATUS
-        ========================= */}
-
+        {/* ACCOUNT STATUS */}
         <div className="profile-status-box">
 
           <div className="profile-status-icon">
             <FaUserCircle />
           </div>
-
 
           <div className="profile-status-content">
 
@@ -454,7 +748,6 @@ const EmployeeProfile = () => {
             </p>
 
           </div>
-
 
           <span className="profile-active-badge">
             Active

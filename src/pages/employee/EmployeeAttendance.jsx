@@ -1,192 +1,372 @@
+import { useEffect, useState } from "react";
 import {
   FaCalendarCheck,
-  FaCheckCircle,
   FaClock,
-  FaCalendarTimes,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaUmbrellaBeach,
+  FaSearch,
 } from "react-icons/fa";
+
+import { getAttendance } from "../../services/api";
 
 import "./EmployeeAttendance.css";
 
-const EmployeeAttendance = () => {
+function EmployeeAttendance() {
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const attendanceData = [
-    {
-      date: "01 Sep 2026",
-      day: "Tuesday",
-      checkIn: "08:02 AM",
-      checkOut: "05:10 PM",
-      hours: "9h 08m",
-      status: "Present",
-    },
-    {
-      date: "02 Sep 2026",
-      day: "Wednesday",
-      checkIn: "08:15 AM",
-      checkOut: "05:05 PM",
-      hours: "8h 50m",
-      status: "Late",
-    },
-    {
-      date: "03 Sep 2026",
-      day: "Thursday",
-      checkIn: "07:58 AM",
-      checkOut: "05:12 PM",
-      hours: "9h 14m",
-      status: "Present",
-    },
-    {
-      date: "04 Sep 2026",
-      day: "Friday",
-      checkIn: "--",
-      checkOut: "--",
-      hours: "--",
-      status: "Leave",
-    },
-    {
-      date: "05 Sep 2026",
-      day: "Saturday",
-      checkIn: "08:04 AM",
-      checkOut: "05:00 PM",
-      hours: "8h 56m",
-      status: "Present",
-    },
-  ];
+  const [searchDate, setSearchDate] = useState("");
 
-  const presentCount = attendanceData.filter(
-    (item) => item.status === "Present"
-  ).length;
+  // ========================================
+  // GET LOGGED-IN EMPLOYEE
+  // ========================================
 
-  const lateCount = attendanceData.filter(
-    (item) => item.status === "Late"
-  ).length;
+  const getLoggedInEmployee = () => {
+    try {
+      const employeeData =
+        localStorage.getItem("employeeData");
 
-  const leaveCount = attendanceData.filter(
-    (item) => item.status === "Leave"
-  ).length;
+      if (!employeeData) {
+        return null;
+      }
+
+      return JSON.parse(employeeData);
+    } catch (error) {
+      console.error(
+        "Employee data error:",
+        error
+      );
+
+      return null;
+    }
+  };
+
+  // ========================================
+  // CHECK EMPLOYEE RECORD
+  // ========================================
+
+  const belongsToEmployee = (record) => {
+    const employee = getLoggedInEmployee();
+
+    if (!employee) {
+      return true;
+    }
+
+    // If backend record does not have employee information,
+    // keep showing it for backward compatibility.
+    if (
+      !record.employeeId &&
+      !record.employeeEmail &&
+      !record.employeeName
+    ) {
+      return true;
+    }
+
+    const employeeId =
+      employee._id ||
+      employee.id ||
+      employee.employeeId;
+
+    const employeeEmail =
+      employee.email;
+
+    const employeeName =
+      employee.name;
+
+    return (
+      String(record.employeeId || "") ===
+        String(employeeId || "") ||
+      String(record.employeeEmail || "")
+        .toLowerCase() ===
+        String(employeeEmail || "")
+          .toLowerCase() ||
+      String(record.employeeName || "")
+        .toLowerCase() ===
+        String(employeeName || "")
+          .toLowerCase()
+    );
+  };
+
+  // ========================================
+  // LOAD ATTENDANCE
+  // ========================================
+
+  const loadAttendance = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getAttendance();
+
+      const records = Array.isArray(response)
+        ? response
+        : response.data || [];
+
+      const employeeRecords =
+        records.filter(belongsToEmployee);
+
+      employeeRecords.sort((a, b) => {
+        return (
+          new Date(b.date || 0) -
+          new Date(a.date || 0)
+        );
+      });
+
+      setAttendanceData(employeeRecords);
+    } catch (error) {
+      console.error(
+        "Attendance loading error:",
+        error
+      );
+
+      setError(
+        error.message ||
+          "Unable to load attendance."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================
+  // USE EFFECT
+  // ========================================
+
+  useEffect(() => {
+    loadAttendance();
+  }, []);
+
+  // ========================================
+  // SEARCH
+  // ========================================
+
+  const filteredAttendance =
+    attendanceData.filter((item) => {
+      if (!searchDate) {
+        return true;
+      }
+
+      return item.date === searchDate;
+    });
+
+  // ========================================
+  // STATUS ICON
+  // ========================================
+
+  const getStatusIcon = (status) => {
+    const value =
+      String(status || "").toLowerCase();
+
+    if (value === "present") {
+      return <FaCheckCircle />;
+    }
+
+    if (value === "absent") {
+      return <FaTimesCircle />;
+    }
+
+    if (value === "leave") {
+      return <FaUmbrellaBeach />;
+    }
+
+    return <FaCalendarCheck />;
+  };
+
+  // ========================================
+  // STATUS CLASS
+  // ========================================
+
+  const getStatusClass = (status) => {
+    const value =
+      String(status || "").toLowerCase();
+
+    if (value === "present") {
+      return "present";
+    }
+
+    if (value === "absent") {
+      return "absent";
+    }
+
+    if (value === "leave") {
+      return "leave";
+    }
+
+    if (value === "half day") {
+      return "half-day";
+    }
+
+    return "";
+  };
+
+  // ========================================
+  // CALCULATE SUMMARY
+  // ========================================
+
+  const presentCount =
+    attendanceData.filter(
+      (item) =>
+        String(item.status).toLowerCase() ===
+        "present"
+    ).length;
+
+  const absentCount =
+    attendanceData.filter(
+      (item) =>
+        String(item.status).toLowerCase() ===
+        "absent"
+    ).length;
+
+  const leaveCount =
+    attendanceData.filter(
+      (item) =>
+        String(item.status).toLowerCase() ===
+        "leave"
+    ).length;
+
+  // ========================================
+  // UI
+  // ========================================
 
   return (
     <div className="employee-attendance-page">
 
-      {/* ================= HEADER ================= */}
+      {/* ========================================
+          PAGE HEADER
+      ======================================== */}
 
-      <div className="attendance-header">
+      <div className="page-header">
 
         <div>
-          <h1>Attendance</h1>
+          <h1>
+            <FaCalendarCheck />
+            Attendance
+          </h1>
 
           <p>
-            Track your daily attendance and working hours
+            View your attendance records
           </p>
         </div>
 
-        <div className="attendance-month">
-          <FaCalendarCheck />
-
-          <span>
-            September 2026
-          </span>
-        </div>
-
       </div>
 
-
-      {/* ================= SUMMARY ================= */}
+      {/* ========================================
+          SUMMARY
+      ======================================== */}
 
       <div className="attendance-summary">
 
-        {/* TOTAL DAYS */}
-
-        <div className="attendance-card">
-
-          <div className="attendance-card-icon total">
-            <FaCalendarCheck />
-          </div>
+        <div className="summary-card">
+          <FaCalendarCheck />
 
           <div>
-            <span>Total Days</span>
-            <strong>{attendanceData.length}</strong>
-          </div>
+            <h3>
+              {attendanceData.length}
+            </h3>
 
+            <p>Total Records</p>
+          </div>
         </div>
 
-
-        {/* PRESENT */}
-
-        <div className="attendance-card">
-
-          <div className="attendance-card-icon present">
-            <FaCheckCircle />
-          </div>
+        <div className="summary-card">
+          <FaCheckCircle />
 
           <div>
-            <span>Present</span>
-            <strong>{presentCount}</strong>
-          </div>
+            <h3>
+              {presentCount}
+            </h3>
 
+            <p>Present</p>
+          </div>
         </div>
 
-
-        {/* LATE */}
-
-        <div className="attendance-card">
-
-          <div className="attendance-card-icon late">
-            <FaClock />
-          </div>
+        <div className="summary-card">
+          <FaTimesCircle />
 
           <div>
-            <span>Late</span>
-            <strong>{lateCount}</strong>
-          </div>
+            <h3>
+              {absentCount}
+            </h3>
 
+            <p>Absent</p>
+          </div>
         </div>
 
-
-        {/* LEAVE */}
-
-        <div className="attendance-card">
-
-          <div className="attendance-card-icon leave">
-            <FaCalendarTimes />
-          </div>
+        <div className="summary-card">
+          <FaUmbrellaBeach />
 
           <div>
-            <span>Leave</span>
-            <strong>{leaveCount}</strong>
-          </div>
+            <h3>
+              {leaveCount}
+            </h3>
 
+            <p>Leave</p>
+          </div>
         </div>
 
       </div>
 
+      {/* ========================================
+          SEARCH
+      ======================================== */}
 
-      {/* ================= TABLE ================= */}
+      <div className="attendance-filter">
 
-      <div className="attendance-table-card">
+        <FaSearch />
 
-        <div className="attendance-table-title">
+        <input
+          type="date"
+          value={searchDate}
+          onChange={(e) =>
+            setSearchDate(e.target.value)
+          }
+        />
 
-          <div>
-            <h2>Attendance History</h2>
+        {searchDate && (
+          <button
+            type="button"
+            onClick={() =>
+              setSearchDate("")
+            }
+          >
+            Clear
+          </button>
+        )}
 
-            <p>
-              Your recent attendance records
-            </p>
-          </div>
+      </div>
 
-          <span>
-            {attendanceData.length} Records
-          </span>
+      {/* ========================================
+          LOADING
+      ======================================== */}
 
+      {loading && (
+        <div className="loading-message">
+          Loading attendance...
         </div>
+      )}
 
+      {/* ========================================
+          ERROR
+      ======================================== */}
 
-        <div className="attendance-table-wrapper">
+      {!loading && error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
 
-          <table>
+      {/* ========================================
+          ATTENDANCE TABLE
+      ======================================== */}
+
+      {!loading && !error && (
+        <div className="attendance-table-container">
+
+          <table className="attendance-table">
 
             <thead>
-
               <tr>
                 <th>Date</th>
                 <th>Day</th>
@@ -195,76 +375,86 @@ const EmployeeAttendance = () => {
                 <th>Working Hours</th>
                 <th>Status</th>
               </tr>
-
             </thead>
-
 
             <tbody>
 
-              {attendanceData.map((attendance, index) => (
-
-                <tr key={index}>
-
-                  <td>
-                    <strong>
-                      {attendance.date}
-                    </strong>
+              {filteredAttendance.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="no-data"
+                  >
+                    No attendance records found.
                   </td>
-
-                  <td>
-                    {attendance.day}
-                  </td>
-
-                  <td>
-                    {attendance.checkIn}
-                  </td>
-
-                  <td>
-                    {attendance.checkOut}
-                  </td>
-
-                  <td>
-                    {attendance.hours}
-                  </td>
-
-                  <td>
-
-                    <span
-                      className={`attendance-status ${attendance.status.toLowerCase()}`}
+                </tr>
+              ) : (
+                filteredAttendance.map(
+                  (item) => (
+                    <tr
+                      key={
+                        item._id ||
+                        item.id
+                      }
                     >
 
-                      {attendance.status === "Present" && (
-                        <FaCheckCircle />
-                      )}
+                      <td>
+                        {item.date || "-"}
+                      </td>
 
-                      {attendance.status === "Late" && (
+                      <td>
+                        {item.day || "-"}
+                      </td>
+
+                      <td>
                         <FaClock />
-                      )}
+                        {" "}
+                        {item.checkIn || "-"}
+                      </td>
 
-                      {attendance.status === "Leave" && (
-                        <FaCalendarTimes />
-                      )}
+                      <td>
+                        <FaClock />
+                        {" "}
+                        {item.checkOut || "-"}
+                      </td>
 
-                      {attendance.status}
+                      <td>
+                        {item.hours || "0"}
+                      </td>
 
-                    </span>
+                      <td>
 
-                  </td>
+                        <span
+                          className={`status-badge ${getStatusClass(
+                            item.status
+                          )}`}
+                        >
+                          {getStatusIcon(
+                            item.status
+                          )}
 
-                </tr>
+                          {" "}
 
-              ))}
+                          {item.status ||
+                            "Pending"}
+                        </span>
+
+                      </td>
+
+                    </tr>
+                  )
+                )
+              )}
 
             </tbody>
 
           </table>
 
         </div>
-
-      </div>
+      )}
 
     </div>
   );
-};
+}
 
 export default EmployeeAttendance;

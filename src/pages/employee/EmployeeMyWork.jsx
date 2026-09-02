@@ -1,123 +1,262 @@
+import { useEffect, useState } from "react";
 
 import {
   FaTasks,
   FaCheckCircle,
   FaClock,
   FaClipboardList,
+  FaExclamationCircle,
 } from "react-icons/fa";
 
 import "./EmployeeMyWork.css";
 
 const EmployeeWork = () => {
-  const tasks = [
-    {
-      id: 1,
-      title: "Morning Cow Feeding",
-      description: "Feed cows according to the morning feeding schedule.",
-      time: "06:00 AM",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      title: "Milk Collection",
-      description: "Collect and record morning milk production.",
-      time: "08:00 AM",
-      status: "Completed",
-    },
-    {
-      id: 3,
-      title: "Animal Health Check",
-      description: "Check the health condition of all assigned cows.",
-      time: "11:00 AM",
-      status: "Pending",
-    },
-    {
-      id: 4,
-      title: "Evening Feeding",
-      description: "Complete evening feeding for assigned animals.",
-      time: "05:00 PM",
-      status: "Pending",
-    },
-  ];
+  const [tasks, setTasks] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState("");
+
+  /* ========================================
+     LOAD WORK FROM BACKEND
+  ======================================== */
+
+  const loadTasks = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(
+        "http://localhost:5000/api/work"
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Failed to load work records"
+        );
+      }
+
+      const data = await response.json();
+
+      /*
+       * Backend may return:
+       * 
+       * [
+       *   {...},
+       *   {...}
+       * ]
+       *
+       * OR
+       *
+       * {
+       *   success: true,
+       *   data: [...]
+       * }
+       */
+
+      const workData = Array.isArray(data)
+        ? data
+        : Array.isArray(data.data)
+        ? data.data
+        : [];
+
+      setTasks(workData);
+
+    } catch (err) {
+
+      console.error(
+        "Error loading work:",
+        err
+      );
+
+      setError(
+        "Unable to load work data from server."
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+  /* ========================================
+     LOAD DATA WHEN PAGE OPENS
+  ======================================== */
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  /* ========================================
+     TASK COUNTS
+  ======================================== */
 
   const completedTasks = tasks.filter(
-    (task) => task.status === "Completed"
+    (task) =>
+      String(task.status).toLowerCase() ===
+      "completed"
   ).length;
 
   const pendingTasks = tasks.filter(
-    (task) => task.status === "Pending"
+    (task) =>
+      String(task.status).toLowerCase() ===
+      "pending"
   ).length;
+
+  /* ========================================
+     FORMAT TIME
+  ======================================== */
+
+  const formatTime = (time) => {
+
+    if (!time) {
+      return "--";
+    }
+
+    return time;
+
+  };
+
+  /* ========================================
+     FORMAT STATUS
+  ======================================== */
+
+  const getStatusIcon = (status) => {
+
+    if (
+      String(status).toLowerCase() ===
+      "completed"
+    ) {
+      return <FaCheckCircle />;
+    }
+
+    return <FaClock />;
+
+  };
 
   return (
     <div className="employee-work-page">
 
-      {/* ================= HEADER ================= */}
+      {/* =====================================
+          HEADER
+      ===================================== */}
 
       <div className="employee-work-header">
 
         <div>
-          <h1>My Work</h1>
+
+          <h1>
+            My Work
+          </h1>
 
           <p>
             Manage and track your daily farm activities
           </p>
+
         </div>
 
+
         <div className="employee-work-date">
-          <span>Today's Date</span>
+
+          <span>
+            Today's Date
+          </span>
+
           <strong>
-            {new Date().toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
+
+            {new Date().toLocaleDateString(
+              "en-IN",
+              {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              }
+            )}
+
           </strong>
+
         </div>
 
       </div>
 
 
-      {/* ================= SUMMARY ================= */}
+      {/* =====================================
+          SUMMARY
+      ===================================== */}
 
       <div className="employee-work-summary">
+
+        {/* TOTAL TASKS */}
 
         <div className="work-summary-card">
 
           <div className="summary-icon">
+
             <FaClipboardList />
+
           </div>
 
           <div>
-            <span>Total Tasks</span>
-            <strong>{tasks.length}</strong>
+
+            <span>
+              Total Tasks
+            </span>
+
+            <strong>
+              {tasks.length}
+            </strong>
+
           </div>
 
         </div>
 
+
+        {/* COMPLETED */}
 
         <div className="work-summary-card">
 
           <div className="summary-icon completed-icon">
+
             <FaCheckCircle />
+
           </div>
 
           <div>
-            <span>Completed</span>
-            <strong>{completedTasks}</strong>
+
+            <span>
+              Completed
+            </span>
+
+            <strong>
+              {completedTasks}
+            </strong>
+
           </div>
 
         </div>
 
 
+        {/* PENDING */}
+
         <div className="work-summary-card">
 
           <div className="summary-icon pending-icon">
+
             <FaClock />
+
           </div>
 
           <div>
-            <span>Pending</span>
-            <strong>{pendingTasks}</strong>
+
+            <span>
+              Pending
+            </span>
+
+            <strong>
+              {pendingTasks}
+            </strong>
+
           </div>
 
         </div>
@@ -125,87 +264,238 @@ const EmployeeWork = () => {
       </div>
 
 
-      {/* ================= TASK SECTION ================= */}
+      {/* =====================================
+          TASK SECTION
+      ===================================== */}
 
       <div className="employee-task-section">
 
         <div className="employee-task-title">
 
           <div>
-            <h2>Today's Tasks</h2>
+
+            <h2>
+              Today's Tasks
+            </h2>
 
             <p>
               Your assigned work for today
             </p>
+
           </div>
 
+
           <div className="task-count">
+
             <FaTasks />
-            <span>{tasks.length} Tasks</span>
+
+            <span>
+              {tasks.length} Tasks
+            </span>
+
           </div>
 
         </div>
 
 
-        {/* ================= TASK LIST ================= */}
+        {/* =================================
+            LOADING
+        ================================= */}
 
-        <div className="employee-task-list">
+        {loading && (
 
-          {tasks.map((task) => (
+          <div className="employee-task-list">
 
-            <div
-              className="employee-task-card"
-              key={task.id}
-            >
+            <div className="employee-task-card">
 
               <div className="employee-task-icon">
-                <FaTasks />
-              </div>
 
+                <FaClock />
+
+              </div>
 
               <div className="employee-task-info">
 
                 <h3>
-                  {task.title}
+                  Loading Tasks...
                 </h3>
 
                 <p>
-                  {task.description}
+                  Please wait while your work
+                  records are loading.
                 </p>
-
-                <small>
-                  <FaClock />
-                  {task.time}
-                </small>
-
-              </div>
-
-
-              <div
-                className={`employee-task-status ${
-                  task.status.toLowerCase()
-                }`}
-              >
-
-                {task.status === "Completed" ? (
-                  <>
-                    <FaCheckCircle />
-                    Completed
-                  </>
-                ) : (
-                  <>
-                    <FaClock />
-                    Pending
-                  </>
-                )}
 
               </div>
 
             </div>
 
-          ))}
+          </div>
 
-        </div>
+        )}
+
+
+        {/* =================================
+            ERROR
+        ================================= */}
+
+        {!loading && error && (
+
+          <div className="employee-task-list">
+
+            <div className="employee-task-card">
+
+              <div className="employee-task-icon">
+
+                <FaExclamationCircle />
+
+              </div>
+
+              <div className="employee-task-info">
+
+                <h3>
+                  Unable to Load Tasks
+                </h3>
+
+                <p>
+                  {error}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )}
+
+
+        {/* =================================
+            NO DATA
+        ================================= */}
+
+        {!loading &&
+          !error &&
+          tasks.length === 0 && (
+
+            <div className="employee-task-list">
+
+              <div className="employee-task-card">
+
+                <div className="employee-task-icon">
+
+                  <FaClipboardList />
+
+                </div>
+
+                <div className="employee-task-info">
+
+                  <h3>
+                    No Tasks Found
+                  </h3>
+
+                  <p>
+                    No work has been assigned to
+                    you yet.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          )}
+
+
+        {/* =================================
+            TASK LIST
+        ================================= */}
+
+        {!loading &&
+          !error &&
+          tasks.length > 0 && (
+
+            <div className="employee-task-list">
+
+              {tasks.map((task) => {
+
+                const status =
+                  task.status || "Pending";
+
+                return (
+
+                  <div
+                    className="employee-task-card"
+                    key={
+                      task._id ||
+                      task.id
+                    }
+                  >
+
+                    {/* TASK ICON */}
+
+                    <div className="employee-task-icon">
+
+                      <FaTasks />
+
+                    </div>
+
+
+                    {/* TASK INFORMATION */}
+
+                    <div className="employee-task-info">
+
+                      <h3>
+                        {task.title ||
+                          task.taskName ||
+                          "Untitled Task"}
+                      </h3>
+
+
+                      <p>
+                        {task.description ||
+                          "No description available."}
+                      </p>
+
+
+                      <small>
+
+                        <FaClock />
+
+                        {formatTime(
+                          task.time
+                        )}
+
+                      </small>
+
+                    </div>
+
+
+                    {/* STATUS */}
+
+                    <div
+                      className={`employee-task-status ${
+                        String(status).toLowerCase()
+                      }`}
+                    >
+
+                      {getStatusIcon(
+                        status
+                      )}
+
+                      {status}
+
+                    </div>
+
+                  </div>
+
+                );
+
+              })}
+
+            </div>
+
+          )}
 
       </div>
 
