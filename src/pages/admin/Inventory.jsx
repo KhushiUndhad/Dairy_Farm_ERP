@@ -1,56 +1,25 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./Inventory.css";
 
-const initialInventory = [
-  {
-    id: 1,
-    itemCode: "INV-001",
-    itemName: "Cattle Feed",
-    category: "Feed",
-    quantity: 250,
-    unit: "Kg",
-    minStock: 100,
-    price: 32,
-    supplier: "Green Feed Suppliers",
-    lastUpdated: "2026-08-22",
-  },
-  {
-    id: 2,
-    itemCode: "INV-002",
-    itemName: "Mineral Mixture",
-    category: "Medicine",
-    quantity: 45,
-    unit: "Kg",
-    minStock: 20,
-    price: 180,
-    supplier: "Farm Care",
-    lastUpdated: "2026-08-21",
-  },
-  {
-    id: 3,
-    itemCode: "INV-003",
-    itemName: "Milk Can 40L",
-    category: "Equipment",
-    quantity: 12,
-    unit: "Pieces",
-    minStock: 5,
-    price: 850,
-    supplier: "Dairy Equipment Store",
-    lastUpdated: "2026-08-20",
-  },
-  {
-    id: 4,
-    itemCode: "INV-004",
-    itemName: "Cleaning Liquid",
-    category: "Cleaning",
-    quantity: 8,
-    unit: "Litres",
-    minStock: 10,
-    price: 120,
-    supplier: "Clean Farm",
-    lastUpdated: "2026-08-19",
-  },
-];
+import {
+  FaBoxOpen,
+  FaMoneyBillWave,
+  FaExclamationTriangle,
+  FaBan,
+  FaPlus,
+  FaTimes,
+  FaSearch,
+  FaEdit,
+  FaTrash,
+  FaTimesCircle,
+} from "react-icons/fa";
+
+import {
+  getInventory,
+  addInventory,
+  updateInventory,
+  deleteInventory,
+} from "../../services/api";
 
 const emptyForm = {
   itemCode: "",
@@ -68,23 +37,53 @@ const getToday = () => {
 };
 
 const Inventory = () => {
-  const [inventory, setInventory] =
-    useState(initialInventory);
+  const [inventory, setInventory] = useState([]);
 
-  const [formData, setFormData] =
-    useState(emptyForm);
+  const [formData, setFormData] = useState(emptyForm);
 
-  const [showForm, setShowForm] =
-    useState(false);
+  const [showForm, setShowForm] = useState(false);
 
-  const [editingId, setEditingId] =
-    useState(null);
+  const [editingId, setEditingId] = useState(null);
 
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
 
-  const [categoryFilter, setCategoryFilter] =
-    useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  const [loading, setLoading] = useState(true);
+
+  const [saving, setSaving] = useState(false);
+
+  // ==========================================
+  // LOAD INVENTORY FROM MONGODB
+  // ==========================================
+
+  useEffect(() => {
+    loadInventory();
+  }, []);
+
+  const loadInventory = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getInventory();
+
+      const formattedData = data.map((item) => ({
+        ...item,
+        id: item._id,
+      }));
+
+      setInventory(formattedData);
+    } catch (error) {
+      console.error("LOAD INVENTORY ERROR:", error);
+
+      alert(
+        error.message ||
+          "Failed to load inventory."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // ==========================================
   // FILTER INVENTORY
@@ -96,16 +95,16 @@ const Inventory = () => {
 
     return inventory.filter((item) => {
       const matchesSearch =
-        item.itemCode
+        String(item.itemCode || "")
           .toLowerCase()
           .includes(searchText) ||
-        item.itemName
+        String(item.itemName || "")
           .toLowerCase()
           .includes(searchText) ||
-        item.category
+        String(item.category || "")
           .toLowerCase()
           .includes(searchText) ||
-        item.supplier
+        String(item.supplier || "")
           .toLowerCase()
           .includes(searchText);
 
@@ -157,7 +156,8 @@ const Inventory = () => {
     const totalQuantity =
       inventory.reduce(
         (sum, item) =>
-          sum + Number(item.quantity || 0),
+          sum +
+          Number(item.quantity || 0),
         0
       );
 
@@ -210,15 +210,15 @@ const Inventory = () => {
   // SUBMIT
   // ==========================================
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (
       !formData.itemCode.trim() ||
       !formData.itemName.trim() ||
-      !formData.quantity ||
-      !formData.minStock ||
-      !formData.price ||
+      formData.quantity === "" ||
+      formData.minStock === "" ||
+      formData.price === "" ||
       !formData.supplier.trim()
     ) {
       alert(
@@ -235,6 +235,23 @@ const Inventory = () => {
 
     const price =
       Number(formData.price);
+
+    if (Number.isNaN(quantity)) {
+      alert("Please enter a valid quantity.");
+      return;
+    }
+
+    if (Number.isNaN(minStock)) {
+      alert(
+        "Please enter a valid minimum stock."
+      );
+      return;
+    }
+
+    if (Number.isNaN(price)) {
+      alert("Please enter a valid price.");
+      return;
+    }
 
     if (quantity < 0) {
       alert(
@@ -282,44 +299,77 @@ const Inventory = () => {
       lastUpdated: getToday(),
     };
 
-    // UPDATE
-    if (editingId !== null) {
-      setInventory((current) =>
-        current.map((item) =>
-          item.id === editingId
-            ? {
-                ...item,
-                ...itemData,
-              }
-            : item
-        )
+    try {
+      setSaving(true);
+
+      // ======================================
+      // UPDATE
+      // ======================================
+
+      if (editingId !== null) {
+        const updatedItem =
+          await updateInventory(
+            editingId,
+            itemData
+          );
+
+        const formattedItem = {
+          ...updatedItem,
+          id: updatedItem._id,
+        };
+
+        setInventory((current) =>
+          current.map((item) =>
+            item.id === editingId
+              ? formattedItem
+              : item
+          )
+        );
+
+        alert(
+          "Inventory updated successfully."
+        );
+
+        resetForm();
+
+        return;
+      }
+
+      // ======================================
+      // ADD
+      // ======================================
+
+      const savedItem =
+        await addInventory(itemData);
+
+      const formattedItem = {
+        ...savedItem,
+        id: savedItem._id,
+      };
+
+      setInventory((current) => [
+        formattedItem,
+        ...current,
+      ]);
+
+      alert(
+        "Inventory added successfully."
       );
 
       resetForm();
-      return;
+    } catch (error) {
+      console.error(
+        "SAVE INVENTORY ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to save inventory."
+      );
+    } finally {
+      setSaving(false);
     }
-
-    // ADD
-    setInventory((current) => {
-      const nextId =
-        current.length === 0
-          ? 1
-          : Math.max(
-              ...current.map(
-                (item) => item.id
-              )
-            ) + 1;
-
-      return [
-        {
-          id: nextId,
-          ...itemData,
-        },
-        ...current,
-      ];
-    });
-
-    resetForm();
   };
 
   // ==========================================
@@ -330,20 +380,20 @@ const Inventory = () => {
     setEditingId(item.id);
 
     setFormData({
-      itemCode: item.itemCode,
-      itemName: item.itemName,
-      category: item.category,
+      itemCode: item.itemCode || "",
+      itemName: item.itemName || "",
+      category: item.category || "Feed",
       quantity: String(
-        item.quantity
+        item.quantity ?? ""
       ),
-      unit: item.unit,
+      unit: item.unit || "Kg",
       minStock: String(
-        item.minStock
+        item.minStock ?? ""
       ),
       price: String(
-        item.price
+        item.price ?? ""
       ),
-      supplier: item.supplier,
+      supplier: item.supplier || "",
     });
 
     setShowForm(true);
@@ -353,7 +403,7 @@ const Inventory = () => {
   // DELETE
   // ==========================================
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const confirmed =
       window.confirm(
         "Are you sure you want to delete this inventory item?"
@@ -363,14 +413,32 @@ const Inventory = () => {
       return;
     }
 
-    setInventory((current) =>
-      current.filter(
-        (item) => item.id !== id
-      )
-    );
+    try {
+      await deleteInventory(id);
 
-    if (editingId === id) {
-      resetForm();
+      setInventory((current) =>
+        current.filter(
+          (item) => item.id !== id
+        )
+      );
+
+      if (editingId === id) {
+        resetForm();
+      }
+
+      alert(
+        "Inventory deleted successfully."
+      );
+    } catch (error) {
+      console.error(
+        "DELETE INVENTORY ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to delete inventory."
+      );
     }
   };
 
@@ -470,8 +538,8 @@ const Inventory = () => {
           className="add-inventory-btn"
           onClick={openAddForm}
         >
-          <span>+</span>
-          Add Inventory
+          <FaPlus />
+          <span>Add Inventory</span>
         </button>
 
       </div>
@@ -487,7 +555,7 @@ const Inventory = () => {
         <div className="inventory-summary-card">
 
           <div className="inventory-summary-icon">
-            📦
+            <FaBoxOpen />
           </div>
 
           <div>
@@ -507,7 +575,7 @@ const Inventory = () => {
         <div className="inventory-summary-card">
 
           <div className="inventory-summary-icon">
-            💰
+            <FaMoneyBillWave />
           </div>
 
           <div>
@@ -529,7 +597,7 @@ const Inventory = () => {
         <div className="inventory-summary-card">
 
           <div className="inventory-summary-icon low">
-            ⚠️
+            <FaExclamationTriangle />
           </div>
 
           <div>
@@ -549,7 +617,7 @@ const Inventory = () => {
         <div className="inventory-summary-card">
 
           <div className="inventory-summary-icon out">
-            🚫
+            <FaBan />
           </div>
 
           <div>
@@ -595,7 +663,7 @@ const Inventory = () => {
               className="inventory-close-btn"
               onClick={resetForm}
             >
-              ×
+              <FaTimes />
             </button>
 
           </div>
@@ -847,14 +915,18 @@ const Inventory = () => {
                 className="inventory-cancel-btn"
                 onClick={resetForm}
               >
+                <FaTimes />
                 Cancel
               </button>
 
               <button
                 type="submit"
                 className="inventory-save-btn"
+                disabled={saving}
               >
-                {editingId !== null
+                {saving
+                  ? "Saving..."
+                  : editingId !== null
                   ? "Update Item"
                   : "Save Item"}
               </button>
@@ -878,9 +950,7 @@ const Inventory = () => {
 
           <div className="inventory-search-box">
 
-            <span>
-              ⌕
-            </span>
+            <FaSearch />
 
             <input
               type="text"
@@ -947,6 +1017,7 @@ const Inventory = () => {
                 setCategoryFilter("");
               }}
             >
+              <FaTimesCircle />
               Clear
             </button>
           )}
@@ -1013,7 +1084,35 @@ const Inventory = () => {
 
             <tbody>
 
-              {filteredInventory.length >
+              {loading ? (
+
+                <tr>
+
+                  <td
+                    colSpan="11"
+                  >
+
+                    <div className="inventory-empty">
+
+                      <div>
+                        <FaBoxOpen />
+                      </div>
+
+                      <h3>
+                        Loading inventory...
+                      </h3>
+
+                      <p>
+                        Please wait.
+                      </p>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              ) : filteredInventory.length >
               0 ? (
 
                 filteredInventory.map(
@@ -1048,7 +1147,7 @@ const Inventory = () => {
                           <div className="inventory-item">
 
                             <div className="inventory-item-icon">
-                              📦
+                              <FaBoxOpen />
                             </div>
 
                             <strong>
@@ -1173,7 +1272,7 @@ const Inventory = () => {
                               }
                               title="Edit"
                             >
-                              ✏️
+                              <FaEdit />
                             </button>
 
                             <button
@@ -1186,7 +1285,7 @@ const Inventory = () => {
                               }
                               title="Delete"
                             >
-                              🗑️
+                              <FaTrash />
                             </button>
 
                           </div>
@@ -1209,7 +1308,7 @@ const Inventory = () => {
                     <div className="inventory-empty">
 
                       <div>
-                        📦
+                        <FaBoxOpen />
                       </div>
 
                       <h3>

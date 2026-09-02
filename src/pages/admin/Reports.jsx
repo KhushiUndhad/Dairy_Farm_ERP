@@ -1,10 +1,23 @@
 import { useMemo, useState } from "react";
+
+import {
+  FaPrint,
+  FaSearch,
+  FaTint,
+  FaMoneyBillWave,
+  FaUsers,
+  FaUserTie,
+} from "react-icons/fa";
+
+import { FaCow } from "react-icons/fa6";
+
 import "./Reports.css";
 
 const Reports = () => {
   const [reportType, setReportType] = useState("overview");
 
-  const [dateRange, setDateRange] = useState("this-month");
+  const [dateRange, setDateRange] =
+    useState("this-month");
 
   const [search, setSearch] = useState("");
 
@@ -103,41 +116,6 @@ const Reports = () => {
     },
   ];
 
-  const inventoryData = [
-    {
-      item: "Cattle Feed",
-      category: "Feed",
-      quantity: 250,
-      unit: "Kg",
-      value: 8000,
-      status: "In Stock",
-    },
-    {
-      item: "Mineral Mixture",
-      category: "Medicine",
-      quantity: 45,
-      unit: "Kg",
-      value: 8100,
-      status: "In Stock",
-    },
-    {
-      item: "Milk Can 40L",
-      category: "Equipment",
-      quantity: 12,
-      unit: "Pieces",
-      value: 10200,
-      status: "In Stock",
-    },
-    {
-      item: "Cleaning Liquid",
-      category: "Cleaning",
-      quantity: 8,
-      unit: "Litres",
-      value: 960,
-      status: "Low Stock",
-    },
-  ];
-
   const cowData = [
     {
       id: "COW-001",
@@ -233,31 +211,28 @@ const Reports = () => {
 
   const summary = useMemo(() => {
     const totalMilk = milkData.reduce(
-      (sum, item) => sum + item.total,
+      (sum, item) => sum + Number(item.total || 0),
       0
     );
 
     const totalSales = salesData.reduce(
-      (sum, item) => sum + item.amount,
+      (sum, item) => sum + Number(item.amount || 0),
       0
     );
 
     const paidSales = salesData
       .filter((item) => item.status === "Paid")
-      .reduce((sum, item) => sum + item.amount, 0);
+      .reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
+      );
 
     const pendingSales = salesData
       .filter((item) => item.status === "Pending")
-      .reduce((sum, item) => sum + item.amount, 0);
-
-    const inventoryValue = inventoryData.reduce(
-      (sum, item) => sum + item.value,
-      0
-    );
-
-    const lowStock = inventoryData.filter(
-      (item) => item.status === "Low Stock"
-    ).length;
+      .reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
+      );
 
     const activeCows = cowData.filter(
       (item) => item.status === "Active"
@@ -274,8 +249,6 @@ const Reports = () => {
       totalSales,
       paidSales,
       pendingSales,
-      inventoryValue,
-      lowStock,
       activeCows,
       activeEmployees,
       customers,
@@ -286,71 +259,86 @@ const Reports = () => {
   // SEARCH
   // ==========================================
 
-  const filteredSales = salesData.filter((item) => {
-    const value = search.toLowerCase();
+  const searchValue = search
+    .toLowerCase()
+    .trim();
 
-    return (
-      item.invoice.toLowerCase().includes(value) ||
-      item.customer.toLowerCase().includes(value) ||
-      item.product.toLowerCase().includes(value)
-    );
-  });
+  const filteredSales = salesData.filter(
+    (item) =>
+      item.invoice
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.customer
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.product
+        .toLowerCase()
+        .includes(searchValue)
+  );
 
-  const filteredInventory = inventoryData.filter((item) => {
-    const value = search.toLowerCase();
+  const filteredCows = cowData.filter(
+    (item) =>
+      item.id
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.name
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.breed
+        .toLowerCase()
+        .includes(searchValue)
+  );
 
-    return (
-      item.item.toLowerCase().includes(value) ||
-      item.category.toLowerCase().includes(value)
-    );
-  });
+  const filteredEmployees = employeeData.filter(
+    (item) =>
+      item.id
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.name
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.role
+        .toLowerCase()
+        .includes(searchValue)
+  );
 
-  const filteredCows = cowData.filter((item) => {
-    const value = search.toLowerCase();
-
-    return (
-      item.id.toLowerCase().includes(value) ||
-      item.name.toLowerCase().includes(value) ||
-      item.breed.toLowerCase().includes(value)
-    );
-  });
-
-  const filteredEmployees = employeeData.filter((item) => {
-    const value = search.toLowerCase();
-
-    return (
-      item.id.toLowerCase().includes(value) ||
-      item.name.toLowerCase().includes(value) ||
-      item.role.toLowerCase().includes(value)
-    );
-  });
-
-  const filteredCustomers = customerData.filter((item) => {
-    const value = search.toLowerCase();
-
-    return (
-      item.id.toLowerCase().includes(value) ||
-      item.name.toLowerCase().includes(value)
-    );
-  });
+  const filteredCustomers = customerData.filter(
+    (item) =>
+      item.id
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.name
+        .toLowerCase()
+        .includes(searchValue) ||
+      item.phone
+        .toLowerCase()
+        .includes(searchValue)
+  );
 
   // ==========================================
-  // FORMAT
+  // FORMAT CURRENCY
   // ==========================================
 
   const currency = (value) => {
-    return `₹${Number(value).toLocaleString("en-IN")}`;
+    return `₹${Number(value || 0).toLocaleString(
+      "en-IN"
+    )}`;
   };
 
+  // ==========================================
+  // FORMAT DATE
+  // ==========================================
+
   const formatDate = (date) => {
-    return new Date(`${date}T00:00:00`).toLocaleDateString(
-      "en-IN",
-      {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }
-    );
+    if (!date) return "-";
+
+    return new Date(
+      `${date}T00:00:00`
+    ).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   };
 
   // ==========================================
@@ -360,6 +348,21 @@ const Reports = () => {
   const handlePrint = () => {
     window.print();
   };
+
+  // ==========================================
+  // MAX MILK FOR CHART
+  // ==========================================
+
+  const maxMilk = Math.max(
+    ...milkData.map((item) =>
+      Number(item.total || 0)
+    ),
+    1
+  );
+
+  // ==========================================
+  // JSX
+  // ==========================================
 
   return (
     <div className="reports-page">
@@ -383,7 +386,8 @@ const Reports = () => {
           className="report-print-btn"
           onClick={handlePrint}
         >
-          🖨️ Print Report
+          <FaPrint />
+          Print Report
         </button>
 
       </div>
@@ -416,10 +420,6 @@ const Reports = () => {
 
             <option value="sales">
               Sales
-            </option>
-
-            <option value="inventory">
-              Inventory
             </option>
 
             <option value="cows">
@@ -474,7 +474,9 @@ const Reports = () => {
 
         <div className="report-search">
 
-          <span>⌕</span>
+          <span>
+            <FaSearch />
+          </span>
 
           <input
             type="text"
@@ -495,12 +497,17 @@ const Reports = () => {
 
       {reportType === "overview" && (
         <>
+
+          {/* SUMMARY CARDS */}
+
           <div className="report-summary-grid">
+
+            {/* MILK */}
 
             <div className="report-summary-card">
 
               <div className="report-card-icon milk">
-                🥛
+                <FaTint />
               </div>
 
               <div>
@@ -519,10 +526,12 @@ const Reports = () => {
 
             </div>
 
+            {/* SALES */}
+
             <div className="report-summary-card">
 
               <div className="report-card-icon sales">
-                ₹
+                <FaMoneyBillWave />
               </div>
 
               <div>
@@ -531,7 +540,9 @@ const Reports = () => {
                 </span>
 
                 <strong>
-                  {currency(summary.totalSales)}
+                  {currency(
+                    summary.totalSales
+                  )}
                 </strong>
 
                 <small>
@@ -541,10 +552,12 @@ const Reports = () => {
 
             </div>
 
+            {/* COWS */}
+
             <div className="report-summary-card">
 
               <div className="report-card-icon cows">
-                🐄
+                <FaCow />
               </div>
 
               <div>
@@ -563,25 +576,25 @@ const Reports = () => {
 
             </div>
 
+            {/* EMPLOYEES */}
+
             <div className="report-summary-card">
 
-              <div className="report-card-icon inventory">
-                📦
+              <div className="report-card-icon employees">
+                <FaUserTie />
               </div>
 
               <div>
                 <span>
-                  Inventory Value
+                  Active Employees
                 </span>
 
                 <strong>
-                  {currency(
-                    summary.inventoryValue
-                  )}
+                  {summary.activeEmployees}
                 </strong>
 
                 <small>
-                  Current stock
+                  Currently active
                 </small>
               </div>
 
@@ -589,14 +602,20 @@ const Reports = () => {
 
           </div>
 
-          {/* FINANCIAL */}
+          {/* ==================================
+              FINANCIAL + QUICK STATISTICS
+          ================================== */}
 
           <div className="report-two-column">
+
+            {/* FINANCIAL SUMMARY */}
 
             <div className="report-panel">
 
               <div className="report-panel-header">
+
                 <div>
+
                   <h2>
                     Financial Summary
                   </h2>
@@ -604,12 +623,15 @@ const Reports = () => {
                   <p>
                     Current financial performance
                   </p>
+
                 </div>
+
               </div>
 
               <div className="financial-list">
 
                 <div>
+
                   <span>
                     Total Sales
                   </span>
@@ -619,9 +641,11 @@ const Reports = () => {
                       summary.totalSales
                     )}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
                     Paid Amount
                   </span>
@@ -631,9 +655,11 @@ const Reports = () => {
                       summary.paidSales
                     )}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
                     Pending Amount
                   </span>
@@ -643,31 +669,33 @@ const Reports = () => {
                       summary.pendingSales
                     )}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
-                    Inventory Value
+                    Customers
                   </span>
 
                   <strong>
-                    {currency(
-                      summary.inventoryValue
-                    )}
+                    {summary.customers}
                   </strong>
+
                 </div>
 
               </div>
 
             </div>
 
-            {/* QUICK REPORTS */}
+            {/* QUICK STATISTICS */}
 
             <div className="report-panel">
 
               <div className="report-panel-header">
 
                 <div>
+
                   <h2>
                     Quick Statistics
                   </h2>
@@ -675,6 +703,7 @@ const Reports = () => {
                   <p>
                     Farm management overview
                   </p>
+
                 </div>
 
               </div>
@@ -682,43 +711,55 @@ const Reports = () => {
               <div className="quick-stats">
 
                 <div>
+
                   <span>
-                    🐄 Active Cows
+                    <FaCow />
+                    Active Cows
                   </span>
 
                   <strong>
                     {summary.activeCows}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
-                    👨‍🌾 Employees
+                    <FaUserTie />
+                    Employees
                   </span>
 
                   <strong>
                     {summary.activeEmployees}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
-                    👥 Customers
+                    <FaUsers />
+                    Customers
                   </span>
 
                   <strong>
                     {summary.customers}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
-                    ⚠️ Low Stock
+                    <FaTint />
+                    Milk Production
                   </span>
 
-                  <strong className="warning">
-                    {summary.lowStock}
+                  <strong>
+                    {summary.totalMilk} L
                   </strong>
+
                 </div>
 
               </div>
@@ -727,13 +768,16 @@ const Reports = () => {
 
           </div>
 
-          {/* MILK CHART */}
+          {/* ==================================
+              MILK CHART
+          ================================== */}
 
           <div className="report-panel milk-chart-panel">
 
             <div className="report-panel-header">
 
               <div>
+
                 <h2>
                   Milk Production
                 </h2>
@@ -741,6 +785,7 @@ const Reports = () => {
                 <p>
                   Daily milk production
                 </p>
+
               </div>
 
               <strong className="chart-total">
@@ -753,16 +798,10 @@ const Reports = () => {
 
               {milkData.map((item) => {
 
-                const max =
-                  Math.max(
-                    ...milkData.map(
-                      (data) =>
-                        data.total
-                    )
-                  );
-
                 const height =
-                  (item.total / max) * 100;
+                  (Number(item.total) /
+                    maxMilk) *
+                  100;
 
                 return (
                   <div
@@ -804,6 +843,7 @@ const Reports = () => {
             </div>
 
           </div>
+
         </>
       )}
 
@@ -817,14 +857,16 @@ const Reports = () => {
           <div className="report-panel-header">
 
             <div>
+
               <h2>
-                Milk Production Report
+                <FaTint /> Milk Production Report
               </h2>
 
               <p>
                 Daily morning and evening milk
                 production.
               </p>
+
             </div>
 
             <strong className="report-total">
@@ -838,6 +880,7 @@ const Reports = () => {
             <table className="report-table">
 
               <thead>
+
                 <tr>
                   <th>Date</th>
                   <th>Milking Cows</th>
@@ -846,44 +889,61 @@ const Reports = () => {
                   <th>Total</th>
                   <th>Avg / Cow</th>
                 </tr>
+
               </thead>
 
               <tbody>
-                {milkData.map((item) => (
-                  <tr key={item.date}>
 
-                    <td>
-                      {formatDate(item.date)}
+                {milkData.length > 0 ? (
+                  milkData.map((item) => (
+
+                    <tr key={item.date}>
+
+                      <td>
+                        {formatDate(item.date)}
+                      </td>
+
+                      <td>
+                        {item.cows}
+                      </td>
+
+                      <td>
+                        {item.morning} L
+                      </td>
+
+                      <td>
+                        {item.evening} L
+                      </td>
+
+                      <td>
+                        <strong>
+                          {item.total} L
+                        </strong>
+                      </td>
+
+                      <td>
+                        {item.cows > 0
+                          ? (
+                              item.total /
+                              item.cows
+                            ).toFixed(1)
+                          : "0.0"}{" "}
+                        L
+                      </td>
+
+                    </tr>
+
+                  ))
+                ) : (
+
+                  <tr>
+                    <td colSpan="6">
+                      No milk production data found.
                     </td>
-
-                    <td>
-                      {item.cows}
-                    </td>
-
-                    <td>
-                      {item.morning} L
-                    </td>
-
-                    <td>
-                      {item.evening} L
-                    </td>
-
-                    <td>
-                      <strong>
-                        {item.total} L
-                      </strong>
-                    </td>
-
-                    <td>
-                      {(
-                        item.total /
-                        item.cows
-                      ).toFixed(1)}{" "}
-                      L
-                    </td>
-
                   </tr>
-                ))}
+
+                )}
+
               </tbody>
 
             </table>
@@ -903,116 +963,20 @@ const Reports = () => {
           <div className="report-panel-header">
 
             <div>
+
               <h2>
-                Sales Report
+                <FaMoneyBillWave /> Sales Report
               </h2>
 
               <p>
                 Sales and customer transactions.
               </p>
-            </div>
 
-            <strong className="report-total">
-              {currency(summary.totalSales)}
-            </strong>
-
-          </div>
-
-          <div className="report-table-wrapper">
-
-            <table className="report-table">
-
-              <thead>
-                <tr>
-                  <th>Invoice</th>
-                  <th>Date</th>
-                  <th>Customer</th>
-                  <th>Product</th>
-                  <th>Quantity</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                {filteredSales.map((item) => (
-                  <tr key={item.invoice}>
-
-                    <td>
-                      <strong>
-                        {item.invoice}
-                      </strong>
-                    </td>
-
-                    <td>
-                      {formatDate(item.date)}
-                    </td>
-
-                    <td>
-                      {item.customer}
-                    </td>
-
-                    <td>
-                      {item.product}
-                    </td>
-
-                    <td>
-                      {item.quantity} L
-                    </td>
-
-                    <td>
-                      <strong>
-                        {currency(item.amount)}
-                      </strong>
-                    </td>
-
-                    <td>
-                      <span
-                        className={`report-status ${
-                          item.status === "Paid"
-                            ? "success"
-                            : "pending"
-                        }`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
-
-                  </tr>
-                ))}
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-      )}
-
-      {/* ======================================
-          INVENTORY REPORT
-      ====================================== */}
-
-      {reportType === "inventory" && (
-        <div className="report-panel">
-
-          <div className="report-panel-header">
-
-            <div>
-              <h2>
-                Inventory Report
-              </h2>
-
-              <p>
-                Current inventory and stock value.
-              </p>
             </div>
 
             <strong className="report-total">
               {currency(
-                summary.inventoryValue
+                summary.totalSales
               )}
             </strong>
 
@@ -1023,60 +987,91 @@ const Reports = () => {
             <table className="report-table">
 
               <thead>
+
                 <tr>
-                  <th>Item</th>
-                  <th>Category</th>
+                  <th>Invoice</th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Product</th>
                   <th>Quantity</th>
-                  <th>Unit</th>
-                  <th>Value</th>
+                  <th>Amount</th>
                   <th>Status</th>
                 </tr>
+
               </thead>
 
               <tbody>
 
-                {filteredInventory.map((item) => (
-                  <tr key={item.item}>
+                {filteredSales.length > 0 ? (
 
-                    <td>
-                      <strong>
-                        {item.item}
-                      </strong>
-                    </td>
+                  filteredSales.map(
+                    (item) => (
 
-                    <td>
-                      {item.category}
-                    </td>
+                      <tr key={item.invoice}>
 
-                    <td>
-                      {item.quantity}
-                    </td>
+                        <td>
+                          <strong>
+                            {item.invoice}
+                          </strong>
+                        </td>
 
-                    <td>
-                      {item.unit}
-                    </td>
+                        <td>
+                          {formatDate(
+                            item.date
+                          )}
+                        </td>
 
-                    <td>
-                      <strong>
-                        {currency(item.value)}
-                      </strong>
-                    </td>
+                        <td>
+                          {item.customer}
+                        </td>
 
-                    <td>
-                      <span
-                        className={`report-status ${
-                          item.status ===
-                          "In Stock"
-                            ? "success"
-                            : "pending"
-                        }`}
-                      >
-                        {item.status}
-                      </span>
+                        <td>
+                          {item.product}
+                        </td>
+
+                        <td>
+                          {item.quantity} L
+                        </td>
+
+                        <td>
+                          <strong>
+                            {currency(
+                              item.amount
+                            )}
+                          </strong>
+                        </td>
+
+                        <td>
+
+                          <span
+                            className={`report-status ${
+                              item.status ===
+                              "Paid"
+                                ? "success"
+                                : "pending"
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+
+                        </td>
+
+                      </tr>
+
+                    )
+                  )
+
+                ) : (
+
+                  <tr>
+
+                    <td colSpan="7">
+                      No sales records found.
                     </td>
 
                   </tr>
-                ))}
+
+                )}
 
               </tbody>
 
@@ -1097,13 +1092,15 @@ const Reports = () => {
           <div className="report-panel-header">
 
             <div>
+
               <h2>
-                Cow Report
+                <FaCow /> Cow Report
               </h2>
 
               <p>
                 Cow health and production overview.
               </p>
+
             </div>
 
             <strong className="report-total">
@@ -1117,6 +1114,7 @@ const Reports = () => {
             <table className="report-table">
 
               <thead>
+
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
@@ -1125,52 +1123,78 @@ const Reports = () => {
                   <th>Daily Milk</th>
                   <th>Status</th>
                 </tr>
+
               </thead>
 
               <tbody>
 
-                {filteredCows.map((item) => (
-                  <tr key={item.id}>
+                {filteredCows.length > 0 ? (
 
-                    <td>
-                      <strong>
-                        {item.id}
-                      </strong>
-                    </td>
+                  filteredCows.map(
+                    (item) => (
 
-                    <td>
-                      🐄 {item.name}
-                    </td>
+                      <tr key={item.id}>
 
-                    <td>
-                      {item.breed}
-                    </td>
+                        <td>
+                          <strong>
+                            {item.id}
+                          </strong>
+                        </td>
 
-                    <td>
-                      {item.age} years
-                    </td>
+                        <td>
 
-                    <td>
-                      <strong>
-                        {item.milk} L
-                      </strong>
-                    </td>
+                          <FaCow />{" "}
+                          {item.name}
 
-                    <td>
-                      <span
-                        className={`report-status ${
-                          item.status ===
-                          "Active"
-                            ? "success"
-                            : "inactive"
-                        }`}
-                      >
-                        {item.status}
-                      </span>
+                        </td>
+
+                        <td>
+                          {item.breed}
+                        </td>
+
+                        <td>
+                          {item.age} years
+                        </td>
+
+                        <td>
+
+                          <strong>
+                            {item.milk} L
+                          </strong>
+
+                        </td>
+
+                        <td>
+
+                          <span
+                            className={`report-status ${
+                              item.status ===
+                              "Active"
+                                ? "success"
+                                : "inactive"
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+
+                        </td>
+
+                      </tr>
+
+                    )
+                  )
+
+                ) : (
+
+                  <tr>
+
+                    <td colSpan="6">
+                      No cow records found.
                     </td>
 
                   </tr>
-                ))}
+
+                )}
 
               </tbody>
 
@@ -1191,14 +1215,16 @@ const Reports = () => {
           <div className="report-panel-header">
 
             <div>
+
               <h2>
-                Employee Report
+                <FaUserTie /> Employee Report
               </h2>
 
               <p>
                 Employee attendance and salary
                 information.
               </p>
+
             </div>
 
             <strong className="report-total">
@@ -1212,6 +1238,7 @@ const Reports = () => {
             <table className="report-table">
 
               <thead>
+
                 <tr>
                   <th>ID</th>
                   <th>Employee</th>
@@ -1220,46 +1247,67 @@ const Reports = () => {
                   <th>Salary</th>
                   <th>Status</th>
                 </tr>
+
               </thead>
 
               <tbody>
 
-                {filteredEmployees.map(
-                  (item) => (
-                    <tr key={item.id}>
+                {filteredEmployees.length > 0 ? (
 
-                      <td>
-                        <strong>
-                          {item.id}
-                        </strong>
-                      </td>
+                  filteredEmployees.map(
+                    (item) => (
 
-                      <td>
-                        {item.name}
-                      </td>
+                      <tr key={item.id}>
 
-                      <td>
-                        {item.role}
-                      </td>
+                        <td>
+                          <strong>
+                            {item.id}
+                          </strong>
+                        </td>
 
-                      <td>
-                        <strong>
-                          {item.attendance}%
-                        </strong>
-                      </td>
+                        <td>
+                          {item.name}
+                        </td>
 
-                      <td>
-                        {currency(item.salary)}
-                      </td>
+                        <td>
+                          {item.role}
+                        </td>
 
-                      <td>
-                        <span className="report-status success">
-                          {item.status}
-                        </span>
-                      </td>
+                        <td>
+                          <strong>
+                            {item.attendance}%
+                          </strong>
+                        </td>
 
-                    </tr>
+                        <td>
+                          {currency(
+                            item.salary
+                          )}
+                        </td>
+
+                        <td>
+
+                          <span className="report-status success">
+                            {item.status}
+                          </span>
+
+                        </td>
+
+                      </tr>
+
+                    )
                   )
+
+                ) : (
+
+                  <tr>
+
+                    <td colSpan="6">
+                      No employee records found.
+                    </td>
+
+                  </tr>
+
                 )}
 
               </tbody>
@@ -1281,14 +1329,16 @@ const Reports = () => {
           <div className="report-panel-header">
 
             <div>
+
               <h2>
-                Customer Report
+                <FaUsers /> Customer Report
               </h2>
 
               <p>
                 Customer purchase and order
                 summary.
               </p>
+
             </div>
 
             <strong className="report-total">
@@ -1302,6 +1352,7 @@ const Reports = () => {
             <table className="report-table">
 
               <thead>
+
                 <tr>
                   <th>ID</th>
                   <th>Customer</th>
@@ -1310,48 +1361,69 @@ const Reports = () => {
                   <th>Total Purchases</th>
                   <th>Status</th>
                 </tr>
+
               </thead>
 
               <tbody>
 
-                {filteredCustomers.map(
-                  (item) => (
-                    <tr key={item.id}>
+                {filteredCustomers.length > 0 ? (
 
-                      <td>
-                        <strong>
-                          {item.id}
-                        </strong>
-                      </td>
+                  filteredCustomers.map(
+                    (item) => (
 
-                      <td>
-                        {item.name}
-                      </td>
+                      <tr key={item.id}>
 
-                      <td>
-                        {item.phone}
-                      </td>
+                        <td>
+                          <strong>
+                            {item.id}
+                          </strong>
+                        </td>
 
-                      <td>
-                        {item.orders}
-                      </td>
+                        <td>
+                          {item.name}
+                        </td>
 
-                      <td>
-                        <strong>
-                          {currency(
-                            item.purchases
-                          )}
-                        </strong>
-                      </td>
+                        <td>
+                          {item.phone}
+                        </td>
 
-                      <td>
-                        <span className="report-status success">
-                          {item.status}
-                        </span>
-                      </td>
+                        <td>
+                          {item.orders}
+                        </td>
 
-                    </tr>
+                        <td>
+
+                          <strong>
+                            {currency(
+                              item.purchases
+                            )}
+                          </strong>
+
+                        </td>
+
+                        <td>
+
+                          <span className="report-status success">
+                            {item.status}
+                          </span>
+
+                        </td>
+
+                      </tr>
+
+                    )
                   )
+
+                ) : (
+
+                  <tr>
+
+                    <td colSpan="6">
+                      No customer records found.
+                    </td>
+
+                  </tr>
+
                 )}
 
               </tbody>

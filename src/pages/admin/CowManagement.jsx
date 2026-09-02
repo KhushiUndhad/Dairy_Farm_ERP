@@ -1,52 +1,107 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   FaPlus,
   FaEdit,
   FaTrash,
   FaTimes,
   FaSave,
-//   FaCow,
 } from "react-icons/fa";
+
+import {
+  getCows,
+  addCow,
+  updateCow,
+  deleteCow,
+} from "../../services/api";
 
 import "./CowManagement.css";
 
 const CowManagement = () => {
+  // ========================================
+  // STATES
+  // ========================================
 
-  const [cows, setCows] = useState([
-    {
-      id: 1,
-      name: "Ganga",
-      breed: "Gir",
-      age: 5,
-      milk: "12L",
-    },
-    {
-      id: 2,
-      name: "Radha",
-      breed: "HF",
-      age: 4,
-      milk: "15L",
-    },
-  ]);
+  const [cows, setCows] = useState([]);
 
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] =
+    useState(false);
 
-  const [editingCow, setEditingCow] = useState(null);
+  const [editingCow, setEditingCow] =
+    useState(null);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    breed: "",
-    age: "",
-    milk: "",
-  });
+  const [loading, setLoading] =
+    useState(false);
 
+  const [saving, setSaving] =
+    useState(false);
 
-  // ==========================================
+  const [formData, setFormData] =
+    useState({
+      name: "",
+      breed: "",
+      age: "",
+      milk: "",
+    });
+
+  // ========================================
+  // LOAD COWS FROM MONGODB
+  // ========================================
+
+  const loadCows = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getCows();
+
+      console.log(
+        "COWS FROM BACKEND:",
+        data
+      );
+
+      setCows(
+        data.map((cow, index) => ({
+          ...cow,
+
+          // MongoDB ID
+          id: cow._id,
+
+          // Display ID
+          displayId: index + 1,
+        }))
+      );
+    } catch (error) {
+      console.error(
+        "LOAD COWS ERROR:",
+        error
+      );
+
+      alert(
+        "Unable to load cows: " +
+          error.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================
+  // LOAD DATA WHEN PAGE OPENS
+  // ========================================
+
+  useEffect(() => {
+    loadCows();
+  }, []);
+
+  // ========================================
   // HANDLE INPUT
-  // ==========================================
+  // ========================================
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const {
+      name,
+      value,
+    } = e.target;
 
     setFormData({
       ...formData,
@@ -54,13 +109,11 @@ const CowManagement = () => {
     });
   };
 
-
-  // ==========================================
+  // ========================================
   // OPEN ADD FORM
-  // ==========================================
+  // ========================================
 
   const handleAddCow = () => {
-
     setEditingCow(null);
 
     setFormData({
@@ -73,13 +126,11 @@ const CowManagement = () => {
     setShowForm(true);
   };
 
-
-  // ==========================================
+  // ========================================
   // OPEN EDIT FORM
-  // ==========================================
+  // ========================================
 
   const handleEdit = (cow) => {
-
     setEditingCow(cow);
 
     setFormData({
@@ -92,101 +143,142 @@ const CowManagement = () => {
     setShowForm(true);
   };
 
+  // ========================================
+  // SAVE / UPDATE COW
+  // ========================================
 
-  // ==========================================
-  // SAVE COW
-  // ==========================================
-
-  const handleSubmit = (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // VALIDATION
     if (
-      !formData.name ||
-      !formData.breed ||
+      !formData.name.trim() ||
+      !formData.breed.trim() ||
       !formData.age ||
-      !formData.milk
+      !formData.milk.trim()
     ) {
-      alert("Please fill all fields");
+      alert(
+        "Please fill all fields"
+      );
+
       return;
     }
 
+    try {
+      setSaving(true);
 
-    // EDIT
-    if (editingCow) {
+      const cowData = {
+        name: formData.name.trim(),
 
-      setCows(
-        cows.map((cow) =>
-          cow.id === editingCow.id
-            ? {
-                ...cow,
-                name: formData.name,
-                breed: formData.breed,
-                age: formData.age,
-                milk: formData.milk,
-              }
-            : cow
-        )
-      );
+        breed: formData.breed.trim(),
 
-    }
+        age: Number(formData.age),
 
-    // ADD
-    else {
-
-      const newCow = {
-        id:
-          cows.length > 0
-            ? Math.max(...cows.map((cow) => cow.id)) + 1
-            : 1,
-
-        name: formData.name,
-        breed: formData.breed,
-        age: formData.age,
-        milk: formData.milk,
+        milk: formData.milk.trim(),
       };
 
-      setCows([...cows, newCow]);
+      // ====================================
+      // UPDATE
+      // ====================================
+
+      if (editingCow) {
+        await updateCow(
+          editingCow.id,
+          cowData
+        );
+
+        alert(
+          "Cow updated successfully"
+        );
+      }
+
+      // ====================================
+      // ADD
+      // ====================================
+
+      else {
+        await addCow(cowData);
+
+        alert(
+          "Cow added successfully"
+        );
+      }
+
+      // ====================================
+      // RELOAD FROM DATABASE
+      // ====================================
+
+      await loadCows();
+
+      // ====================================
+      // CLOSE FORM
+      // ====================================
+
+      setShowForm(false);
+
+      setEditingCow(null);
+
+      setFormData({
+        name: "",
+        breed: "",
+        age: "",
+        milk: "",
+      });
+    } catch (error) {
+      console.error(
+        "SAVE COW ERROR:",
+        error
+      );
+
+      alert(
+        "Failed to save cow: " +
+          error.message
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ========================================
+  // DELETE COW
+  // ========================================
+
+  const handleDelete = async (id) => {
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to delete this cow?"
+      );
+
+    if (!confirmDelete) {
+      return;
     }
 
+    try {
+      await deleteCow(id);
 
-    setShowForm(false);
+      alert(
+        "Cow deleted successfully"
+      );
 
-    setEditingCow(null);
+      await loadCows();
+    } catch (error) {
+      console.error(
+        "DELETE COW ERROR:",
+        error
+      );
 
-    setFormData({
-      name: "",
-      breed: "",
-      age: "",
-      milk: "",
-    });
+      alert(
+        "Failed to delete cow: " +
+          error.message
+      );
+    }
   };
 
-
-  // ==========================================
-  // DELETE COW
-  // ==========================================
-
-  const handleDelete = (id) => {
-
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this cow?"
-    );
-
-    if (!confirmDelete) return;
-
-    setCows(
-      cows.filter((cow) => cow.id !== id)
-    );
-  };
-
-
-  // ==========================================
+  // ========================================
   // CLOSE FORM
-  // ==========================================
+  // ========================================
 
   const handleClose = () => {
-
     setShowForm(false);
 
     setEditingCow(null);
@@ -199,6 +291,9 @@ const CowManagement = () => {
     });
   };
 
+  // ========================================
+  // UI
+  // ========================================
 
   return (
     <div className="cow-management">
@@ -210,10 +305,13 @@ const CowManagement = () => {
       <div className="page-header">
 
         <div>
-          <h1>Cow Management</h1>
+          <h1>
+            Cow Management
+          </h1>
 
           <p>
-            Manage all cows and their milk production
+            Manage all cows and their milk
+            production
           </p>
         </div>
 
@@ -230,7 +328,6 @@ const CowManagement = () => {
 
       </div>
 
-
       {/* =====================================
           TABLE
       ====================================== */}
@@ -240,86 +337,134 @@ const CowManagement = () => {
         <table className="cow-table">
 
           <thead>
-
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Breed</th>
-              <th>Age</th>
-              <th>Milk</th>
-              <th>Action</th>
+
+              <th>
+                ID
+              </th>
+
+              <th>
+                Name
+              </th>
+
+              <th>
+                Breed
+              </th>
+
+              <th>
+                Age
+              </th>
+
+              <th>
+                Milk
+              </th>
+
+              <th>
+                Action
+              </th>
+
             </tr>
-
           </thead>
-
 
           <tbody>
 
-            {cows.length > 0 ? (
+            {/* LOADING */}
 
-              cows.map((cow) => (
+            {loading ? (
 
-                <tr key={cow.id}>
+              <tr>
+                <td
+                  colSpan="6"
+                  className="empty-table"
+                >
+                  Loading cows...
+                </td>
+              </tr>
 
-                  <td>
-                    {cow.id}
-                  </td>
+            ) : cows.length > 0 ? (
 
-                  <td>
-                    <strong>
-                      {cow.name}
-                    </strong>
-                  </td>
+              cows.map(
+                (cow, index) => (
 
-                  <td>
-                    <span className="breed-badge">
-                      {cow.breed}
-                    </span>
-                  </td>
+                  <tr
+                    key={cow.id}
+                  >
 
-                  <td>
-                    {cow.age} Years
-                  </td>
+                    {/* ID */}
 
-                  <td>
-                    <span className="milk-value">
-                      {cow.milk}
-                    </span>
-                  </td>
+                    <td>
+                      {index + 1}
+                    </td>
 
-                  <td>
+                    {/* NAME */}
 
-                    <div className="action-buttons">
+                    <td>
+                      <strong>
+                        {cow.name}
+                      </strong>
+                    </td>
 
-                      <button
-                        className="edit-btn"
-                        onClick={() =>
-                          handleEdit(cow)
-                        }
-                        title="Edit Cow"
-                      >
-                        <FaEdit />
-                        Edit
-                      </button>
+                    {/* BREED */}
 
+                    <td>
+                      <span className="breed-badge">
+                        {cow.breed}
+                      </span>
+                    </td>
 
-                      <button
-                        className="delete-btn"
-                        onClick={() =>
-                          handleDelete(cow.id)
-                        }
-                        title="Delete Cow"
-                      >
-                        <FaTrash />
-                      </button>
+                    {/* AGE */}
 
-                    </div>
+                    <td>
+                      {cow.age} Years
+                    </td>
 
-                  </td>
+                    {/* MILK */}
 
-                </tr>
+                    <td>
+                      <span className="milk-value">
+                        {cow.milk}
+                      </span>
+                    </td>
 
-              ))
+                    {/* ACTION */}
+
+                    <td>
+
+                      <div className="action-buttons">
+
+                        <button
+                          className="edit-btn"
+                          onClick={() =>
+                            handleEdit(
+                              cow
+                            )
+                          }
+                          title="Edit Cow"
+                        >
+                          <FaEdit />
+
+                          Edit
+                        </button>
+
+                        <button
+                          className="delete-btn"
+                          onClick={() =>
+                            handleDelete(
+                              cow.id
+                            )
+                          }
+                          title="Delete Cow"
+                        >
+                          <FaTrash />
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+                )
+              )
 
             ) : (
 
@@ -341,7 +486,6 @@ const CowManagement = () => {
         </table>
 
       </div>
-
 
       {/* =====================================
           ADD / EDIT MODAL
@@ -365,18 +509,21 @@ const CowManagement = () => {
 
               <button
                 className="close-btn"
-                onClick={handleClose}
+                onClick={
+                  handleClose
+                }
               >
                 <FaTimes />
               </button>
 
             </div>
 
-
             {/* FORM */}
 
             <form
-              onSubmit={handleSubmit}
+              onSubmit={
+                handleSubmit
+              }
               className="cow-form"
             >
 
@@ -392,12 +539,15 @@ const CowManagement = () => {
                   type="text"
                   name="name"
                   placeholder="Enter cow name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  value={
+                    formData.name
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
 
               </div>
-
 
               {/* BREED */}
 
@@ -411,12 +561,15 @@ const CowManagement = () => {
                   type="text"
                   name="breed"
                   placeholder="Enter breed"
-                  value={formData.breed}
-                  onChange={handleChange}
+                  value={
+                    formData.breed
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
 
               </div>
-
 
               {/* AGE */}
 
@@ -431,12 +584,15 @@ const CowManagement = () => {
                   name="age"
                   min="0"
                   placeholder="Enter age"
-                  value={formData.age}
-                  onChange={handleChange}
+                  value={
+                    formData.age
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
 
               </div>
-
 
               {/* MILK */}
 
@@ -450,12 +606,15 @@ const CowManagement = () => {
                   type="text"
                   name="milk"
                   placeholder="Example: 12L"
-                  value={formData.milk}
-                  onChange={handleChange}
+                  value={
+                    formData.milk
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
 
               </div>
-
 
               {/* BUTTONS */}
 
@@ -464,21 +623,26 @@ const CowManagement = () => {
                 <button
                   type="button"
                   className="cancel-btn"
-                  onClick={handleClose}
+                  onClick={
+                    handleClose
+                  }
+                  disabled={saving}
                 >
                   <FaTimes />
 
                   Cancel
                 </button>
 
-
                 <button
                   type="submit"
                   className="save-btn"
+                  disabled={saving}
                 >
                   <FaSave />
 
-                  {editingCow
+                  {saving
+                    ? "Saving..."
+                    : editingCow
                     ? "Update Cow"
                     : "Save Cow"}
                 </button>

@@ -1,13 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
 import {
   FaTachometerAlt,
   FaTint,
   FaUserTie,
   FaUsers,
   FaRupeeSign,
-  FaBox,
-  FaChartBar,
-  FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
 
@@ -16,6 +14,27 @@ import { GiCow } from "react-icons/gi";
 import "./AdminSidebar.css";
 
 const AdminSidebar = ({ sidebarOpen }) => {
+
+  const navigate = useNavigate();
+
+  // ========================================
+  // LOGOUT
+  // ========================================
+
+  const handleLogout = () => {
+
+    // Remove admin login status
+    localStorage.removeItem("adminLoggedIn");
+
+    // Optional: remove admin token if you use one
+    localStorage.removeItem("adminToken");
+
+    // Go to Admin Login page
+    navigate("/admin/login", {
+      replace: true,
+    });
+  };
+
   return (
     <aside
       className={`admin-sidebar ${
@@ -25,7 +44,10 @@ const AdminSidebar = ({ sidebarOpen }) => {
       }`}
     >
 
-      {/* BRAND */}
+      {/* ========================================
+          SIDEBAR BRAND
+      ======================================== */}
+
       <div className="sidebar-brand">
 
         <div className="brand-logo">
@@ -42,7 +64,10 @@ const AdminSidebar = ({ sidebarOpen }) => {
       </div>
 
 
-      {/* NAVIGATION */}
+      {/* ========================================
+          SIDEBAR NAVIGATION
+      ======================================== */}
+
       <nav className="sidebar-nav">
 
         {sidebarOpen && (
@@ -52,7 +77,10 @@ const AdminSidebar = ({ sidebarOpen }) => {
         )}
 
 
-        {/* Dashboard */}
+        {/* ========================================
+            DASHBOARD
+        ======================================== */}
+
         <NavLink
           to="/admin/dashboard"
           title="Dashboard"
@@ -67,12 +95,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
           </span>
 
           {sidebarOpen && (
-            <span>Dashboard</span>
+            <span>
+              Dashboard
+            </span>
           )}
         </NavLink>
 
 
-        {/* Cow Management */}
+        {/* ========================================
+            COW MANAGEMENT
+        ======================================== */}
+
         <NavLink
           to="/admin/cows"
           title="Cow Management"
@@ -87,12 +120,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
           </span>
 
           {sidebarOpen && (
-            <span>Cow Management</span>
+            <span>
+              Cow Management
+            </span>
           )}
         </NavLink>
 
 
-        {/* Milk Production */}
+        {/* ========================================
+            MILK PRODUCTION
+        ======================================== */}
+
         <NavLink
           to="/admin/milk-production"
           title="Milk Production"
@@ -107,12 +145,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
           </span>
 
           {sidebarOpen && (
-            <span>Milk Production</span>
+            <span>
+              Milk Production
+            </span>
           )}
         </NavLink>
 
 
-        {/* Employees */}
+        {/* ========================================
+            EMPLOYEES
+        ======================================== */}
+
         <NavLink
           to="/admin/employees"
           title="Employees"
@@ -127,12 +170,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
           </span>
 
           {sidebarOpen && (
-            <span>Employees</span>
+            <span>
+              Employees
+            </span>
           )}
         </NavLink>
 
 
-        {/* Customers */}
+        {/* ========================================
+            CUSTOMERS
+        ======================================== */}
+
         <NavLink
           to="/admin/customers"
           title="Customers"
@@ -147,12 +195,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
           </span>
 
           {sidebarOpen && (
-            <span>Customers</span>
+            <span>
+              Customers
+            </span>
           )}
         </NavLink>
 
 
-        {/* Sales */}
+        {/* ========================================
+            SALES
+        ======================================== */}
+
         <NavLink
           to="/admin/sales"
           title="Sales"
@@ -167,87 +220,38 @@ const AdminSidebar = ({ sidebarOpen }) => {
           </span>
 
           {sidebarOpen && (
-            <span>Sales</span>
-          )}
-        </NavLink>
-
-
-        {/* Inventory */}
-        <NavLink
-          to="/admin/inventory"
-          title="Inventory"
-          className={({ isActive }) =>
-            isActive
-              ? "sidebar-link active"
-              : "sidebar-link"
-          }
-        >
-          <span className="sidebar-icon">
-            <FaBox />
-          </span>
-
-          {sidebarOpen && (
-            <span>Inventory</span>
-          )}
-        </NavLink>
-
-
-        {/* Reports */}
-        <NavLink
-          to="/admin/reports"
-          title="Reports"
-          className={({ isActive }) =>
-            isActive
-              ? "sidebar-link active"
-              : "sidebar-link"
-          }
-        >
-          <span className="sidebar-icon">
-            <FaChartBar />
-          </span>
-
-          {sidebarOpen && (
-            <span>Reports</span>
-          )}
-        </NavLink>
-
-
-        {/* Settings */}
-        <NavLink
-          to="/admin/settings"
-          title="Settings"
-          className={({ isActive }) =>
-            isActive
-              ? "sidebar-link active"
-              : "sidebar-link"
-          }
-        >
-          <span className="sidebar-icon">
-            <FaCog />
-          </span>
-
-          {sidebarOpen && (
-            <span>Settings</span>
+            <span>
+              Sales
+            </span>
           )}
         </NavLink>
 
       </nav>
 
 
-      {/* LOGOUT */}
+      {/* ========================================
+          LOGOUT
+      ======================================== */}
+
       <div className="sidebar-bottom">
 
         <button
+          type="button"
           className="logout-btn"
           title="Logout"
+          onClick={handleLogout}
         >
+
           <span className="sidebar-icon">
             <FaSignOutAlt />
           </span>
 
           {sidebarOpen && (
-            <span>Logout</span>
+            <span>
+              Logout
+            </span>
           )}
+
         </button>
 
       </div>

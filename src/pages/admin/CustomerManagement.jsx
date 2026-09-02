@@ -1,58 +1,37 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./CustomerManagement.css";
 
-const getToday = () => new Date().toISOString().split("T")[0];
+import {
+  FaUsers,
+  FaUserCheck,
+  FaUserClock,
+  FaMoneyBillWave,
+  FaPlus,
+  FaTimes,
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaTimesCircle,
+} from "react-icons/fa";
 
-const initialCustomers = [
-  {
-    id: 1,
-    customerId: "CUS-001",
-    name: "Rajesh Kumar",
-    phone: "9876543210",
-    email: "rajesh@gmail.com",
-    address: "Chennai",
-    customerType: "Regular",
-    balance: 2500,
-    joiningDate: "2025-07-10",
-    status: "Active",
-  },
-  {
-    id: 2,
-    customerId: "CUS-002",
-    name: "Suresh Traders",
-    phone: "9876543211",
-    email: "sureshtraders@gmail.com",
-    address: "Coimbatore",
-    customerType: "Wholesale",
-    balance: 5200,
-    joiningDate: "2025-09-15",
-    status: "Active",
-  },
-  {
-    id: 3,
-    customerId: "CUS-003",
-    name: "Priya",
-    phone: "9876543212",
-    email: "priya@gmail.com",
-    address: "Madurai",
-    customerType: "Regular",
-    balance: 0,
-    joiningDate: "2026-01-12",
-    status: "Active",
-  },
-  {
-    id: 4,
-    customerId: "CUS-004",
-    name: "Arun Stores",
-    phone: "9876543213",
-    email: "arunstores@gmail.com",
-    address: "Salem",
-    customerType: "Wholesale",
-    balance: 1800,
-    joiningDate: "2025-11-20",
-    status: "Inactive",
-  },
-];
+import {
+  getCustomers,
+  addCustomer,
+  updateCustomer,
+  deleteCustomer,
+} from "../../services/api";
+
+// ========================================
+// TODAY'S DATE
+// ========================================
+
+const getToday = () => {
+  return new Date().toISOString().split("T")[0];
+};
+
+// ========================================
+// EMPTY FORM
+// ========================================
 
 const emptyForm = {
   customerId: "",
@@ -66,8 +45,12 @@ const emptyForm = {
   status: "Active",
 };
 
+// ========================================
+// CUSTOMER MANAGEMENT
+// ========================================
+
 const CustomerManagement = () => {
-  const [customers, setCustomers] = useState(initialCustomers);
+  const [customers, setCustomers] = useState([]);
 
   const [formData, setFormData] = useState(emptyForm);
 
@@ -79,20 +62,76 @@ const CustomerManagement = () => {
 
   const [statusFilter, setStatusFilter] = useState("");
 
-  // ==============================
+  const [loading, setLoading] = useState(true);
+
+  const [saving, setSaving] = useState(false);
+
+  // ========================================
+  // LOAD CUSTOMERS FROM MONGODB
+  // ========================================
+
+  useEffect(() => {
+    const loadCustomers = async () => {
+      try {
+        const data = await getCustomers();
+
+        const formattedCustomers = Array.isArray(data)
+          ? data.map((customer) => ({
+              ...customer,
+              id: customer._id || customer.id,
+            }))
+          : [];
+
+        setCustomers(formattedCustomers);
+      } catch (error) {
+        console.error("LOAD CUSTOMERS ERROR:", error);
+
+        alert(
+          error.message ||
+            "Failed to load customers from server."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCustomers();
+  }, []);
+
+  // ========================================
   // FILTER CUSTOMERS
-  // ==============================
+  // ========================================
 
   const filteredCustomers = useMemo(() => {
     const searchText = search.trim().toLowerCase();
 
     return customers.filter((customer) => {
+      const customerId = String(
+        customer.customerId || ""
+      ).toLowerCase();
+
+      const name = String(
+        customer.name || ""
+      ).toLowerCase();
+
+      const phone = String(
+        customer.phone || ""
+      );
+
+      const email = String(
+        customer.email || ""
+      ).toLowerCase();
+
+      const address = String(
+        customer.address || ""
+      ).toLowerCase();
+
       const matchesSearch =
-        customer.customerId.toLowerCase().includes(searchText) ||
-        customer.name.toLowerCase().includes(searchText) ||
-        customer.phone.includes(searchText) ||
-        customer.email.toLowerCase().includes(searchText) ||
-        customer.address.toLowerCase().includes(searchText);
+        customerId.includes(searchText) ||
+        name.includes(searchText) ||
+        phone.includes(searchText) ||
+        email.includes(searchText) ||
+        address.includes(searchText);
 
       const matchesStatus =
         statusFilter === "" ||
@@ -102,9 +141,9 @@ const CustomerManagement = () => {
     });
   }, [customers, search, statusFilter]);
 
-  // ==============================
+  // ========================================
   // SUMMARY
-  // ==============================
+  // ========================================
 
   const summary = useMemo(() => {
     const total = customers.length;
@@ -131,9 +170,9 @@ const CustomerManagement = () => {
     };
   }, [customers]);
 
-  // ==============================
+  // ========================================
   // FORM CHANGE
-  // ==============================
+  // ========================================
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -144,9 +183,9 @@ const CustomerManagement = () => {
     }));
   };
 
-  // ==============================
+  // ========================================
   // OPEN ADD FORM
-  // ==============================
+  // ========================================
 
   const openAddForm = () => {
     setEditingId(null);
@@ -159,12 +198,16 @@ const CustomerManagement = () => {
     setShowForm(true);
   };
 
-  // ==============================
-  // SUBMIT
-  // ==============================
+  // ========================================
+  // SUBMIT FORM
+  // ========================================
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // ----------------------------------------
+    // REQUIRED FIELD VALIDATION
+    // ----------------------------------------
 
     if (
       !formData.customerId.trim() ||
@@ -177,10 +220,20 @@ const CustomerManagement = () => {
       return;
     }
 
+    // ----------------------------------------
+    // PHONE VALIDATION
+    // ----------------------------------------
+
     if (!/^[0-9]{10}$/.test(formData.phone.trim())) {
-      alert("Please enter a valid 10-digit phone number.");
+      alert(
+        "Please enter a valid 10-digit phone number."
+      );
       return;
     }
+
+    // ----------------------------------------
+    // EMAIL VALIDATION
+    // ----------------------------------------
 
     if (
       formData.email.trim() &&
@@ -192,12 +245,22 @@ const CustomerManagement = () => {
       return;
     }
 
+    // ----------------------------------------
+    // BALANCE VALIDATION
+    // ----------------------------------------
+
     const balance = Number(formData.balance || 0);
 
     if (!Number.isFinite(balance) || balance < 0) {
-      alert("Please enter a valid outstanding balance.");
+      alert(
+        "Please enter a valid outstanding balance."
+      );
       return;
     }
+
+    // ----------------------------------------
+    // CUSTOMER DATA
+    // ----------------------------------------
 
     const customerData = {
       customerId: formData.customerId.trim(),
@@ -211,71 +274,109 @@ const CustomerManagement = () => {
       status: formData.status,
     };
 
-    // UPDATE
-    if (editingId !== null) {
-      setCustomers((current) =>
-        current.map((customer) =>
-          customer.id === editingId
-            ? {
-                ...customer,
-                ...customerData,
-              }
-            : customer
-        )
+    try {
+      setSaving(true);
+
+      // ======================================
+      // UPDATE CUSTOMER
+      // ======================================
+
+      if (editingId !== null) {
+        const updatedCustomer = await updateCustomer(
+          editingId,
+          customerData
+        );
+
+        const formattedCustomer = {
+          ...updatedCustomer,
+          id:
+            updatedCustomer._id ||
+            updatedCustomer.id ||
+            editingId,
+        };
+
+        setCustomers((current) =>
+          current.map((customer) =>
+            customer.id === editingId
+              ? formattedCustomer
+              : customer
+          )
+        );
+
+        alert("Customer updated successfully.");
+
+        resetForm();
+
+        return;
+      }
+
+      // ======================================
+      // ADD CUSTOMER
+      // ======================================
+
+      const savedCustomer = await addCustomer(
+        customerData
       );
 
-      resetForm();
-      return;
-    }
+      const formattedCustomer = {
+        ...savedCustomer,
+        id:
+          savedCustomer._id ||
+          savedCustomer.id,
+      };
 
-    // ADD
-    setCustomers((current) => {
-      const nextId =
-        current.length === 0
-          ? 1
-          : Math.max(
-              ...current.map((customer) => customer.id)
-            ) + 1;
-
-      return [
-        {
-          id: nextId,
-          ...customerData,
-        },
+      setCustomers((current) => [
+        formattedCustomer,
         ...current,
-      ];
-    });
+      ]);
 
-    resetForm();
+      alert("Customer added successfully.");
+
+      resetForm();
+    } catch (error) {
+      console.error(
+        "SAVE CUSTOMER ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to save customer."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
-  // ==============================
-  // EDIT
-  // ==============================
+  // ========================================
+  // EDIT CUSTOMER
+  // ========================================
 
   const handleEdit = (customer) => {
     setEditingId(customer.id);
 
     setFormData({
-      customerId: customer.customerId,
-      name: customer.name,
-      phone: customer.phone,
-      email: customer.email,
-      address: customer.address,
-      customerType: customer.customerType,
-      balance: String(customer.balance),
-      joiningDate: customer.joiningDate,
-      status: customer.status,
+      customerId: customer.customerId || "",
+      name: customer.name || "",
+      phone: customer.phone || "",
+      email: customer.email || "",
+      address: customer.address || "",
+      customerType:
+        customer.customerType || "Regular",
+      balance: String(customer.balance || 0),
+      joiningDate:
+        customer.joiningDate || getToday(),
+      status: customer.status || "Active",
     });
 
     setShowForm(true);
   };
 
-  // ==============================
-  // DELETE
-  // ==============================
+  // ========================================
+  // DELETE CUSTOMER
+  // ========================================
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this customer?"
     );
@@ -284,18 +385,36 @@ const CustomerManagement = () => {
       return;
     }
 
-    setCustomers((current) =>
-      current.filter((customer) => customer.id !== id)
-    );
+    try {
+      await deleteCustomer(id);
 
-    if (editingId === id) {
-      resetForm();
+      setCustomers((current) =>
+        current.filter(
+          (customer) => customer.id !== id
+        )
+      );
+
+      if (editingId === id) {
+        resetForm();
+      }
+
+      alert("Customer deleted successfully.");
+    } catch (error) {
+      console.error(
+        "DELETE CUSTOMER ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to delete customer."
+      );
     }
   };
 
-  // ==============================
-  // RESET
-  // ==============================
+  // ========================================
+  // RESET FORM
+  // ========================================
 
   const resetForm = () => {
     setFormData({
@@ -304,27 +423,54 @@ const CustomerManagement = () => {
     });
 
     setEditingId(null);
+
     setShowForm(false);
   };
 
-  // ==============================
+  // ========================================
   // DATE FORMAT
-  // ==============================
+  // ========================================
 
   const formatDate = (date) => {
     if (!date) {
       return "-";
     }
 
-    return new Date(`${date}T00:00:00`).toLocaleDateString(
-      "en-IN",
-      {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }
-    );
+    return new Date(
+      `${date}T00:00:00`
+    ).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   };
+
+  // ========================================
+  // LOADING
+  // ========================================
+
+  if (loading) {
+    return (
+      <div className="customer-page">
+        <div className="customer-empty-state">
+          <FaUsers size={40} />
+
+          <h3>
+            Loading Customers...
+          </h3>
+
+          <p>
+            Please wait while customers are
+            loaded from MongoDB.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ========================================
+  // UI
+  // ========================================
 
   return (
     <div className="customer-page">
@@ -347,8 +493,11 @@ const CustomerManagement = () => {
           className="add-customer-btn"
           onClick={openAddForm}
         >
-          <span>+</span>
-          Add Customer
+          <FaPlus />
+
+          <span>
+            Add Customer
+          </span>
         </button>
 
       </div>
@@ -360,12 +509,15 @@ const CustomerManagement = () => {
         <div className="customer-summary-card">
 
           <div className="customer-summary-icon">
-            👥
+            <FaUsers />
           </div>
 
           <div>
             <span>Total Customers</span>
-            <strong>{summary.total}</strong>
+
+            <strong>
+              {summary.total}
+            </strong>
           </div>
 
         </div>
@@ -373,12 +525,15 @@ const CustomerManagement = () => {
         <div className="customer-summary-card">
 
           <div className="customer-summary-icon">
-            ✅
+            <FaUserCheck />
           </div>
 
           <div>
             <span>Active Customers</span>
-            <strong>{summary.active}</strong>
+
+            <strong>
+              {summary.active}
+            </strong>
           </div>
 
         </div>
@@ -386,12 +541,15 @@ const CustomerManagement = () => {
         <div className="customer-summary-card">
 
           <div className="customer-summary-icon">
-            ⏸️
+            <FaUserClock />
           </div>
 
           <div>
             <span>Inactive Customers</span>
-            <strong>{summary.inactive}</strong>
+
+            <strong>
+              {summary.inactive}
+            </strong>
           </div>
 
         </div>
@@ -399,7 +557,7 @@ const CustomerManagement = () => {
         <div className="customer-summary-card">
 
           <div className="customer-summary-icon">
-            💰
+            <FaMoneyBillWave />
           </div>
 
           <div>
@@ -441,7 +599,7 @@ const CustomerManagement = () => {
               className="customer-close-btn"
               onClick={resetForm}
             >
-              ×
+              <FaTimes />
             </button>
 
           </div>
@@ -453,6 +611,7 @@ const CustomerManagement = () => {
               {/* CUSTOMER ID */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerId">
                   Customer ID
                 </label>
@@ -465,11 +624,13 @@ const CustomerManagement = () => {
                   value={formData.customerId}
                   onChange={handleChange}
                 />
+
               </div>
 
               {/* NAME */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerName">
                   Customer Name
                 </label>
@@ -482,11 +643,13 @@ const CustomerManagement = () => {
                   value={formData.name}
                   onChange={handleChange}
                 />
+
               </div>
 
               {/* PHONE */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerPhone">
                   Phone Number
                 </label>
@@ -500,11 +663,13 @@ const CustomerManagement = () => {
                   value={formData.phone}
                   onChange={handleChange}
                 />
+
               </div>
 
               {/* EMAIL */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerEmail">
                   Email
                 </label>
@@ -517,11 +682,13 @@ const CustomerManagement = () => {
                   value={formData.email}
                   onChange={handleChange}
                 />
+
               </div>
 
               {/* CUSTOMER TYPE */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerType">
                   Customer Type
                 </label>
@@ -548,11 +715,13 @@ const CustomerManagement = () => {
                     Distributor
                   </option>
                 </select>
+
               </div>
 
               {/* BALANCE */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerBalance">
                   Outstanding Balance (₹)
                 </label>
@@ -567,11 +736,13 @@ const CustomerManagement = () => {
                   value={formData.balance}
                   onChange={handleChange}
                 />
+
               </div>
 
               {/* JOINING DATE */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerJoiningDate">
                   Joining Date
                 </label>
@@ -583,11 +754,13 @@ const CustomerManagement = () => {
                   value={formData.joiningDate}
                   onChange={handleChange}
                 />
+
               </div>
 
               {/* STATUS */}
 
               <div className="customer-form-group">
+
                 <label htmlFor="customerStatus">
                   Status
                 </label>
@@ -606,11 +779,13 @@ const CustomerManagement = () => {
                     Inactive
                   </option>
                 </select>
+
               </div>
 
               {/* ADDRESS */}
 
               <div className="customer-form-group customer-address-group">
+
                 <label htmlFor="customerAddress">
                   Address
                 </label>
@@ -623,6 +798,7 @@ const CustomerManagement = () => {
                   value={formData.address}
                   onChange={handleChange}
                 />
+
               </div>
 
             </div>
@@ -635,6 +811,7 @@ const CustomerManagement = () => {
                 type="button"
                 className="customer-cancel-btn"
                 onClick={resetForm}
+                disabled={saving}
               >
                 Cancel
               </button>
@@ -642,8 +819,11 @@ const CustomerManagement = () => {
               <button
                 type="submit"
                 className="customer-save-btn"
+                disabled={saving}
               >
-                {editingId !== null
+                {saving
+                  ? "Saving..."
+                  : editingId !== null
                   ? "Update Customer"
                   : "Save Customer"}
               </button>
@@ -665,7 +845,7 @@ const CustomerManagement = () => {
 
           <div className="customer-search-box">
 
-            <span>⌕</span>
+            <FaSearch />
 
             <input
               type="text"
@@ -696,6 +876,7 @@ const CustomerManagement = () => {
             <option value="Inactive">
               Inactive
             </option>
+
           </select>
 
           {(search || statusFilter) && (
@@ -707,6 +888,8 @@ const CustomerManagement = () => {
                 setStatusFilter("");
               }}
             >
+              <FaTimesCircle />
+
               Clear
             </button>
           )}
@@ -749,7 +932,9 @@ const CustomerManagement = () => {
                       <div className="customer-info">
 
                         <div className="customer-avatar">
-                          {customer.name
+                          {String(
+                            customer.name || "C"
+                          )
                             .charAt(0)
                             .toUpperCase()}
                         </div>
@@ -779,9 +964,11 @@ const CustomerManagement = () => {
                     {/* TYPE */}
 
                     <td>
+
                       <span className="customer-type">
                         {customer.customerType}
                       </span>
+
                     </td>
 
                     {/* ADDRESS */}
@@ -803,7 +990,7 @@ const CustomerManagement = () => {
                       >
                         ₹
                         {Number(
-                          customer.balance
+                          customer.balance || 0
                         ).toLocaleString("en-IN")}
                       </strong>
 
@@ -847,7 +1034,7 @@ const CustomerManagement = () => {
                           }
                           title="Edit"
                         >
-                          ✏️
+                          <FaEdit />
                         </button>
 
                         <button
@@ -858,7 +1045,7 @@ const CustomerManagement = () => {
                           }
                           title="Delete"
                         >
-                          🗑️
+                          <FaTrash />
                         </button>
 
                       </div>
@@ -877,7 +1064,7 @@ const CustomerManagement = () => {
 
                     <div className="customer-empty-state">
 
-                      <div>👥</div>
+                      <FaUsers size={40} />
 
                       <h3>
                         No customers found

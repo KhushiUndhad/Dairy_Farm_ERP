@@ -1,121 +1,157 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaTimes,
+  FaSave,
+} from "react-icons/fa";
+
+import {
+  getMilkProduction,
+  addMilkProduction,
+  updateMilkProduction,
+  deleteMilkProduction,
+} from "../../services/api";
+
 import "./MilkProduction.css";
 
-const getToday = () => new Date().toISOString().split("T")[0];
-
-const initialRecords = [
-  {
-    id: 1,
-    date: "2026-08-23",
-    cow: "COW-001",
-    cowName: "Lakshmi",
-    morning: 8,
-    evening: 7,
-    price: 45,
-  },
-  {
-    id: 2,
-    date: "2026-08-23",
-    cow: "COW-002",
-    cowName: "Ganga",
-    morning: 6.5,
-    evening: 6,
-    price: 45,
-  },
-  {
-    id: 3,
-    date: "2026-08-22",
-    cow: "COW-003",
-    cowName: "Sita",
-    morning: 7,
-    evening: 6.5,
-    price: 46,
-  },
-];
-
-const createEmptyForm = () => ({
-  date: getToday(),
-  cow: "",
-  cowName: "",
-  morning: "",
-  evening: "",
-  price: "45",
-});
-
 const MilkProduction = () => {
-  const [records, setRecords] = useState(initialRecords);
-  const [formData, setFormData] = useState(createEmptyForm);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [search, setSearch] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+  // ========================================
+  // STATES
+  // ========================================
 
-  // =========================
-  // FILTER RECORDS
-  // =========================
-  const filteredRecords = useMemo(() => {
-    const searchText = search.trim().toLowerCase();
+  const [records, setRecords] =
+    useState([]);
 
-    return records.filter((record) => {
-      const matchesSearch =
-        record.cow.toLowerCase().includes(searchText) ||
-        record.cowName.toLowerCase().includes(searchText);
+  const [showForm, setShowForm] =
+    useState(false);
 
-      const matchesDate =
-        filterDate === "" || record.date === filterDate;
+  const [editingRecord, setEditingRecord] =
+    useState(null);
 
-      return matchesSearch && matchesDate;
+  const [loading, setLoading] =
+    useState(false);
+
+  const [saving, setSaving] =
+    useState(false);
+
+  const [formData, setFormData] =
+    useState({
+      date: "",
+      cow: "",
+      cowName: "",
+      morning: "",
+      evening: "",
+      price: "",
     });
-  }, [records, search, filterDate]);
 
-  // =========================
-  // SUMMARY
-  // =========================
-  const summary = useMemo(() => {
-    const totalMorning = filteredRecords.reduce(
-      (sum, record) => sum + Number(record.morning),
-      0
-    );
+  // ========================================
+  // LOAD DATA
+  // ========================================
 
-    const totalEvening = filteredRecords.reduce(
-      (sum, record) => sum + Number(record.evening),
-      0
-    );
+  const loadMilkProduction = async () => {
+    try {
+      setLoading(true);
 
-    const totalMilk = totalMorning + totalEvening;
+      const data =
+        await getMilkProduction();
 
-    const totalAmount = filteredRecords.reduce((sum, record) => {
-      const milk =
-        Number(record.morning) + Number(record.evening);
+      console.log(
+        "MILK DATA:",
+        data
+      );
 
-      return sum + milk * Number(record.price);
-    }, 0);
+      setRecords(
+        data.map((record) => ({
+          ...record,
+          id: record._id,
+        }))
+      );
+    } catch (error) {
+      console.error(
+        "LOAD MILK ERROR:",
+        error
+      );
 
-    return {
-      totalMorning,
-      totalEvening,
-      totalMilk,
-      totalAmount,
-    };
-  }, [filteredRecords]);
-
-  // =========================
-  // FORM CHANGE
-  // =========================
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
+      alert(
+        "Unable to load milk production: " +
+          error.message
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // =========================
-  // SUBMIT FORM
-  // =========================
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  // ========================================
+  // PAGE LOAD
+  // ========================================
+
+  useEffect(() => {
+    loadMilkProduction();
+  }, []);
+
+  // ========================================
+  // HANDLE INPUT
+  // ========================================
+
+  const handleChange = (e) => {
+    const {
+      name,
+      value,
+    } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // ========================================
+  // ADD FORM
+  // ========================================
+
+  const handleAdd = () => {
+    setEditingRecord(null);
+
+    setFormData({
+      date: "",
+      cow: "",
+      cowName: "",
+      morning: "",
+      evening: "",
+      price: "",
+    });
+
+    setShowForm(true);
+  };
+
+  // ========================================
+  // EDIT FORM
+  // ========================================
+
+  const handleEdit = (record) => {
+    setEditingRecord(record);
+
+    setFormData({
+      date: record.date,
+      cow: record.cow,
+      cowName: record.cowName,
+      morning: record.morning,
+      evening: record.evening,
+      price: record.price,
+    });
+
+    setShowForm(true);
+  };
+
+  // ========================================
+  // SAVE
+  // ========================================
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (
       !formData.date ||
@@ -125,573 +161,549 @@ const MilkProduction = () => {
       formData.evening === "" ||
       formData.price === ""
     ) {
-      alert("Please fill all fields.");
-      return;
-    }
-
-    const morning = Number(formData.morning);
-    const evening = Number(formData.evening);
-    const price = Number(formData.price);
-
-    if (
-      !Number.isFinite(morning) ||
-      !Number.isFinite(evening) ||
-      !Number.isFinite(price) ||
-      morning < 0 ||
-      evening < 0 ||
-      price < 0
-    ) {
-      alert("Please enter valid values.");
-      return;
-    }
-
-    const cleanedRecord = {
-      date: formData.date,
-      cow: formData.cow.trim(),
-      cowName: formData.cowName.trim(),
-      morning,
-      evening,
-      price,
-    };
-
-    // =========================
-    // EDIT EXISTING RECORD
-    // =========================
-    if (editingId !== null) {
-      setRecords((current) =>
-        current.map((record) =>
-          record.id === editingId
-            ? {
-                ...record,
-                ...cleanedRecord,
-              }
-            : record
-        )
+      alert(
+        "Please fill all fields"
       );
 
-      resetForm();
       return;
     }
 
-    // =========================
-    // ADD NEW RECORD
-    // =========================
-    setRecords((current) => {
-      const nextId =
-        current.length === 0
-          ? 1
-          : Math.max(...current.map((record) => record.id)) + 1;
+    try {
+      setSaving(true);
 
-      const newRecord = {
-        id: nextId,
-        ...cleanedRecord,
+      const data = {
+        date: formData.date,
+
+        cow: formData.cow.trim(),
+
+        cowName:
+          formData.cowName.trim(),
+
+        morning: Number(
+          formData.morning
+        ),
+
+        evening: Number(
+          formData.evening
+        ),
+
+        price: Number(
+          formData.price
+        ),
       };
 
-      return [newRecord, ...current];
-    });
+      // UPDATE
+      if (editingRecord) {
+        await updateMilkProduction(
+          editingRecord.id,
+          data
+        );
 
-    resetForm();
+        alert(
+          "Milk production updated successfully"
+        );
+      }
+
+      // ADD
+      else {
+        await addMilkProduction(
+          data
+        );
+
+        alert(
+          "Milk production added successfully"
+        );
+      }
+
+      // RELOAD
+      await loadMilkProduction();
+
+      // CLOSE
+      handleClose();
+    } catch (error) {
+      console.error(
+        "SAVE MILK ERROR:",
+        error
+      );
+
+      alert(
+        "Failed to save milk production: " +
+          error.message
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
-  // =========================
-  // EDIT
-  // =========================
-  const handleEdit = (record) => {
-    setEditingId(record.id);
-
-    setFormData({
-      date: record.date,
-      cow: record.cow,
-      cowName: record.cowName,
-      morning: String(record.morning),
-      evening: String(record.evening),
-      price: String(record.price),
-    });
-
-    setShowForm(true);
-  };
-
-  // =========================
+  // ========================================
   // DELETE
-  // =========================
-  const handleDelete = (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this milk production record?"
-    );
+  // ========================================
 
-    if (!confirmed) {
+  const handleDelete = async (id) => {
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to delete this record?"
+      );
+
+    if (!confirmDelete) {
       return;
     }
 
-    setRecords((current) =>
-      current.filter((record) => record.id !== id)
-    );
+    try {
+      await deleteMilkProduction(
+        id
+      );
 
-    if (editingId === id) {
-      resetForm();
+      alert(
+        "Milk production deleted successfully"
+      );
+
+      await loadMilkProduction();
+    } catch (error) {
+      console.error(
+        "DELETE MILK ERROR:",
+        error
+      );
+
+      alert(
+        "Failed to delete record: " +
+          error.message
+      );
     }
   };
 
-  // =========================
-  // RESET FORM
-  // =========================
-  const resetForm = () => {
-    setFormData(createEmptyForm());
-    setEditingId(null);
+  // ========================================
+  // CLOSE
+  // ========================================
+
+  const handleClose = () => {
     setShowForm(false);
+
+    setEditingRecord(null);
+
+    setFormData({
+      date: "",
+      cow: "",
+      cowName: "",
+      morning: "",
+      evening: "",
+      price: "",
+    });
   };
 
-  // =========================
-  // OPEN ADD FORM
-  // =========================
-  const openAddForm = () => {
-    setEditingId(null);
-    setFormData(createEmptyForm());
-    setShowForm(true);
-  };
+  // ========================================
+  // TOTAL MILK
+  // ========================================
 
-  // =========================
-  // DATE FORMAT
-  // =========================
-  const formatDate = (date) => {
-    if (!date) {
-      return "-";
-    }
-
-    return new Date(`${date}T00:00:00`).toLocaleDateString(
-      "en-IN",
-      {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }
+  const getTotalMilk = (record) => {
+    return (
+      Number(record.morning || 0) +
+      Number(record.evening || 0)
     );
   };
+
+  // ========================================
+  // UI
+  // ========================================
 
   return (
-    <div className="milk-production-page">
-      {/* =========================
-          PAGE HEADER
-      ========================== */}
-      <div className="milk-page-header">
+    <div className="milk-production">
+
+      {/* PAGE HEADER */}
+
+      <div className="page-header">
+
         <div>
-          <h1>Milk Production</h1>
+          <h1>
+            Milk Production
+          </h1>
 
           <p>
-            Track and manage daily milk production from your cows.
+            Manage daily milk production
           </p>
         </div>
 
         <button
-          type="button"
-          className="add-milk-btn"
-          onClick={openAddForm}
+          className="add-cow-btn"
+          onClick={handleAdd}
         >
-          <span>+</span>
-          Add Production
+          <FaPlus />
+
+          <span>
+            Add Production
+          </span>
         </button>
+
       </div>
 
-      {/* =========================
-          SUMMARY CARDS
-      ========================== */}
-      <div className="milk-summary-grid">
-        <div className="milk-summary-card">
-          <div className="summary-icon">🥛</div>
+      {/* TABLE */}
 
-          <div>
-            <span>Total Milk</span>
+      <div className="cow-table-container">
 
-            <strong>
-              {summary.totalMilk.toFixed(1)} L
-            </strong>
-          </div>
-        </div>
+        <table className="cow-table">
 
-        <div className="milk-summary-card">
-          <div className="summary-icon">🌅</div>
+          <thead>
+            <tr>
 
-          <div>
-            <span>Morning Milk</span>
+              <th>
+                ID
+              </th>
 
-            <strong>
-              {summary.totalMorning.toFixed(1)} L
-            </strong>
-          </div>
-        </div>
+              <th>
+                Date
+              </th>
 
-        <div className="milk-summary-card">
-          <div className="summary-icon">🌙</div>
+              <th>
+                Cow
+              </th>
 
-          <div>
-            <span>Evening Milk</span>
+              <th>
+                Morning
+              </th>
 
-            <strong>
-              {summary.totalEvening.toFixed(1)} L
-            </strong>
-          </div>
-        </div>
+              <th>
+                Evening
+              </th>
 
-        <div className="milk-summary-card">
-          <div className="summary-icon">💰</div>
+              <th>
+                Total
+              </th>
 
-          <div>
-            <span>Total Value</span>
+              <th>
+                Price
+              </th>
 
-            <strong>
-              ₹{summary.totalAmount.toFixed(2)}
-            </strong>
-          </div>
-        </div>
+              <th>
+                Action
+              </th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {loading ? (
+
+              <tr>
+                <td
+                  colSpan="8"
+                  className="empty-table"
+                >
+                  Loading...
+                </td>
+              </tr>
+
+            ) : records.length > 0 ? (
+
+              records.map(
+                (record, index) => (
+
+                  <tr
+                    key={record.id}
+                  >
+
+                    <td>
+                      {index + 1}
+                    </td>
+
+                    <td>
+                      {record.date}
+                    </td>
+
+                    <td>
+                      <strong>
+                        {record.cowName}
+                      </strong>
+                    </td>
+
+                    <td>
+                      {record.morning} L
+                    </td>
+
+                    <td>
+                      {record.evening} L
+                    </td>
+
+                    <td>
+                      <strong>
+                        {
+                          getTotalMilk(
+                            record
+                          )
+                        }{" "}
+                        L
+                      </strong>
+                    </td>
+
+                    <td>
+                      ₹{record.price}
+                    </td>
+
+                    <td>
+
+                      <div className="action-buttons">
+
+                        <button
+                          className="edit-btn"
+                          onClick={() =>
+                            handleEdit(
+                              record
+                            )
+                          }
+                        >
+                          <FaEdit />
+                          Edit
+                        </button>
+
+                        <button
+                          className="delete-btn"
+                          onClick={() =>
+                            handleDelete(
+                              record.id
+                            )
+                          }
+                        >
+                          <FaTrash />
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                )
+              )
+
+            ) : (
+
+              <tr>
+
+                <td
+                  colSpan="8"
+                  className="empty-table"
+                >
+                  No milk production
+                  records available
+                </td>
+
+              </tr>
+
+            )}
+
+          </tbody>
+
+        </table>
+
       </div>
 
-      {/* =========================
-          ADD / EDIT FORM
-      ========================== */}
+      {/* MODAL */}
+
       {showForm && (
-        <div className="milk-form-card">
-          <div className="milk-form-header">
-            <div>
+
+        <div className="modal-overlay">
+
+          <div className="cow-modal">
+
+            <div className="modal-header">
+
               <h2>
-                {editingId !== null
+                {editingRecord
                   ? "Edit Milk Production"
                   : "Add Milk Production"}
               </h2>
 
-              <p>
-                Enter the morning and evening milk production
-                details.
-              </p>
+              <button
+                className="close-btn"
+                onClick={handleClose}
+              >
+                <FaTimes />
+              </button>
+
             </div>
 
-            <button
-              type="button"
-              className="close-form-btn"
-              onClick={resetForm}
+            <form
+              onSubmit={handleSubmit}
+              className="cow-form"
             >
-              ×
-            </button>
-          </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="milk-form-grid">
               {/* DATE */}
+
               <div className="form-group">
-                <label htmlFor="milk-date">
+
+                <label>
                   Date
                 </label>
 
                 <input
-                  id="milk-date"
                   type="date"
                   name="date"
-                  value={formData.date}
-                  onChange={handleChange}
+                  value={
+                    formData.date
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
+
               </div>
 
               {/* COW ID */}
+
               <div className="form-group">
-                <label htmlFor="milk-cow">
+
+                <label>
                   Cow ID
                 </label>
 
                 <input
-                  id="milk-cow"
                   type="text"
                   name="cow"
-                  placeholder="Example: COW-001"
-                  value={formData.cow}
-                  onChange={handleChange}
+                  placeholder="Enter cow ID"
+                  value={
+                    formData.cow
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
+
               </div>
 
               {/* COW NAME */}
+
               <div className="form-group">
-                <label htmlFor="milk-cow-name">
+
+                <label>
                   Cow Name
                 </label>
 
                 <input
-                  id="milk-cow-name"
                   type="text"
                   name="cowName"
-                  placeholder="Example: Lakshmi"
-                  value={formData.cowName}
-                  onChange={handleChange}
+                  placeholder="Enter cow name"
+                  value={
+                    formData.cowName
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
+
               </div>
 
               {/* MORNING */}
+
               <div className="form-group">
-                <label htmlFor="milk-morning">
-                  Morning Milk (L)
+
+                <label>
+                  Morning Production (L)
                 </label>
 
                 <input
-                  id="milk-morning"
                   type="number"
-                  name="morning"
                   min="0"
                   step="0.1"
-                  placeholder="0.0"
-                  value={formData.morning}
-                  onChange={handleChange}
+                  name="morning"
+                  placeholder="Example: 6"
+                  value={
+                    formData.morning
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
+
               </div>
 
               {/* EVENING */}
+
               <div className="form-group">
-                <label htmlFor="milk-evening">
-                  Evening Milk (L)
+
+                <label>
+                  Evening Production (L)
                 </label>
 
                 <input
-                  id="milk-evening"
                   type="number"
-                  name="evening"
                   min="0"
                   step="0.1"
-                  placeholder="0.0"
-                  value={formData.evening}
-                  onChange={handleChange}
+                  name="evening"
+                  placeholder="Example: 6"
+                  value={
+                    formData.evening
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
+
               </div>
 
               {/* PRICE */}
+
               <div className="form-group">
-                <label htmlFor="milk-price">
-                  Price / Litre (₹)
+
+                <label>
+                  Price per Liter
                 </label>
 
                 <input
-                  id="milk-price"
                   type="number"
-                  name="price"
                   min="0"
                   step="0.01"
-                  placeholder="45"
-                  value={formData.price}
-                  onChange={handleChange}
+                  name="price"
+                  placeholder="Example: 50"
+                  value={
+                    formData.price
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
+
               </div>
-            </div>
 
-            {/* FORM BUTTONS */}
-            <div className="milk-form-actions">
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={resetForm}
-              >
-                Cancel
-              </button>
+              {/* BUTTONS */}
 
-              <button
-                type="submit"
-                className="save-milk-btn"
-              >
-                {editingId !== null
-                  ? "Update Production"
-                  : "Save Production"}
-              </button>
-            </div>
-          </form>
+              <div className="form-actions">
+
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={
+                    handleClose
+                  }
+                  disabled={saving}
+                >
+                  <FaTimes />
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-btn"
+                  disabled={saving}
+                >
+                  <FaSave />
+
+                  {saving
+                    ? "Saving..."
+                    : editingRecord
+                    ? "Update"
+                    : "Save"}
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+
         </div>
+
       )}
 
-      {/* =========================
-          TABLE CARD
-      ========================== */}
-      <div className="milk-table-card">
-        {/* FILTER BAR */}
-        <div className="milk-filter-bar">
-          <div className="search-box">
-            <span>⌕</span>
-
-            <input
-              type="text"
-              placeholder="Search cow ID or name..."
-              value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
-            />
-          </div>
-
-          <div className="date-filter">
-            <label htmlFor="filter-date">
-              Filter Date
-            </label>
-
-            <input
-              id="filter-date"
-              type="date"
-              value={filterDate}
-              onChange={(event) =>
-                setFilterDate(event.target.value)
-              }
-            />
-          </div>
-
-          {(search || filterDate) && (
-            <button
-              type="button"
-              className="clear-filter-btn"
-              onClick={() => {
-                setSearch("");
-                setFilterDate("");
-              }}
-            >
-              Clear
-            </button>
-          )}
-        </div>
-
-        {/* TABLE */}
-        <div className="milk-table-wrapper">
-          <table className="milk-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Cow</th>
-                <th>Morning</th>
-                <th>Evening</th>
-                <th>Total Milk</th>
-                <th>Price/L</th>
-                <th>Total Amount</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filteredRecords.length > 0 ? (
-                filteredRecords.map((record) => {
-                  const morning = Number(record.morning);
-                  const evening = Number(record.evening);
-                  const price = Number(record.price);
-
-                  const totalMilk = morning + evening;
-                  const totalAmount = totalMilk * price;
-
-                  return (
-                    <tr key={record.id}>
-                      {/* DATE */}
-                      <td>
-                        {formatDate(record.date)}
-                      </td>
-
-                      {/* COW */}
-                      <td>
-                        <div className="cow-info">
-                          <div className="cow-avatar">
-                            🐄
-                          </div>
-
-                          <div>
-                            <strong>
-                              {record.cowName}
-                            </strong>
-
-                            <small>
-                              {record.cow}
-                            </small>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* MORNING */}
-                      <td>
-                        <span className="morning-value">
-                          {morning.toFixed(1)} L
-                        </span>
-                      </td>
-
-                      {/* EVENING */}
-                      <td>
-                        <span className="evening-value">
-                          {evening.toFixed(1)} L
-                        </span>
-                      </td>
-
-                      {/* TOTAL */}
-                      <td>
-                        <strong className="total-milk-value">
-                          {totalMilk.toFixed(1)} L
-                        </strong>
-                      </td>
-
-                      {/* PRICE */}
-                      <td>
-                        ₹{price.toFixed(2)}
-                      </td>
-
-                      {/* AMOUNT */}
-                      <td>
-                        <strong>
-                          ₹{totalAmount.toFixed(2)}
-                        </strong>
-                      </td>
-
-                      {/* ACTIONS */}
-                      <td>
-                        <div className="action-buttons">
-                          <button
-                            type="button"
-                            className="edit-btn"
-                            onClick={() =>
-                              handleEdit(record)
-                            }
-                            title="Edit"
-                          >
-                            ✏️
-                          </button>
-
-                          <button
-                            type="button"
-                            className="delete-btn"
-                            onClick={() =>
-                              handleDelete(record.id)
-                            }
-                            title="Delete"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="8">
-                    <div className="empty-state">
-                      <div>🥛</div>
-
-                      <h3>
-                        No milk production records
-                      </h3>
-
-                      <p>
-                        Add a production record to see it
-                        here.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* FOOTER */}
-        <div className="milk-table-footer">
-          Showing{" "}
-          <strong>{filteredRecords.length}</strong>{" "}
-          record
-          {filteredRecords.length !== 1 ? "s" : ""}
-        </div>
-      </div>
     </div>
   );
 };

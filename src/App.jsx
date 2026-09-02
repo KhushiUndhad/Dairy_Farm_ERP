@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+// ======================================================
 // ADMIN
+// ======================================================
+
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -9,10 +12,11 @@ import MilkProduction from "./pages/admin/MilkProduction";
 import EmployeeManagement from "./pages/admin/EmployeeManagement";
 import CustomerManagement from "./pages/admin/CustomerManagement";
 import Sales from "./pages/admin/Sales";
-import Inventory from "./pages/admin/Inventory";
-import Reports from "./pages/admin/Reports";
 
+// ======================================================
 // EMPLOYEE
+// ======================================================
+
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeRegister from "./pages/employee/EmployeeRegister";
 import EmployeeLayout from "./pages/employee/EmployeeLayout";
@@ -23,7 +27,10 @@ import EmployeeLeave from "./pages/employee/EmployeeLeave";
 import EmployeeSalary from "./pages/employee/EmployeeSalary";
 import EmployeeProfile from "./pages/employee/EmployeeProfile";
 
+// ======================================================
 // CUSTOMER
+// ======================================================
+
 import CustomerLogin from "./pages/customer/CustomerLogin";
 import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
@@ -34,55 +41,72 @@ import CustomerProfile from "./pages/customer/CustomerProfile";
 
 
 // ======================================================
-// PROTECTION
+// ADMIN PROTECTION
 // ======================================================
 
 function ProtectedAdmin({ children }) {
-
   const loggedIn =
     localStorage.getItem("adminLoggedIn") === "true";
 
-  return loggedIn
-    ? children
-    : <Navigate to="/admin/login" replace />;
+  return loggedIn ? (
+    children
+  ) : (
+    <Navigate
+      to="/admin/login"
+      replace
+    />
+  );
 }
 
 
-function ProtectedEmployee({ children }) {
+// ======================================================
+// EMPLOYEE PROTECTION
+// ======================================================
 
+function ProtectedEmployee({ children }) {
   const loggedIn =
     localStorage.getItem("employeeLoggedIn") === "true";
 
-  return loggedIn
-    ? children
-    : <Navigate to="/employee/login" replace />;
+  return loggedIn ? (
+    children
+  ) : (
+    <Navigate
+      to="/employee/login"
+      replace
+    />
+  );
 }
 
 
-function ProtectedCustomer({ children }) {
+// ======================================================
+// CUSTOMER PROTECTION
+// ======================================================
 
+function ProtectedCustomer({ children }) {
   const loggedIn =
     localStorage.getItem("customerLoggedIn") === "true";
 
-  return loggedIn
-    ? children
-    : <Navigate to="/customer/login" replace />;
+  return loggedIn ? (
+    children
+  ) : (
+    <Navigate
+      to="/customer/login"
+      replace
+    />
+  );
 }
 
 
 // ======================================================
-// ADMIN PAGE
+// ADMIN PAGE WRAPPER
 // ======================================================
 
 function AdminPage({ children }) {
-
   return (
     <ProtectedAdmin>
-
       <AdminLayout>
         {children}
       </AdminLayout>
-
     </ProtectedAdmin>
   );
 }
@@ -93,12 +117,12 @@ function AdminPage({ children }) {
 // ======================================================
 
 function App() {
-
   return (
-
     <Routes>
 
-      {/* HOME */}
+      {/* ==================================================
+          HOME
+      ================================================== */}
 
       <Route
         path="/"
@@ -115,19 +139,42 @@ function App() {
           ADMIN
       ================================================== */}
 
+      {/* ADMIN LOGIN */}
+
       <Route
         path="/admin/login"
         element={<AdminLogin />}
       />
 
+
+      {/* ADMIN DASHBOARD */}
+
       <Route
-        path="/admin"
+        path="/admin/dashboard"
         element={
           <AdminPage>
             <AdminDashboard />
           </AdminPage>
         }
       />
+
+
+      {/* ADMIN DEFAULT */}
+
+      {/* /admin → /admin/dashboard */}
+
+      <Route
+        path="/admin"
+        element={
+          <Navigate
+            to="/admin/dashboard"
+            replace
+          />
+        }
+      />
+
+
+      {/* COW MANAGEMENT */}
 
       <Route
         path="/admin/cows"
@@ -138,6 +185,9 @@ function App() {
         }
       />
 
+
+      {/* MILK PRODUCTION */}
+
       <Route
         path="/admin/milk-production"
         element={
@@ -146,6 +196,9 @@ function App() {
           </AdminPage>
         }
       />
+
+
+      {/* EMPLOYEES */}
 
       <Route
         path="/admin/employees"
@@ -156,6 +209,9 @@ function App() {
         }
       />
 
+
+      {/* CUSTOMERS */}
+
       <Route
         path="/admin/customers"
         element={
@@ -164,6 +220,9 @@ function App() {
           </AdminPage>
         }
       />
+
+
+      {/* SALES */}
 
       <Route
         path="/admin/sales"
@@ -174,39 +233,28 @@ function App() {
         }
       />
 
-      <Route
-        path="/admin/inventory"
-        element={
-          <AdminPage>
-            <Inventory />
-          </AdminPage>
-        }
-      />
-
-      <Route
-        path="/admin/reports"
-        element={
-          <AdminPage>
-            <Reports />
-          </AdminPage>
-        }
-      />
-
 
       {/* ==================================================
           EMPLOYEE
       ================================================== */}
+
+      {/* EMPLOYEE LOGIN */}
 
       <Route
         path="/employee/login"
         element={<EmployeeLogin />}
       />
 
+
+      {/* EMPLOYEE REGISTER */}
+
       <Route
         path="/employee/register"
         element={<EmployeeRegister />}
       />
 
+
+      {/* EMPLOYEE LAYOUT */}
 
       <Route
         path="/employee"
@@ -217,30 +265,47 @@ function App() {
         }
       >
 
+        {/* EMPLOYEE DASHBOARD */}
+
         <Route
           index
           element={<EmployeeDashboard />}
         />
+
+
+        {/* MY WORK */}
 
         <Route
           path="work"
           element={<EmployeeMyWork />}
         />
 
+
+        {/* ATTENDANCE */}
+
         <Route
           path="attendance"
           element={<EmployeeAttendance />}
         />
+
+
+        {/* LEAVE */}
 
         <Route
           path="leave"
           element={<EmployeeLeave />}
         />
 
+
+        {/* SALARY */}
+
         <Route
           path="salary"
           element={<EmployeeSalary />}
         />
+
+
+        {/* PROFILE */}
 
         <Route
           path="profile"
@@ -254,10 +319,15 @@ function App() {
           CUSTOMER
       ================================================== */}
 
+      {/* CUSTOMER LOGIN */}
+
       <Route
         path="/customer/login"
         element={<CustomerLogin />}
       />
+
+
+      {/* CUSTOMER LAYOUT */}
 
       <Route
         path="/customer"
@@ -268,25 +338,39 @@ function App() {
         }
       >
 
+        {/* CUSTOMER DASHBOARD */}
+
         <Route
           index
           element={<CustomerDashboard />}
         />
+
+
+        {/* PRODUCTS */}
 
         <Route
           path="products"
           element={<CustomerProducts />}
         />
 
+
+        {/* ORDERS */}
+
         <Route
           path="orders"
           element={<CustomerOrders />}
         />
 
+
+        {/* PAYMENTS */}
+
         <Route
           path="payments"
           element={<CustomerPayments />}
         />
+
+
+        {/* PROFILE */}
 
         <Route
           path="profile"
@@ -296,7 +380,9 @@ function App() {
       </Route>
 
 
-      {/* 404 */}
+      {/* ==================================================
+          404
+      ================================================== */}
 
       <Route
         path="*"
@@ -309,7 +395,6 @@ function App() {
       />
 
     </Routes>
-
   );
 }
 

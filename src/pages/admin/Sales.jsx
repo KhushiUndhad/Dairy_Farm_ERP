@@ -1,54 +1,28 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./Sales.css";
+
+import {
+  FaPlus,
+  FaTimes,
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaMoneyBillWave,
+  FaGlassWhiskey,
+  FaCheckCircle,
+  FaClock,
+} from "react-icons/fa";
+
+import {
+  getSales,
+  addSale,
+  updateSale,
+  deleteSale,
+} from "../../services/api";
 
 const getToday = () => {
   return new Date().toISOString().split("T")[0];
 };
-
-const initialSales = [
-  {
-    id: 1,
-    invoiceNo: "INV-001",
-    date: "2026-08-20",
-    customer: "Rajesh Kumar",
-    saleType: "Retail",
-    quantity: 25,
-    price: 55,
-    total: 1375,
-    paid: 1375,
-    paymentMethod: "Cash",
-    paymentStatus: "Paid",
-    notes: "",
-  },
-  {
-    id: 2,
-    invoiceNo: "INV-002",
-    date: "2026-08-21",
-    customer: "Suresh Traders",
-    saleType: "Wholesale",
-    quantity: 80,
-    price: 50,
-    total: 4000,
-    paid: 2500,
-    paymentMethod: "UPI",
-    paymentStatus: "Partial",
-    notes: "",
-  },
-  {
-    id: 3,
-    invoiceNo: "INV-003",
-    date: "2026-08-22",
-    customer: "Priya",
-    saleType: "Retail",
-    quantity: 15,
-    price: 55,
-    total: 825,
-    paid: 0,
-    paymentMethod: "Cash",
-    paymentStatus: "Pending",
-    notes: "",
-  },
-];
 
 const emptyForm = {
   invoiceNo: "",
@@ -63,28 +37,84 @@ const emptyForm = {
 };
 
 const Sales = () => {
-  const [sales, setSales] = useState(initialSales);
+  const [sales, setSales] = useState([]);
 
-  const [formData, setFormData] = useState(emptyForm);
+  const [formData, setFormData] =
+    useState(emptyForm);
 
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] =
+    useState(false);
 
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] =
+    useState(null);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] =
+    useState("");
 
-  const [paymentFilter, setPaymentFilter] = useState("");
+  const [paymentFilter, setPaymentFilter] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [saving, setSaving] =
+    useState(false);
+
+  // ==========================================
+  // LOAD SALES FROM MONGODB
+  // ==========================================
+
+  useEffect(() => {
+    loadSales();
+  }, []);
+
+  const loadSales = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getSales();
+
+      const formattedSales = data.map(
+        (sale) => ({
+          ...sale,
+          id: sale._id,
+        })
+      );
+
+      setSales(formattedSales);
+    } catch (error) {
+      console.error(
+        "LOAD SALES ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to load sales."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // ==========================================
   // CALCULATE FORM TOTAL
   // ==========================================
 
-  const quantity = Number(formData.quantity || 0);
-  const price = Number(formData.price || 0);
+  const quantity = Number(
+    formData.quantity || 0
+  );
 
-  const formTotal = quantity * price;
+  const price = Number(
+    formData.price || 0
+  );
 
-  const paidAmount = Number(formData.paid || 0);
+  const formTotal =
+    quantity * price;
+
+  const paidAmount = Number(
+    formData.paid || 0
+  );
 
   const pendingAmount = Math.max(
     formTotal - paidAmount,
@@ -96,53 +126,85 @@ const Sales = () => {
   // ==========================================
 
   const filteredSales = useMemo(() => {
-    const searchText = search.trim().toLowerCase();
+    const searchText =
+      search.trim().toLowerCase();
 
     return sales.filter((sale) => {
       const matchesSearch =
-        sale.invoiceNo.toLowerCase().includes(searchText) ||
-        sale.customer.toLowerCase().includes(searchText) ||
-        sale.saleType.toLowerCase().includes(searchText);
+        String(
+          sale.invoiceNo || ""
+        )
+          .toLowerCase()
+          .includes(searchText) ||
+        String(
+          sale.customer || ""
+        )
+          .toLowerCase()
+          .includes(searchText) ||
+        String(
+          sale.saleType || ""
+        )
+          .toLowerCase()
+          .includes(searchText);
 
       const matchesPayment =
         paymentFilter === "" ||
-        sale.paymentStatus === paymentFilter;
+        sale.paymentStatus ===
+          paymentFilter;
 
-      return matchesSearch && matchesPayment;
+      return (
+        matchesSearch &&
+        matchesPayment
+      );
     });
-  }, [sales, search, paymentFilter]);
+  }, [
+    sales,
+    search,
+    paymentFilter,
+  ]);
 
   // ==========================================
   // SUMMARY
   // ==========================================
 
   const summary = useMemo(() => {
-    const totalSales = sales.reduce(
-      (sum, sale) => sum + Number(sale.total || 0),
-      0
-    );
+    const totalSales =
+      sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.total || 0),
+        0
+      );
 
-    const totalPaid = sales.reduce(
-      (sum, sale) => sum + Number(sale.paid || 0),
-      0
-    );
+    const totalPaid =
+      sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.paid || 0),
+        0
+      );
 
-    const totalPending = sales.reduce(
-      (sum, sale) =>
-        sum +
-        Math.max(
-          Number(sale.total || 0) -
-            Number(sale.paid || 0),
-          0
-        ),
-      0
-    );
+    const totalPending =
+      sales.reduce(
+        (sum, sale) =>
+          sum +
+          Math.max(
+            Number(sale.total || 0) -
+              Number(sale.paid || 0),
+            0
+          ),
+        0
+      );
 
-    const totalLitres = sales.reduce(
-      (sum, sale) =>
-        sum + Number(sale.quantity || 0),
-      0
-    );
+    const totalLitres =
+      sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.quantity || 0
+          ),
+        0
+      );
 
     return {
       totalSales,
@@ -157,7 +219,10 @@ const Sales = () => {
   // ==========================================
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
     setFormData((current) => ({
       ...current,
@@ -177,10 +242,9 @@ const Sales = () => {
 
     setFormData({
       ...emptyForm,
-      invoiceNo: `INV-${String(nextNumber).padStart(
-        3,
-        "0"
-      )}`,
+      invoiceNo: `INV-${String(
+        nextNumber
+      ).padStart(3, "0")}`,
       date: getToday(),
     });
 
@@ -191,7 +255,7 @@ const Sales = () => {
   // SUBMIT
   // ==========================================
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (
@@ -201,38 +265,44 @@ const Sales = () => {
       !formData.quantity ||
       !formData.price
     ) {
-      alert("Please fill all required fields.");
+      alert(
+        "Please fill all required fields."
+      );
       return;
     }
 
-    const saleQuantity = Number(
-      formData.quantity
-    );
+    const saleQuantity =
+      Number(formData.quantity);
 
-    const salePrice = Number(
-      formData.price
-    );
+    const salePrice =
+      Number(formData.price);
 
-    const salePaid = Number(
-      formData.paid || 0
-    );
+    const salePaid =
+      Number(formData.paid || 0);
 
     if (saleQuantity <= 0) {
-      alert("Quantity must be greater than 0.");
+      alert(
+        "Quantity must be greater than 0."
+      );
       return;
     }
 
     if (salePrice <= 0) {
-      alert("Price must be greater than 0.");
+      alert(
+        "Price must be greater than 0."
+      );
       return;
     }
 
     if (salePaid < 0) {
-      alert("Paid amount cannot be negative.");
+      alert(
+        "Paid amount cannot be negative."
+      );
       return;
     }
 
-    const total = saleQuantity * salePrice;
+    const total =
+      saleQuantity * salePrice;
 
     if (salePaid > total) {
       alert(
@@ -250,55 +320,103 @@ const Sales = () => {
     }
 
     const saleData = {
-      invoiceNo: formData.invoiceNo.trim(),
+      invoiceNo:
+        formData.invoiceNo.trim(),
+
       date: formData.date,
-      customer: formData.customer.trim(),
-      saleType: formData.saleType,
-      quantity: saleQuantity,
-      price: salePrice,
+
+      customer:
+        formData.customer.trim(),
+
+      saleType:
+        formData.saleType,
+
+      quantity:
+        saleQuantity,
+
+      price:
+        salePrice,
+
       total,
-      paid: salePaid,
-      paymentMethod: formData.paymentMethod,
+
+      paid:
+        salePaid,
+
+      paymentMethod:
+        formData.paymentMethod,
+
       paymentStatus,
-      notes: formData.notes.trim(),
+
+      notes:
+        formData.notes.trim(),
     };
 
-    // UPDATE
-    if (editingId !== null) {
-      setSales((current) =>
-        current.map((sale) =>
-          sale.id === editingId
-            ? {
-                ...sale,
-                ...saleData,
-              }
-            : sale
-        )
+    try {
+      setSaving(true);
+
+      // ========================================
+      // UPDATE
+      // ========================================
+
+      if (editingId !== null) {
+        const updatedSale =
+          await updateSale(
+            editingId,
+            saleData
+          );
+
+        setSales((current) =>
+          current.map((sale) =>
+            sale.id === editingId
+              ? {
+                  ...updatedSale,
+                  id: updatedSale._id,
+                }
+              : sale
+          )
+        );
+
+        alert(
+          "Sale updated successfully."
+        );
+
+        resetForm();
+        return;
+      }
+
+      // ========================================
+      // ADD
+      // ========================================
+
+      const savedSale =
+        await addSale(saleData);
+
+      setSales((current) => [
+        {
+          ...savedSale,
+          id: savedSale._id,
+        },
+        ...current,
+      ]);
+
+      alert(
+        "Sale saved successfully."
       );
 
       resetForm();
-      return;
+    } catch (error) {
+      console.error(
+        "SAVE SALE ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to save sale."
+      );
+    } finally {
+      setSaving(false);
     }
-
-    // ADD
-    setSales((current) => {
-      const nextId =
-        current.length === 0
-          ? 1
-          : Math.max(
-              ...current.map((sale) => sale.id)
-            ) + 1;
-
-      return [
-        {
-          id: nextId,
-          ...saleData,
-        },
-        ...current,
-      ];
-    });
-
-    resetForm();
   };
 
   // ==========================================
@@ -309,15 +427,33 @@ const Sales = () => {
     setEditingId(sale.id);
 
     setFormData({
-      invoiceNo: sale.invoiceNo,
-      date: sale.date,
-      customer: sale.customer,
-      saleType: sale.saleType,
-      quantity: String(sale.quantity),
-      price: String(sale.price),
-      paid: String(sale.paid),
-      paymentMethod: sale.paymentMethod,
-      notes: sale.notes || "",
+      invoiceNo:
+        sale.invoiceNo || "",
+
+      date:
+        sale.date || getToday(),
+
+      customer:
+        sale.customer || "",
+
+      saleType:
+        sale.saleType || "Retail",
+
+      quantity:
+        String(sale.quantity || ""),
+
+      price:
+        String(sale.price || ""),
+
+      paid:
+        String(sale.paid || ""),
+
+      paymentMethod:
+        sale.paymentMethod ||
+        "Cash",
+
+      notes:
+        sale.notes || "",
     });
 
     setShowForm(true);
@@ -327,21 +463,43 @@ const Sales = () => {
   // DELETE
   // ==========================================
 
-  const handleDelete = (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this sale?"
-    );
+  const handleDelete = async (id) => {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this sale?"
+      );
 
     if (!confirmed) {
       return;
     }
 
-    setSales((current) =>
-      current.filter((sale) => sale.id !== id)
-    );
+    try {
+      await deleteSale(id);
 
-    if (editingId === id) {
-      resetForm();
+      setSales((current) =>
+        current.filter(
+          (sale) =>
+            sale.id !== id
+        )
+      );
+
+      if (editingId === id) {
+        resetForm();
+      }
+
+      alert(
+        "Sale deleted successfully."
+      );
+    } catch (error) {
+      console.error(
+        "DELETE SALE ERROR:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Failed to delete sale."
+      );
     }
   };
 
@@ -370,11 +528,14 @@ const Sales = () => {
 
     return new Date(
       `${date}T00:00:00`
-    ).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
+    ).toLocaleDateString(
+      "en-IN",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }
+    );
   };
 
   // ==========================================
@@ -382,10 +543,35 @@ const Sales = () => {
   // ==========================================
 
   const currency = (amount) => {
-    return `₹${Number(amount || 0).toLocaleString(
-      "en-IN"
-    )}`;
+    return `₹${Number(
+      amount || 0
+    ).toLocaleString("en-IN")}`;
   };
+
+  // ==========================================
+  // LOADING
+  // ==========================================
+
+  if (loading) {
+    return (
+      <div className="sales-page">
+        <div className="sales-empty-state">
+          <div>
+            <FaMoneyBillWave />
+          </div>
+
+          <h3>
+            Loading sales...
+          </h3>
+
+          <p>
+            Please wait while sales
+            are loaded from MongoDB.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sales-page">
@@ -397,11 +583,14 @@ const Sales = () => {
       <div className="sales-page-header">
 
         <div>
-          <h1>Sales Management</h1>
+          <h1>
+            Sales Management
+          </h1>
 
           <p>
-            Manage milk sales, invoices, payments
-            and customer transactions.
+            Manage milk sales, invoices,
+            payments and customer
+            transactions.
           </p>
         </div>
 
@@ -410,7 +599,10 @@ const Sales = () => {
           className="add-sale-btn"
           onClick={openAddForm}
         >
-          <span>+</span>
+          <span>
+            <FaPlus />
+          </span>
+
           New Sale
         </button>
 
@@ -422,67 +614,90 @@ const Sales = () => {
 
       <div className="sales-summary-grid">
 
+        {/* TOTAL SALES */}
+
         <div className="sales-summary-card">
 
           <div className="sales-summary-icon">
-            💰
+            <FaMoneyBillWave />
           </div>
 
           <div>
-            <span>Total Sales</span>
+            <span>
+              Total Sales
+            </span>
 
             <strong>
-              {currency(summary.totalSales)}
+              {currency(
+                summary.totalSales
+              )}
             </strong>
           </div>
 
         </div>
 
+        {/* TOTAL MILK */}
+
         <div className="sales-summary-card">
 
           <div className="sales-summary-icon">
-            🥛
+            <FaGlassWhiskey />
           </div>
 
           <div>
-            <span>Total Milk Sold</span>
+            <span>
+              Total Milk Sold
+            </span>
 
             <strong>
               {summary.totalLitres.toLocaleString(
                 "en-IN"
-              )} L
+              )}{" "}
+              L
             </strong>
           </div>
 
         </div>
 
+        {/* TOTAL RECEIVED */}
+
         <div className="sales-summary-card">
 
           <div className="sales-summary-icon">
-            ✅
+            <FaCheckCircle />
           </div>
 
           <div>
-            <span>Total Received</span>
+            <span>
+              Total Received
+            </span>
 
             <strong>
-              {currency(summary.totalPaid)}
+              {currency(
+                summary.totalPaid
+              )}
             </strong>
           </div>
 
         </div>
 
+        {/* TOTAL PENDING */}
+
         <div className="sales-summary-card">
 
           <div className="sales-summary-icon">
-            ⏳
+            <FaClock />
           </div>
 
           <div>
-            <span>Total Pending</span>
+            <span>
+              Total Pending
+            </span>
 
             <strong className="sales-pending-total">
-              {currency(summary.totalPending)}
+              {currency(
+                summary.totalPending
+              )}
             </strong>
           </div>
 
@@ -500,6 +715,7 @@ const Sales = () => {
           <div className="sales-form-header">
 
             <div>
+
               <h2>
                 {editingId !== null
                   ? "Edit Sale"
@@ -507,9 +723,10 @@ const Sales = () => {
               </h2>
 
               <p>
-                Enter the milk sale and payment
-                details.
+                Enter the milk sale and
+                payment details.
               </p>
+
             </div>
 
             <button
@@ -517,12 +734,14 @@ const Sales = () => {
               className="sales-close-btn"
               onClick={resetForm}
             >
-              ×
+              <FaTimes />
             </button>
 
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form
+            onSubmit={handleSubmit}
+          >
 
             <div className="sales-form-grid">
 
@@ -538,8 +757,12 @@ const Sales = () => {
                   id="invoiceNo"
                   type="text"
                   name="invoiceNo"
-                  value={formData.invoiceNo}
-                  onChange={handleChange}
+                  value={
+                    formData.invoiceNo
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="INV-001"
                 />
 
@@ -557,8 +780,12 @@ const Sales = () => {
                   id="saleDate"
                   type="date"
                   name="date"
-                  value={formData.date}
-                  onChange={handleChange}
+                  value={
+                    formData.date
+                  }
+                  onChange={
+                    handleChange
+                  }
                 />
 
               </div>
@@ -575,8 +802,12 @@ const Sales = () => {
                   id="customer"
                   type="text"
                   name="customer"
-                  value={formData.customer}
-                  onChange={handleChange}
+                  value={
+                    formData.customer
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Customer name"
                 />
 
@@ -593,9 +824,14 @@ const Sales = () => {
                 <select
                   id="saleType"
                   name="saleType"
-                  value={formData.saleType}
-                  onChange={handleChange}
+                  value={
+                    formData.saleType
+                  }
+                  onChange={
+                    handleChange
+                  }
                 >
+
                   <option value="Retail">
                     Retail
                   </option>
@@ -626,8 +862,12 @@ const Sales = () => {
                   name="quantity"
                   min="0"
                   step="0.1"
-                  value={formData.quantity}
-                  onChange={handleChange}
+                  value={
+                    formData.quantity
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Example: 25"
                 />
 
@@ -647,8 +887,12 @@ const Sales = () => {
                   name="price"
                   min="0"
                   step="0.01"
-                  value={formData.price}
-                  onChange={handleChange}
+                  value={
+                    formData.price
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Example: 55"
                 />
 
@@ -668,8 +912,12 @@ const Sales = () => {
                   name="paid"
                   min="0"
                   step="0.01"
-                  value={formData.paid}
-                  onChange={handleChange}
+                  value={
+                    formData.paid
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Example: 1000"
                 />
 
@@ -686,9 +934,14 @@ const Sales = () => {
                 <select
                   id="paymentMethod"
                   name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
+                  value={
+                    formData.paymentMethod
+                  }
+                  onChange={
+                    handleChange
+                  }
                 >
+
                   <option value="Cash">
                     Cash
                   </option>
@@ -713,10 +966,14 @@ const Sales = () => {
 
               <div className="sales-calculation-box">
 
-                <span>Total Amount</span>
+                <span>
+                  Total Amount
+                </span>
 
                 <strong>
-                  {currency(formTotal)}
+                  {currency(
+                    formTotal
+                  )}
                 </strong>
 
               </div>
@@ -725,10 +982,14 @@ const Sales = () => {
 
               <div className="sales-calculation-box pending">
 
-                <span>Pending Amount</span>
+                <span>
+                  Pending Amount
+                </span>
 
                 <strong>
-                  {currency(pendingAmount)}
+                  {currency(
+                    pendingAmount
+                  )}
                 </strong>
 
               </div>
@@ -745,8 +1006,12 @@ const Sales = () => {
                   id="notes"
                   type="text"
                   name="notes"
-                  value={formData.notes}
-                  onChange={handleChange}
+                  value={
+                    formData.notes
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Optional notes"
                 />
 
@@ -769,8 +1034,11 @@ const Sales = () => {
               <button
                 type="submit"
                 className="sales-save-btn"
+                disabled={saving}
               >
-                {editingId !== null
+                {saving
+                  ? "Saving..."
+                  : editingId !== null
                   ? "Update Sale"
                   : "Save Sale"}
               </button>
@@ -794,14 +1062,18 @@ const Sales = () => {
 
           <div className="sales-search-box">
 
-            <span>⌕</span>
+            <span>
+              <FaSearch />
+            </span>
 
             <input
               type="text"
               placeholder="Search invoice or customer..."
               value={search}
               onChange={(event) =>
-                setSearch(event.target.value)
+                setSearch(
+                  event.target.value
+                )
               }
             />
 
@@ -809,9 +1081,13 @@ const Sales = () => {
 
           <select
             className="sales-payment-filter"
-            value={paymentFilter}
+            value={
+              paymentFilter
+            }
             onChange={(event) =>
-              setPaymentFilter(event.target.value)
+              setPaymentFilter(
+                event.target.value
+              )
             }
           >
 
@@ -833,7 +1109,8 @@ const Sales = () => {
 
           </select>
 
-          {(search || paymentFilter) && (
+          {(search ||
+            paymentFilter) && (
             <button
               type="button"
               className="sales-clear-btn"
@@ -857,17 +1134,51 @@ const Sales = () => {
             <thead>
 
               <tr>
-                <th>Invoice</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Rate</th>
-                <th>Total</th>
-                <th>Paid</th>
-                <th>Pending</th>
-                <th>Status</th>
-                <th>Actions</th>
+
+                <th>
+                  Invoice
+                </th>
+
+                <th>
+                  Date
+                </th>
+
+                <th>
+                  Customer
+                </th>
+
+                <th>
+                  Type
+                </th>
+
+                <th>
+                  Quantity
+                </th>
+
+                <th>
+                  Rate
+                </th>
+
+                <th>
+                  Total
+                </th>
+
+                <th>
+                  Paid
+                </th>
+
+                <th>
+                  Pending
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Actions
+                </th>
+
               </tr>
 
             </thead>
@@ -876,164 +1187,202 @@ const Sales = () => {
 
               {filteredSales.length > 0 ? (
 
-                filteredSales.map((sale) => {
+                filteredSales.map(
+                  (sale) => {
 
-                  const pending =
-                    Math.max(
-                      sale.total - sale.paid,
-                      0
-                    );
+                    const pending =
+                      Math.max(
+                        Number(
+                          sale.total || 0
+                        ) -
+                          Number(
+                            sale.paid || 0
+                          ),
+                        0
+                      );
 
-                  return (
-                    <tr key={sale.id}>
+                    return (
+                      <tr
+                        key={sale.id}
+                      >
 
-                      {/* INVOICE */}
+                        {/* INVOICE */}
 
-                      <td>
+                        <td>
 
-                        <strong className="sales-invoice">
-                          {sale.invoiceNo}
-                        </strong>
-
-                      </td>
-
-                      {/* DATE */}
-
-                      <td>
-                        {formatDate(sale.date)}
-                      </td>
-
-                      {/* CUSTOMER */}
-
-                      <td>
-
-                        <div className="sales-customer">
-
-                          <div className="sales-customer-avatar">
-                            {sale.customer
-                              .charAt(0)
-                              .toUpperCase()}
-                          </div>
-
-                          <strong>
-                            {sale.customer}
+                          <strong className="sales-invoice">
+                            {
+                              sale.invoiceNo
+                            }
                           </strong>
 
-                        </div>
+                        </td>
 
-                      </td>
+                        {/* DATE */}
 
-                      {/* TYPE */}
+                        <td>
+                          {formatDate(
+                            sale.date
+                          )}
+                        </td>
 
-                      <td>
+                        {/* CUSTOMER */}
 
-                        <span className="sales-type">
-                          {sale.saleType}
-                        </span>
+                        <td>
 
-                      </td>
+                          <div className="sales-customer">
 
-                      {/* QUANTITY */}
+                            <div className="sales-customer-avatar">
+                              {sale.customer
+                                ?.charAt(
+                                  0
+                                )
+                                .toUpperCase()}
+                            </div>
 
-                      <td>
-                        <strong>
-                          {sale.quantity} L
-                        </strong>
-                      </td>
+                            <strong>
+                              {
+                                sale.customer
+                              }
+                            </strong>
 
-                      {/* RATE */}
+                          </div>
 
-                      <td>
-                        {currency(sale.price)}
-                      </td>
+                        </td>
 
-                      {/* TOTAL */}
+                        {/* TYPE */}
 
-                      <td>
+                        <td>
 
-                        <strong>
-                          {currency(sale.total)}
-                        </strong>
-
-                      </td>
-
-                      {/* PAID */}
-
-                      <td className="sales-paid">
-                        {currency(sale.paid)}
-                      </td>
-
-                      {/* PENDING */}
-
-                      <td>
-
-                        <strong
-                          className={
-                            pending > 0
-                              ? "sales-pending"
-                              : "sales-clear"
-                          }
-                        >
-                          {currency(pending)}
-                        </strong>
-
-                      </td>
-
-                      {/* STATUS */}
-
-                      <td>
-
-                        <span
-                          className={`sales-payment-status ${
-                            sale.paymentStatus ===
-                            "Paid"
-                              ? "paid"
-                              : sale.paymentStatus ===
-                                "Partial"
-                              ? "partial"
-                              : "pending"
-                          }`}
-                        >
-                          {sale.paymentStatus}
-                        </span>
-
-                      </td>
-
-                      {/* ACTIONS */}
-
-                      <td>
-
-                        <div className="sales-action-buttons">
-
-                          <button
-                            type="button"
-                            className="sales-edit-btn"
-                            onClick={() =>
-                              handleEdit(sale)
+                          <span className="sales-type">
+                            {
+                              sale.saleType
                             }
-                            title="Edit"
-                          >
-                            ✏️
-                          </button>
+                          </span>
 
-                          <button
-                            type="button"
-                            className="sales-delete-btn"
-                            onClick={() =>
-                              handleDelete(sale.id)
+                        </td>
+
+                        {/* QUANTITY */}
+
+                        <td>
+
+                          <strong>
+                            {
+                              sale.quantity
+                            }{" "}
+                            L
+                          </strong>
+
+                        </td>
+
+                        {/* RATE */}
+
+                        <td>
+                          {currency(
+                            sale.price
+                          )}
+                        </td>
+
+                        {/* TOTAL */}
+
+                        <td>
+
+                          <strong>
+                            {currency(
+                              sale.total
+                            )}
+                          </strong>
+
+                        </td>
+
+                        {/* PAID */}
+
+                        <td className="sales-paid">
+                          {currency(
+                            sale.paid
+                          )}
+                        </td>
+
+                        {/* PENDING */}
+
+                        <td>
+
+                          <strong
+                            className={
+                              pending > 0
+                                ? "sales-pending"
+                                : "sales-clear"
                             }
-                            title="Delete"
                           >
-                            🗑️
-                          </button>
+                            {currency(
+                              pending
+                            )}
+                          </strong>
 
-                        </div>
+                        </td>
 
-                      </td>
+                        {/* STATUS */}
 
-                    </tr>
-                  );
-                })
+                        <td>
+
+                          <span
+                            className={`sales-payment-status ${
+                              sale.paymentStatus ===
+                              "Paid"
+                                ? "paid"
+                                : sale.paymentStatus ===
+                                  "Partial"
+                                ? "partial"
+                                : "pending"
+                            }`}
+                          >
+                            {
+                              sale.paymentStatus
+                            }
+                          </span>
+
+                        </td>
+
+                        {/* ACTIONS */}
+
+                        <td>
+
+                          <div className="sales-action-buttons">
+
+                            <button
+                              type="button"
+                              className="sales-edit-btn"
+                              onClick={() =>
+                                handleEdit(
+                                  sale
+                                )
+                              }
+                              title="Edit"
+                            >
+                              <FaEdit />
+                            </button>
+
+                            <button
+                              type="button"
+                              className="sales-delete-btn"
+                              onClick={() =>
+                                handleDelete(
+                                  sale.id
+                                )
+                              }
+                              title="Delete"
+                            >
+                              <FaTrash />
+                            </button>
+
+                          </div>
+
+                        </td>
+
+                      </tr>
+                    );
+                  }
+                )
 
               ) : (
 
@@ -1043,15 +1392,18 @@ const Sales = () => {
 
                     <div className="sales-empty-state">
 
-                      <div>💰</div>
+                      <div>
+                        <FaMoneyBillWave />
+                      </div>
 
                       <h3>
                         No sales found
                       </h3>
 
                       <p>
-                        Add a new sale or change
-                        your search filter.
+                        Add a new sale or
+                        change your search
+                        filter.
                       </p>
 
                     </div>
@@ -1073,11 +1425,16 @@ const Sales = () => {
         <div className="sales-table-footer">
 
           Showing{" "}
+
           <strong>
-            {filteredSales.length}
+            {
+              filteredSales.length
+            }
           </strong>{" "}
+
           sale
-          {filteredSales.length !== 1
+          {filteredSales.length !==
+          1
             ? "s"
             : ""}
 
