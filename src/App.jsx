@@ -1,3 +1,4 @@
+
 import { Navigate, Route, Routes } from "react-router-dom";
 
 // ======================================================
@@ -32,13 +33,13 @@ import EmployeeProfile from "./pages/employee/EmployeeProfile";
 // ======================================================
 
 import CustomerLogin from "./pages/customer/CustomerLogin";
+import CustomerRegister from "./pages/customer/CustomerRegister";
 import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import CustomerProducts from "./pages/customer/CustomerProducts";
 import CustomerOrders from "./pages/customer/CustomerOrders";
 import CustomerPayments from "./pages/customer/CustomerPayments";
 import CustomerProfile from "./pages/customer/CustomerProfile";
-
 
 // ======================================================
 // ADMIN PROTECTION
@@ -58,7 +59,6 @@ function ProtectedAdmin({ children }) {
   );
 }
 
-
 // ======================================================
 // EMPLOYEE PROTECTION
 // ======================================================
@@ -76,7 +76,6 @@ function ProtectedEmployee({ children }) {
     />
   );
 }
-
 
 // ======================================================
 // CUSTOMER PROTECTION
@@ -96,7 +95,6 @@ function ProtectedCustomer({ children }) {
   );
 }
 
-
 // ======================================================
 // ADMIN PAGE WRAPPER
 // ======================================================
@@ -110,7 +108,6 @@ function AdminPage({ children }) {
     </ProtectedAdmin>
   );
 }
-
 
 // ======================================================
 // APP
@@ -134,7 +131,6 @@ function App() {
         }
       />
 
-
       {/* ==================================================
           ADMIN
       ================================================== */}
@@ -145,7 +141,6 @@ function App() {
         path="/admin/login"
         element={<AdminLogin />}
       />
-
 
       {/* ADMIN DASHBOARD */}
 
@@ -158,10 +153,7 @@ function App() {
         }
       />
 
-
       {/* ADMIN DEFAULT */}
-
-      {/* /admin → /admin/dashboard */}
 
       <Route
         path="/admin"
@@ -172,7 +164,6 @@ function App() {
           />
         }
       />
-
 
       {/* COW MANAGEMENT */}
 
@@ -185,7 +176,6 @@ function App() {
         }
       />
 
-
       {/* MILK PRODUCTION */}
 
       <Route
@@ -196,7 +186,6 @@ function App() {
           </AdminPage>
         }
       />
-
 
       {/* EMPLOYEES */}
 
@@ -209,7 +198,6 @@ function App() {
         }
       />
 
-
       {/* CUSTOMERS */}
 
       <Route
@@ -220,7 +208,6 @@ function App() {
           </AdminPage>
         }
       />
-
 
       {/* SALES */}
 
@@ -233,7 +220,6 @@ function App() {
         }
       />
 
-
       {/* ==================================================
           EMPLOYEE
       ================================================== */}
@@ -245,7 +231,6 @@ function App() {
         element={<EmployeeLogin />}
       />
 
-
       {/* EMPLOYEE REGISTER */}
 
       <Route
@@ -253,8 +238,7 @@ function App() {
         element={<EmployeeRegister />}
       />
 
-
-      {/* EMPLOYEE LAYOUT */}
+      {/* EMPLOYEE PROTECTED LAYOUT */}
 
       <Route
         path="/employee"
@@ -265,13 +249,12 @@ function App() {
         }
       >
 
-        {/* EMPLOYEE DASHBOARD */}
+        {/* DASHBOARD */}
 
         <Route
           index
           element={<EmployeeDashboard />}
         />
-
 
         {/* MY WORK */}
 
@@ -280,14 +263,12 @@ function App() {
           element={<EmployeeMyWork />}
         />
 
-
         {/* ATTENDANCE */}
 
         <Route
           path="attendance"
           element={<EmployeeAttendance />}
         />
-
 
         {/* LEAVE */}
 
@@ -296,14 +277,12 @@ function App() {
           element={<EmployeeLeave />}
         />
 
-
         {/* SALARY */}
 
         <Route
           path="salary"
           element={<EmployeeSalary />}
         />
-
 
         {/* PROFILE */}
 
@@ -313,7 +292,6 @@ function App() {
         />
 
       </Route>
-
 
       {/* ==================================================
           CUSTOMER
@@ -326,8 +304,14 @@ function App() {
         element={<CustomerLogin />}
       />
 
+      {/* CUSTOMER REGISTER */}
 
-      {/* CUSTOMER LAYOUT */}
+      <Route
+        path="/customer/register"
+        element={<CustomerRegister />}
+      />
+
+      {/* CUSTOMER PROTECTED LAYOUT */}
 
       <Route
         path="/customer"
@@ -345,14 +329,12 @@ function App() {
           element={<CustomerDashboard />}
         />
 
-
         {/* PRODUCTS */}
 
         <Route
           path="products"
           element={<CustomerProducts />}
         />
-
 
         {/* ORDERS */}
 
@@ -361,14 +343,12 @@ function App() {
           element={<CustomerOrders />}
         />
 
-
         {/* PAYMENTS */}
 
         <Route
           path="payments"
           element={<CustomerPayments />}
         />
-
 
         {/* PROFILE */}
 
@@ -378,7 +358,6 @@ function App() {
         />
 
       </Route>
-
 
       {/* ==================================================
           404

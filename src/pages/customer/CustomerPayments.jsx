@@ -1,65 +1,75 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  FaMoneyBillWave,
+  FaCheckCircle,
+  FaClock,
+  FaTimesCircle,
+  FaCreditCard,
+  FaEye,
+  FaExclamationTriangle,
+} from "react-icons/fa";
+
+import {
+  getCustomerPayments,
+} from "../../api/customerApi";
+
 import "./CustomerPayments.css";
 
 const CustomerPayments = () => {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [payments, setPayments] =
+    useState([]);
 
-  const payments = [
-    {
-      id: "PAY-1001",
-      orderId: "ORD-1001",
-      date: "28 Aug 2026",
-      amount: 120,
-      method: "UPI",
-      status: "Successful",
-      transactionId: "TXN839201",
-    },
-    {
-      id: "PAY-1002",
-      orderId: "ORD-1002",
-      date: "27 Aug 2026",
-      amount: 75,
-      method: "Credit Card",
-      status: "Successful",
-      transactionId: "TXN839202",
-    },
-    {
-      id: "PAY-1003",
-      orderId: "ORD-1003",
-      date: "26 Aug 2026",
-      amount: 80,
-      method: "Cash on Delivery",
-      status: "Pending",
-      transactionId: "-",
-    },
-    {
-      id: "PAY-1004",
-      orderId: "ORD-1004",
-      date: "24 Aug 2026",
-      amount: 90,
-      method: "UPI",
-      status: "Successful",
-      transactionId: "TXN839204",
-    },
-    {
-      id: "PAY-1005",
-      orderId: "ORD-1005",
-      date: "22 Aug 2026",
-      amount: 280,
-      method: "Debit Card",
-      status: "Successful",
-      transactionId: "TXN839205",
-    },
-    {
-      id: "PAY-1006",
-      orderId: "ORD-1006",
-      date: "20 Aug 2026",
-      amount: 120,
-      method: "UPI",
-      status: "Failed",
-      transactionId: "-",
-    },
-  ];
+  const [activeFilter, setActiveFilter] =
+    useState("All");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  useEffect(() => {
+    const loadPayments = async () => {
+      try {
+        const data =
+          await getCustomerPayments();
+
+        setPayments(
+          data.payments ||
+          data ||
+          []
+        );
+      } catch (err) {
+        console.error(
+          "Payments Error:",
+          err
+        );
+
+        setError(
+          err.message ||
+            "Unable to load payments."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPayments();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="customer-payments-page">
+        <h2>
+          Loading payments...
+        </h2>
+      </div>
+    );
+  }
 
   const filters = [
     "All",
@@ -72,134 +82,202 @@ const CustomerPayments = () => {
     activeFilter === "All"
       ? payments
       : payments.filter(
-          (payment) => payment.status === activeFilter
+          (payment) =>
+            payment.status ===
+            activeFilter
         );
 
-  const totalPaid = payments
-    .filter((payment) => payment.status === "Successful")
-    .reduce((total, payment) => total + payment.amount, 0);
+  const totalPaid =
+    payments
+      .filter(
+        (payment) =>
+          payment.status ===
+          "Successful"
+      )
+      .reduce(
+        (total, payment) =>
+          total +
+          Number(
+            payment.amount || 0
+          ),
+        0
+      );
 
-  const pendingAmount = payments
-    .filter((payment) => payment.status === "Pending")
-    .reduce((total, payment) => total + payment.amount, 0);
+  const pendingAmount =
+    payments
+      .filter(
+        (payment) =>
+          payment.status ===
+          "Pending"
+      )
+      .reduce(
+        (total, payment) =>
+          total +
+          Number(
+            payment.amount || 0
+          ),
+        0
+      );
 
-  const handleViewDetails = (payment) => {
+  const successful =
+    payments.filter(
+      (payment) =>
+        payment.status ===
+        "Successful"
+    ).length;
+
+  const failed =
+    payments.filter(
+      (payment) =>
+        payment.status ===
+        "Failed"
+    ).length;
+
+  const viewDetails = (
+    payment
+  ) => {
     alert(
-      `Payment Details\n\nPayment ID: ${payment.id}\nOrder ID: ${payment.orderId}\nAmount: ₹${payment.amount}\nMethod: ${payment.method}\nStatus: ${payment.status}\nTransaction ID: ${payment.transactionId}`
-    );
-  };
-
-  const handlePayNow = (payment) => {
-    alert(
-      `Proceeding with payment of ₹${payment.amount} for ${payment.orderId}.`
-    );
-  };
-
-  const handleDownloadReceipt = (payment) => {
-    alert(
-      `Receipt for ${payment.id} is ready to download.`
+      `Payment Details\n\n` +
+      `Payment ID: ${
+        payment.paymentId ||
+        payment._id ||
+        "-"
+      }\n` +
+      `Order ID: ${
+        payment.orderId ||
+        "-"
+      }\n` +
+      `Amount: ₹${
+        payment.amount ||
+        0
+      }\n` +
+      `Method: ${
+        payment.method ||
+        payment.paymentMethod ||
+        "-"
+      }\n` +
+      `Status: ${
+        payment.status ||
+        "-"
+      }`
     );
   };
 
   return (
     <div className="customer-payments-page">
 
-      {/* =========================================
-          PAGE HEADER
-      ========================================= */}
+      {/* HEADER */}
 
       <div className="customer-payments-header">
 
         <div>
-          <h1>Payments</h1>
+          <h1>
+            Payments
+          </h1>
 
           <p>
-            View and manage your payment transactions.
+            View your payment transactions.
           </p>
         </div>
 
         <div className="customer-payment-wallet">
-          <span>💳</span>
+
+          <FaCreditCard />
 
           <div>
-            <small>Payment History</small>
-            <strong>{payments.length} Transactions</strong>
+            <small>
+              Payment History
+            </small>
+
+            <strong>
+              {payments.length} Transactions
+            </strong>
           </div>
+
         </div>
 
       </div>
 
+      {/* ERROR */}
 
-      {/* =========================================
-          SUMMARY
-      ========================================= */}
+      {error && (
+        <div className="customer-login-error">
+          <FaExclamationTriangle />
+          {error}
+        </div>
+      )}
+
+      {/* SUMMARY */}
 
       <div className="customer-payment-summary">
 
         <div className="customer-payment-summary-card">
 
           <div className="payment-summary-icon green">
-            💰
+            <FaMoneyBillWave />
           </div>
 
           <div>
-            <span>Total Paid</span>
-            <strong>₹{totalPaid}</strong>
-          </div>
+            <span>
+              Total Paid
+            </span>
 
-        </div>
-
-
-        <div className="customer-payment-summary-card">
-
-          <div className="payment-summary-icon blue">
-            ✅
-          </div>
-
-          <div>
-            <span>Successful</span>
             <strong>
-              {
-                payments.filter(
-                  (payment) =>
-                    payment.status === "Successful"
-                ).length
-              }
+              ₹{totalPaid}
             </strong>
           </div>
 
         </div>
 
-
         <div className="customer-payment-summary-card">
 
-          <div className="payment-summary-icon orange">
-            ⏳
+          <div className="payment-summary-icon blue">
+            <FaCheckCircle />
           </div>
 
           <div>
-            <span>Pending Amount</span>
-            <strong>₹{pendingAmount}</strong>
+            <span>
+              Successful
+            </span>
+
+            <strong>
+              {successful}
+            </strong>
           </div>
 
         </div>
 
+        <div className="customer-payment-summary-card">
+
+          <div className="payment-summary-icon orange">
+            <FaClock />
+          </div>
+
+          <div>
+            <span>
+              Pending Amount
+            </span>
+
+            <strong>
+              ₹{pendingAmount}
+            </strong>
+          </div>
+
+        </div>
 
         <div className="customer-payment-summary-card">
 
           <div className="payment-summary-icon red">
-            ❌
+            <FaTimesCircle />
           </div>
 
           <div>
-            <span>Failed</span>
+            <span>
+              Failed
+            </span>
+
             <strong>
-              {
-                payments.filter(
-                  (payment) =>
-                    payment.status === "Failed"
-                ).length
-              }
+              {failed}
             </strong>
           </div>
 
@@ -207,17 +285,16 @@ const CustomerPayments = () => {
 
       </div>
 
-
-      {/* =========================================
-          PAYMENT HISTORY
-      ========================================= */}
+      {/* HISTORY */}
 
       <div className="customer-payment-container">
 
         <div className="customer-payment-container-header">
 
           <div>
-            <h2>Payment History</h2>
+            <h2>
+              Payment History
+            </h2>
 
             <p>
               Your recent payment transactions.
@@ -230,249 +307,211 @@ const CustomerPayments = () => {
 
         </div>
 
-
-        {/* =========================================
-            FILTERS
-        ========================================= */}
+        {/* FILTERS */}
 
         <div className="customer-payment-filters">
 
-          {filters.map((filter) => (
-
-            <button
-              key={filter}
-              type="button"
-              className={
-                activeFilter === filter
-                  ? "payment-filter active"
-                  : "payment-filter"
-              }
-              onClick={() =>
-                setActiveFilter(filter)
-              }
-            >
-              {filter}
-            </button>
-
-          ))}
+          {filters.map(
+            (filter) => (
+              <button
+                key={filter}
+                type="button"
+                className={
+                  activeFilter ===
+                  filter
+                    ? "payment-filter active"
+                    : "payment-filter"
+                }
+                onClick={() =>
+                  setActiveFilter(
+                    filter
+                  )
+                }
+              >
+                {filter}
+              </button>
+            )
+          )}
 
         </div>
 
-
-        {/* =========================================
-            PAYMENT TABLE
-        ========================================= */}
+        {/* TABLE */}
 
         <div className="customer-payment-table-wrapper">
 
           <table className="customer-payment-table">
 
             <thead>
-
               <tr>
-                <th>Payment</th>
-                <th>Order</th>
-                <th>Date</th>
-                <th>Method</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Action</th>
+
+                <th>
+                  Payment
+                </th>
+
+                <th>
+                  Order
+                </th>
+
+                <th>
+                  Date
+                </th>
+
+                <th>
+                  Method
+                </th>
+
+                <th>
+                  Amount
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Action
+                </th>
+
               </tr>
-
             </thead>
-
 
             <tbody>
 
-              {filteredPayments.map((payment) => (
+              {filteredPayments.length ===
+              0 ? (
 
-                <tr key={payment.id}>
-
-                  {/* PAYMENT */}
-
-                  <td>
-
-                    <div className="payment-id">
-
-                      <div className="payment-method-icon">
-                        💳
-                      </div>
-
-                      <div>
-                        <strong>
-                          {payment.id}
-                        </strong>
-
-                        <span>
-                          {payment.transactionId}
-                        </span>
-                      </div>
-
-                    </div>
-
+                <tr>
+                  <td
+                    colSpan="7"
+                    style={{
+                      textAlign:
+                        "center",
+                      padding:
+                        "30px",
+                    }}
+                  >
+                    No payments found.
                   </td>
-
-
-                  {/* ORDER */}
-
-                  <td>
-                    <span className="payment-order-id">
-                      {payment.orderId}
-                    </span>
-                  </td>
-
-
-                  {/* DATE */}
-
-                  <td>
-                    <span className="payment-date">
-                      {payment.date}
-                    </span>
-                  </td>
-
-
-                  {/* METHOD */}
-
-                  <td>
-                    <span className="payment-method">
-                      {payment.method}
-                    </span>
-                  </td>
-
-
-                  {/* AMOUNT */}
-
-                  <td>
-                    <strong className="payment-amount">
-                      ₹{payment.amount}
-                    </strong>
-                  </td>
-
-
-                  {/* STATUS */}
-
-                  <td>
-
-                    <span
-                      className={`payment-status ${payment.status
-                        .toLowerCase()
-                        .replaceAll(" ", "-")}`}
-                    >
-                      {payment.status}
-                    </span>
-
-                  </td>
-
-
-                  {/* ACTION */}
-
-                  <td>
-
-                    <div className="payment-actions">
-
-                      <button
-                        type="button"
-                        className="payment-view-button"
-                        onClick={() =>
-                          handleViewDetails(payment)
-                        }
-                      >
-                        View
-                      </button>
-
-
-                      {payment.status === "Pending" && (
-
-                        <button
-                          type="button"
-                          className="payment-pay-button"
-                          onClick={() =>
-                            handlePayNow(payment)
-                          }
-                        >
-                          Pay Now
-                        </button>
-
-                      )}
-
-
-                      {payment.status === "Successful" && (
-
-                        <button
-                          type="button"
-                          className="payment-receipt-button"
-                          onClick={() =>
-                            handleDownloadReceipt(payment)
-                          }
-                        >
-                          Receipt
-                        </button>
-
-                      )}
-
-                    </div>
-
-                  </td>
-
                 </tr>
 
-              ))}
+              ) : (
+
+                filteredPayments.map(
+                  (
+                    payment,
+                    index
+                  ) => {
+
+                    const paymentId =
+                      payment.paymentId ||
+                      payment._id ||
+                      `PAY-${index + 1}`;
+
+                    const status =
+                      payment.status ||
+                      "-";
+
+                    return (
+                      <tr
+                        key={
+                          paymentId
+                        }
+                      >
+
+                        <td>
+
+                          <div className="payment-id">
+
+                            <div className="payment-method-icon">
+                              <FaCreditCard />
+                            </div>
+
+                            <div>
+                              <strong>
+                                {paymentId}
+                              </strong>
+
+                              <span>
+                                {payment.transactionId ||
+                                  "-"}
+                              </span>
+                            </div>
+
+                          </div>
+
+                        </td>
+
+                        <td>
+                          <span className="payment-order-id">
+                            {payment.orderId ||
+                              "-"}
+                          </span>
+                        </td>
+
+                        <td>
+                          <span className="payment-date">
+                            {payment.date ||
+                              payment.paymentDate ||
+                              "-"}
+                          </span>
+                        </td>
+
+                        <td>
+                          <span className="payment-method">
+                            {payment.method ||
+                              payment.paymentMethod ||
+                              "-"}
+                          </span>
+                        </td>
+
+                        <td>
+                          <strong className="payment-amount">
+                            ₹
+                            {payment.amount ||
+                              0}
+                          </strong>
+                        </td>
+
+                        <td>
+                          <span
+                            className={`payment-status ${status
+                              .toLowerCase()
+                              .replaceAll(
+                                " ",
+                                "-"
+                              )}`}
+                          >
+                            {status}
+                          </span>
+                        </td>
+
+                        <td>
+
+                          <button
+                            type="button"
+                            className="payment-view-button"
+                            onClick={() =>
+                              viewDetails(
+                                payment
+                              )
+                            }
+                          >
+                            <FaEye />
+                            View
+                          </button>
+
+                        </td>
+
+                      </tr>
+                    );
+                  }
+                )
+
+              )}
 
             </tbody>
 
           </table>
-
-        </div>
-
-
-        {/* =========================================
-            EMPTY STATE
-        ========================================= */}
-
-        {filteredPayments.length === 0 && (
-
-          <div className="customer-no-payments">
-
-            <div>
-              💳
-            </div>
-
-            <h3>
-              No Payments Found
-            </h3>
-
-            <p>
-              There are no payment transactions in this category.
-            </p>
-
-          </div>
-
-        )}
-
-      </div>
-
-
-      {/* =========================================
-          PAYMENT SECURITY
-      ========================================= */}
-
-      <div className="customer-payment-security">
-
-        <div className="payment-security-icon">
-          🔒
-        </div>
-
-        <div>
-
-          <h3>
-            Secure Payments
-          </h3>
-
-          <p>
-            Your payment information is protected and
-            securely processed. We never store your complete
-            card details.
-          </p>
 
         </div>
 

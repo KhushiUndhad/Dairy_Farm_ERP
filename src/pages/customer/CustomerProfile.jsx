@@ -1,56 +1,357 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
+  FaUser,
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaLock,
-  FaUser,
-  FaSave,
   FaEdit,
+  FaSave,
+  FaTimes,
 } from "react-icons/fa";
+
+import {
+  getCustomerProfile,
+  updateCustomerProfile,
+} from "../../api/customerApi";
 
 import "./CustomerProfile.css";
 
-function CustomerProfile() {
-  const [formData, setFormData] = useState({
-    name: "John Customer",
-    email: "johncustomer@gmail.com",
-    phone: "+91 98765 43210",
-    address: "Ahmedabad, Gujarat",
-    city: "Ahmedabad",
-    state: "Gujarat",
-    pincode: "380001",
+const CustomerProfile = () => {
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
   });
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const [editing, setEditing] = useState(false);
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // ======================================================
+  // LOAD CUSTOMER PROFILE
+  // ======================================================
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const storedCustomer = JSON.parse(
+          localStorage.getItem("customerUser") || "{}"
+        );
+
+        const response = await getCustomerProfile();
+
+        const customer =
+          response?.customer ||
+          response?.profile ||
+          response?.data ||
+          storedCustomer;
+
+        const customerProfile = {
+          name:
+            customer?.name ||
+            storedCustomer?.name ||
+            "",
+
+          email:
+            customer?.email ||
+            storedCustomer?.email ||
+            "",
+
+          phone:
+            customer?.phone ||
+            storedCustomer?.phone ||
+            "",
+
+          address:
+            customer?.address || "",
+
+          city:
+            customer?.city || "",
+
+          state:
+            customer?.state || "",
+
+          pincode:
+            customer?.pincode || "",
+        };
+
+        setProfile(customerProfile);
+        setFormData(customerProfile);
+
+        // Keep latest customer information
+        // in localStorage for the Topbar.
+        localStorage.setItem(
+          "customerUser",
+          JSON.stringify(customerProfile)
+        );
+      } catch (err) {
+        console.error(
+          "Customer Profile Error:",
+          err
+        );
+
+        // If API is not available,
+        // still show login customer data.
+        try {
+          const storedCustomer = JSON.parse(
+            localStorage.getItem(
+              "customerUser"
+            ) || "{}"
+          );
+
+          if (storedCustomer.name) {
+            const fallbackProfile = {
+              name:
+                storedCustomer.name || "",
+
+              email:
+                storedCustomer.email || "",
+
+              phone:
+                storedCustomer.phone || "",
+
+              address:
+                storedCustomer.address || "",
+
+              city:
+                storedCustomer.city || "",
+
+              state:
+                storedCustomer.state || "",
+
+              pincode:
+                storedCustomer.pincode || "",
+            };
+
+            setProfile(fallbackProfile);
+            setFormData(fallbackProfile);
+          } else {
+            setError(
+              err.message ||
+                "Unable to load customer profile."
+            );
+          }
+        } catch {
+          setError(
+            "Unable to load customer profile."
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  // ======================================================
+  // INPUT CHANGE
+  // ======================================================
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert("Profile updated successfully!");
+  // ======================================================
+  // EDIT PROFILE
+  // ======================================================
+
+  const handleEdit = () => {
+    setSuccess("");
+    setError("");
+
+    setFormData(profile);
+
+    setEditing(true);
   };
+
+  // ======================================================
+  // CANCEL EDIT
+  // ======================================================
+
+  const handleCancel = () => {
+    setFormData(profile);
+
+    setError("");
+    setSuccess("");
+
+    setEditing(false);
+  };
+
+  // ======================================================
+  // SAVE PROFILE
+  // ======================================================
+
+  const handleSave = async (event) => {
+    event.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    if (!formData.name.trim()) {
+      setError("Name is required.");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      setError("Phone number is required.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      const response =
+        await updateCustomerProfile({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          address: formData.address.trim(),
+          city: formData.city.trim(),
+          state: formData.state.trim(),
+          pincode: formData.pincode.trim(),
+        });
+
+      const updatedCustomer =
+        response?.customer ||
+        response?.profile ||
+        response?.data ||
+        formData;
+
+      const finalProfile = {
+        name:
+          updatedCustomer.name ||
+          formData.name,
+
+        email:
+          updatedCustomer.email ||
+          formData.email,
+
+        phone:
+          updatedCustomer.phone ||
+          formData.phone,
+
+        address:
+          updatedCustomer.address ||
+          formData.address,
+
+        city:
+          updatedCustomer.city ||
+          formData.city,
+
+        state:
+          updatedCustomer.state ||
+          formData.state,
+
+        pincode:
+          updatedCustomer.pincode ||
+          formData.pincode,
+      };
+
+      setProfile(finalProfile);
+      setFormData(finalProfile);
+
+      // Update Topbar customer name.
+      localStorage.setItem(
+        "customerUser",
+        JSON.stringify(finalProfile)
+      );
+
+      setEditing(false);
+
+      setSuccess(
+        "Profile updated successfully."
+      );
+
+      // Refresh other components
+      window.dispatchEvent(
+        new Event("customerProfileUpdated")
+      );
+    } catch (err) {
+      console.error(
+        "Update Customer Profile Error:",
+        err
+      );
+
+      setError(
+        err.message ||
+          "Unable to update profile."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ======================================================
+  // LOADING
+  // ======================================================
+
+  if (loading) {
+    return (
+      <div className="customer-profile-page">
+        <div className="customer-profile-loading">
+          Loading profile...
+        </div>
+      </div>
+    );
+  }
+
+  // ======================================================
+  // PROFILE PAGE
+  // ======================================================
 
   return (
     <div className="customer-profile-page">
 
       {/* PAGE HEADER */}
-      <div className="profile-page-heading">
+
+      <div className="customer-profile-page-header">
         <div>
           <h1>My Profile</h1>
-          <p>Manage your personal information and account settings.</p>
+
+          <p>
+            Manage your customer information and
+            account details.
+          </p>
         </div>
 
-        {!isEditing && (
+        {!editing && (
           <button
-            className="profile-edit-button"
-            onClick={() => setIsEditing(true)}
+            type="button"
+            className="customer-profile-edit-button"
+            onClick={handleEdit}
           >
             <FaEdit />
             Edit Profile
@@ -58,331 +359,417 @@ function CustomerProfile() {
         )}
       </div>
 
+      {/* ERROR */}
 
-      {/* MAIN PROFILE AREA */}
-      <div className="profile-main-grid">
+      {error && (
+        <div className="customer-profile-message error">
+          {error}
+        </div>
+      )}
 
-        {/* =====================================
-            LEFT PROFILE CARD
-        ===================================== */}
-        <div className="profile-user-card">
+      {/* SUCCESS */}
 
-          <div className="profile-user-top">
+      {success && (
+        <div className="customer-profile-message success">
+          {success}
+        </div>
+      )}
 
-            <div className="profile-user-avatar">
-              <FaUser />
-            </div>
+      {/* PROFILE CARD */}
 
-            <h2>John Customer</h2>
+      <div className="customer-profile-main-card">
 
-            <span className="profile-role">
-              Customer
-            </span>
+        {/* PROFILE HEADER */}
 
+        <div className="customer-profile-card-header">
+
+          <div className="customer-profile-avatar">
+            <FaUser />
           </div>
 
+          <div className="customer-profile-user-info">
+            <h2>
+              {profile.name || "Customer"}
+            </h2>
 
-          {/* USER INFORMATION */}
-          <div className="profile-contact-list">
+            <p>
+              Customer Account
+            </p>
+          </div>
+
+        </div>
+
+        {/* VIEW MODE */}
+
+        {!editing && (
+          <div className="customer-profile-details">
+
+            {/* NAME */}
+
+            <div className="customer-profile-detail">
+
+              <div className="customer-profile-detail-icon">
+                <FaUser />
+              </div>
+
+              <div>
+                <span>Full Name</span>
+
+                <strong>
+                  {profile.name || "Not provided"}
+                </strong>
+              </div>
+
+            </div>
 
             {/* EMAIL */}
-            <div className="profile-contact-item">
 
-              <div className="profile-contact-icon">
+            <div className="customer-profile-detail">
+
+              <div className="customer-profile-detail-icon">
                 <FaEnvelope />
               </div>
 
-              <div className="profile-contact-content">
-                <span className="profile-contact-label">
-                  Email
-                </span>
+              <div>
+                <span>Email Address</span>
 
-                <strong className="profile-contact-value">
-                  johncustomer@gmail.com
+                <strong>
+                  {profile.email || "Not provided"}
                 </strong>
               </div>
 
             </div>
 
-
             {/* PHONE */}
-            <div className="profile-contact-item">
 
-              <div className="profile-contact-icon">
+            <div className="customer-profile-detail">
+
+              <div className="customer-profile-detail-icon">
                 <FaPhone />
               </div>
 
-              <div className="profile-contact-content">
-                <span className="profile-contact-label">
-                  Phone
-                </span>
+              <div>
+                <span>Phone Number</span>
 
-                <strong className="profile-contact-value">
-                  +91 98765 43210
+                <strong>
+                  {profile.phone || "Not provided"}
                 </strong>
               </div>
 
             </div>
 
+            {/* ADDRESS */}
 
-            {/* LOCATION */}
-            <div className="profile-contact-item">
+            <div className="customer-profile-detail">
 
-              <div className="profile-contact-icon">
+              <div className="customer-profile-detail-icon">
                 <FaMapMarkerAlt />
               </div>
 
-              <div className="profile-contact-content">
-                <span className="profile-contact-label">
-                  Location
-                </span>
+              <div>
+                <span>Address</span>
 
-                <strong className="profile-contact-value">
-                  Ahmedabad, Gujarat
+                <strong>
+                  {profile.address || "Not provided"}
                 </strong>
               </div>
 
             </div>
 
+            {/* CITY */}
 
-            {/* CUSTOMER SINCE */}
-            <div className="profile-contact-item">
+            <div className="customer-profile-detail">
 
-              <div className="profile-contact-icon">
-                <FaCalendarAlt />
+              <div className="customer-profile-detail-icon">
+                <FaMapMarkerAlt />
               </div>
 
-              <div className="profile-contact-content">
-                <span className="profile-contact-label">
-                  Customer Since
-                </span>
+              <div>
+                <span>City</span>
 
-                <strong className="profile-contact-value">
-                  January 2026
+                <strong>
+                  {profile.city || "Not provided"}
                 </strong>
               </div>
 
             </div>
 
-          </div>
+            {/* STATE */}
 
-        </div>
+            <div className="customer-profile-detail">
 
-
-        {/* =====================================
-            RIGHT PERSONAL INFORMATION
-        ===================================== */}
-        <div className="profile-information-card">
-
-          <div className="profile-section-header">
-
-            <div>
-              <h2>Personal Information</h2>
-
-              <p>
-                Update your personal information below.
-              </p>
-            </div>
-
-          </div>
-
-
-          <div className="profile-divider"></div>
-
-
-          {/* FORM */}
-          <div className="profile-form">
-
-            {/* FULL NAME + EMAIL */}
-            <div className="profile-form-row">
-
-              <div className="profile-form-group">
-
-                <label>Full Name</label>
-
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-
+              <div className="customer-profile-detail-icon">
+                <FaMapMarkerAlt />
               </div>
 
+              <div>
+                <span>State</span>
 
-              <div className="profile-form-group">
-
-                <label>Email Address</label>
-
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-
+                <strong>
+                  {profile.state || "Not provided"}
+                </strong>
               </div>
 
             </div>
-
-
-            {/* PHONE */}
-            <div className="profile-form-row">
-
-              <div className="profile-form-group">
-
-                <label>Phone Number</label>
-
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-
-              </div>
-
-              <div></div>
-
-            </div>
-
-
-            {/* ADDRESS */}
-            <div className="profile-form-group full-width">
-
-              <label>Address</label>
-
-              <textarea
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                disabled={!isEditing}
-                rows="3"
-              ></textarea>
-
-            </div>
-
-
-            {/* CITY + STATE */}
-            <div className="profile-form-row">
-
-              <div className="profile-form-group">
-
-                <label>City</label>
-
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-
-              </div>
-
-
-              <div className="profile-form-group">
-
-                <label>State</label>
-
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-
-              </div>
-
-            </div>
-
 
             {/* PINCODE */}
-            <div className="profile-form-row">
 
-              <div className="profile-form-group">
+            <div className="customer-profile-detail">
 
-                <label>Pincode</label>
-
-                <input
-                  type="text"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-
+              <div className="customer-profile-detail-icon">
+                <FaMapMarkerAlt />
               </div>
 
-              <div></div>
+              <div>
+                <span>PIN Code</span>
+
+                <strong>
+                  {profile.pincode || "Not provided"}
+                </strong>
+              </div>
 
             </div>
 
+          </div>
+        )}
 
-            {/* SAVE BUTTON */}
-            {isEditing && (
-              <div className="profile-save-area">
+        {/* EDIT MODE */}
 
-                <button
-                  className="profile-cancel-button"
-                  onClick={() => setIsEditing(false)}
-                >
-                  Cancel
-                </button>
+        {editing && (
+          <form
+            className="customer-profile-form"
+            onSubmit={handleSave}
+          >
 
-                <button
-                  className="profile-save-button"
-                  onClick={handleSave}
-                >
-                  <FaSave />
-                  Save Changes
-                </button>
+            <div className="customer-profile-form-grid">
+
+              {/* NAME */}
+
+              <div className="customer-profile-form-group">
+
+                <label>
+                  Full Name
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaUser />
+
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your name"
+                  />
+
+                </div>
 
               </div>
-            )}
 
-          </div>
+              {/* EMAIL */}
 
-        </div>
+              <div className="customer-profile-form-group">
+
+                <label>
+                  Email Address
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaEnvelope />
+
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email"
+                  />
+
+                </div>
+
+              </div>
+
+              {/* PHONE */}
+
+              <div className="customer-profile-form-group">
+
+                <label>
+                  Phone Number
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaPhone />
+
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Enter phone number"
+                  />
+
+                </div>
+
+              </div>
+
+              {/* ADDRESS */}
+
+              <div className="customer-profile-form-group full-width">
+
+                <label>
+                  Address
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaMapMarkerAlt />
+
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Enter your address"
+                  />
+
+                </div>
+
+              </div>
+
+              {/* CITY */}
+
+              <div className="customer-profile-form-group">
+
+                <label>
+                  City
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaMapMarkerAlt />
+
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="Enter city"
+                  />
+
+                </div>
+
+              </div>
+
+              {/* STATE */}
+
+              <div className="customer-profile-form-group">
+
+                <label>
+                  State
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaMapMarkerAlt />
+
+                  <input
+                    type="text"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    placeholder="Enter state"
+                  />
+
+                </div>
+
+              </div>
+
+              {/* PINCODE */}
+
+              <div className="customer-profile-form-group">
+
+                <label>
+                  PIN Code
+                </label>
+
+                <div className="customer-profile-input-wrapper">
+
+                  <FaMapMarkerAlt />
+
+                  <input
+                    type="text"
+                    name="pincode"
+                    value={formData.pincode}
+                    onChange={handleChange}
+                    placeholder="Enter PIN code"
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* FORM BUTTONS */}
+
+            <div className="customer-profile-form-actions">
+
+              <button
+                type="button"
+                className="customer-profile-cancel-button"
+                onClick={handleCancel}
+                disabled={saving}
+              >
+                <FaTimes />
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="customer-profile-save-button"
+                disabled={saving}
+              >
+                <FaSave />
+
+                {saving
+                  ? "Saving..."
+                  : "Save Changes"}
+              </button>
+
+            </div>
+
+          </form>
+        )}
 
       </div>
 
+      {/* ACCOUNT INFORMATION */}
 
-      {/* =====================================
-          ACCOUNT SECURITY
-      ===================================== */}
-      <div className="profile-security-card">
+      <div className="customer-profile-info-box">
 
-        <div className="security-icon">
-          <FaLock />
+        <div className="customer-profile-info-icon">
+          <FaUser />
         </div>
 
-        <div className="security-content">
-
-          <h3>Account Security</h3>
+        <div>
+          <h3>
+            Customer Account
+          </h3>
 
           <p>
-            Keep your account information secure and make
-            sure your contact details are always up to date.
+            Your profile information is used
+            to manage your dairy orders,
+            payments and account activity.
           </p>
-
         </div>
-
-        <button
-          className="change-password-button"
-          onClick={() => alert("Change Password")}
-        >
-          Change Password
-        </button>
 
       </div>
 
     </div>
   );
-}
+};
 
 export default CustomerProfile;

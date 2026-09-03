@@ -1,83 +1,113 @@
+import { useEffect, useState } from "react";
+
+import {
+  FaUserCircle,
+  FaBars,
+} from "react-icons/fa";
+
 import "./CustomerTopbar.css";
 
-const CustomerTopbar = ({ onMenuClick }) => {
+const CustomerTopbar = ({
+  onMenuClick,
+}) => {
+  const getCustomer = () => {
+    try {
+      return JSON.parse(
+        localStorage.getItem(
+          "customerUser"
+        ) || "{}"
+      );
+    } catch {
+      return {};
+    }
+  };
+
+  const [customer, setCustomer] =
+    useState(getCustomer());
+
+  useEffect(() => {
+    const updateCustomer = () => {
+      setCustomer(getCustomer());
+    };
+
+    window.addEventListener(
+      "customerProfileUpdated",
+      updateCustomer
+    );
+
+    window.addEventListener(
+      "storage",
+      updateCustomer
+    );
+
+    return () => {
+      window.removeEventListener(
+        "customerProfileUpdated",
+        updateCustomer
+      );
+
+      window.removeEventListener(
+        "storage",
+        updateCustomer
+      );
+    };
+  }, []);
+
+  const customerName =
+    customer.name ||
+    customer.fullName ||
+    "Customer";
 
   return (
     <header className="customer-topbar">
 
-      {/* =====================================
-          LEFT SIDE
-      ===================================== */}
+      {/* MENU BUTTON */}
 
-      <div className="customer-topbar-left">
+      <button
+        type="button"
+        className="customer-topbar-menu-button"
+        onClick={onMenuClick}
+      >
+        <FaBars />
+      </button>
 
-        {/* MENU BUTTON */}
+      {/* PAGE TITLE */}
 
-        <button
-          type="button"
-          className="customer-menu-button"
-          onClick={onMenuClick}
-          aria-label="Toggle sidebar"
-          title="Toggle Sidebar"
-        >
-          ☰
-        </button>
+      <div className="customer-topbar-title">
 
+        <h2>
+          Customer Dashboard
+        </h2>
 
-        {/* TITLE */}
-
-        <div className="customer-page-title">
-
-          <h2>
-            Customer Dashboard
-          </h2>
-
-          <span>
-            Dairy Farm Management System
-          </span>
-
-        </div>
+        <p>
+          Dairy Farm Management System
+        </p>
 
       </div>
 
+      {/* CUSTOMER PROFILE */}
 
-      {/* =====================================
-          RIGHT SIDE
-      ===================================== */}
+      <div className="customer-topbar-profile">
 
-      <div className="customer-topbar-right">
+        <div className="customer-topbar-avatar">
+          <FaUserCircle />
+        </div>
 
-        <div className="customer-topbar-profile">
+        <div className="customer-topbar-user">
 
-          {/* AVATAR */}
+          <strong>
+            {customerName}
+          </strong>
 
-          <div className="customer-topbar-avatar">
-            👤
-          </div>
-
-
-          {/* USER */}
-
-          <div className="customer-topbar-user">
-
-            <strong>
-              John Customer
-            </strong>
-
-            <span>
-              Customer
-            </span>
-
-          </div>
-
-
-          {/* ARROW */}
-
-          <span className="customer-profile-arrow">
-            ▼
+          <span>
+            Customer
           </span>
 
         </div>
+
+        <span className="customer-topbar-arrow">
+          ▾
+        </span>
 
       </div>
 

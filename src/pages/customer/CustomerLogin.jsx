@@ -1,36 +1,136 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import {
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaSignInAlt,
+  FaUserPlus,
+  FaExclamationTriangle,
+} from "react-icons/fa";
+
 import "./CustomerLogin.css";
+
+import { loginCustomer } from "../../api/customerApi";
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     setError("");
 
-    // Demo customer login credentials
-    if (
-      username === "customer" &&
-      password === "customer123"
-    ) {
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter email and password.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // ------------------------------------------
+      // SEND LOGIN DATA TO CUSTOMER DATABASE API
+      // ------------------------------------------
+
+      const data = await loginCustomer(
+        email.trim(),
+        password
+      );
+
+      // ------------------------------------------
+      // CHECK LOGIN RESPONSE
+      // ------------------------------------------
+
+      if (!data) {
+        throw new Error(
+          "No response received from server."
+        );
+      }
+
+      if (data.success === false) {
+        throw new Error(
+          data.message ||
+            "Invalid email or password."
+        );
+      }
+
+      // ------------------------------------------
+      // SAVE CUSTOMER JWT TOKEN
+      // ------------------------------------------
+
+      const token =
+        data.token ||
+        data.accessToken ||
+        data.jwt;
+
+      if (!token) {
+        throw new Error(
+          "Login successful but token was not received."
+        );
+      }
+
+      localStorage.setItem(
+        "customerToken",
+        token
+      );
+
+      // ------------------------------------------
+      // SAVE CUSTOMER INFORMATION
+      // ------------------------------------------
+
+      const customer =
+        data.customer ||
+        data.user ||
+        data.data;
+
+      if (customer) {
+        localStorage.setItem(
+          "customerUser",
+          JSON.stringify(customer)
+        );
+      }
+
+      // ------------------------------------------
+      // CUSTOMER LOGIN STATUS
+      // ------------------------------------------
+
       localStorage.setItem(
         "customerLoggedIn",
         "true"
       );
 
-      navigate("/customer");
-    } else {
-      setError(
-        "Invalid username or password. Please try again."
+      // ------------------------------------------
+      // REDIRECT CUSTOMER
+      // ------------------------------------------
+
+      navigate("/customer", {
+        replace: true,
+      });
+
+    } catch (err) {
+      console.error(
+        "Customer Login Error:",
+        err
       );
+
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Invalid email or password."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,56 +139,51 @@ const CustomerLogin = () => {
 
       <div className="customer-login-card">
 
-        {/* LOGO */}
         <div className="customer-login-logo">
-          🥛
+          <FaSignInAlt />
         </div>
 
-        {/* HEADING */}
         <div className="customer-login-heading">
-
-          <h1>
-            Customer Login
-          </h1>
+          <h1>Customer Login</h1>
 
           <p>
             Sign in to manage your dairy orders
           </p>
-
         </div>
 
-        {/* ERROR */}
         {error && (
           <div className="customer-login-error">
-            ⚠️ {error}
+            <FaExclamationTriangle />
+
+            <span>{error}</span>
           </div>
         )}
 
-        {/* LOGIN FORM */}
         <form onSubmit={handleLogin}>
 
-          {/* USERNAME */}
+          {/* EMAIL */}
+
           <div className="customer-form-group">
 
-            <label htmlFor="username">
-              Username
+            <label htmlFor="email">
+              Email Address
             </label>
 
             <div className="customer-input-wrapper">
 
               <span className="customer-input-icon">
-                👤
+                <FaEnvelope />
               </span>
 
               <input
-                id="username"
-                type="text"
-                placeholder="Enter username"
-                value={username}
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                value={email}
                 onChange={(e) =>
-                  setUsername(e.target.value)
+                  setEmail(e.target.value)
                 }
-                autoComplete="username"
+                autoComplete="email"
                 required
               />
 
@@ -97,6 +192,7 @@ const CustomerLogin = () => {
           </div>
 
           {/* PASSWORD */}
+
           <div className="customer-form-group">
 
             <label htmlFor="password">
@@ -106,7 +202,7 @@ const CustomerLogin = () => {
             <div className="customer-input-wrapper">
 
               <span className="customer-input-icon">
-                🔒
+                <FaLock />
               </span>
 
               <input
@@ -119,7 +215,9 @@ const CustomerLogin = () => {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) =>
-                  setPassword(e.target.value)
+                  setPassword(
+                    e.target.value
+                  )
                 }
                 autoComplete="current-password"
                 required
@@ -130,29 +228,30 @@ const CustomerLogin = () => {
                 className="customer-password-toggle"
                 onClick={() =>
                   setShowPassword(
-                    (current) => !current
+                    (value) => !value
                   )
                 }
-                aria-label={
-                  showPassword
-                    ? "Hide password"
-                    : "Show password"
-                }
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? (
+                  <FaEyeSlash />
+                ) : (
+                  <FaEye />
+                )}
               </button>
 
             </div>
 
           </div>
 
-          {/* REMEMBER ME / FORGOT PASSWORD */}
+          {/* OPTIONS */}
+
           <div className="customer-login-options">
 
             <label className="customer-remember-me">
 
               <input
                 type="checkbox"
+                id="rememberMe"
               />
 
               <span>
@@ -165,7 +264,7 @@ const CustomerLogin = () => {
               type="button"
               className="customer-forgot-password"
               onClick={() =>
-                alert(
+                setError(
                   "Please contact the dairy farm administrator to reset your password."
                 )
               }
@@ -175,17 +274,27 @@ const CustomerLogin = () => {
 
           </div>
 
-          {/* LOGIN BUTTON */}
+          {/* LOGIN */}
+
           <button
             type="submit"
             className="customer-login-button"
+            disabled={loading}
           >
-            Sign In
+            {loading ? (
+              "Signing In..."
+            ) : (
+              <>
+                <FaSignInAlt />
+                Sign In
+              </>
+            )}
           </button>
 
         </form>
 
         {/* REGISTER */}
+
         <div className="customer-register-section">
 
           <p>
@@ -196,15 +305,17 @@ const CustomerLogin = () => {
             type="button"
             className="customer-register-button"
             onClick={() =>
-              navigate("/customer/register")
+              navigate(
+                "/customer/register"
+              )
             }
           >
+            <FaUserPlus />
             Create Account
           </button>
 
         </div>
 
-        {/* FOOTER */}
         <div className="customer-login-footer">
           © 2026 Dairy Farm Management System
         </div>

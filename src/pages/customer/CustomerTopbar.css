@@ -1,67 +1,53 @@
-/* =========================================
-   TOPBAR
-========================================= */
+/* =========================================================
+   CUSTOMER TOPBAR
+========================================================= */
 
 .customer-topbar {
+  width: 100%;
   height: 78px;
 
-  width: 100%;
+  padding: 0 25px;
 
-  background: #ffffff;
+  box-sizing: border-box;
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
-  padding: 0 28px;
-
-  box-sizing: border-box;
+  background: #ffffff;
 
   border-bottom: 1px solid #e5e7eb;
 
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
-  position: sticky;
+  position: relative;
 
-  top: 0;
-
-  z-index: 900;
+  z-index: 20;
 }
 
 
-/* =========================================
-   LEFT
-========================================= */
+/* =========================================================
+   MENU BUTTON
+========================================================= */
 
-.customer-topbar-left {
-  display: flex;
-  align-items: center;
+.customer-topbar-menu-button {
+  width: 44px;
+  height: 44px;
 
-  gap: 16px;
-}
-
-
-/* =========================================
-   MENU
-========================================= */
-
-.customer-menu-button {
-  width: 46px;
-  height: 46px;
-
-  border: none;
-
-  border-radius: 10px;
-
-  background: #dcfce7;
-
-  color: #166534;
-
-  font-size: 25px;
+  margin-right: 16px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: #dcfce7;
+
+  color: #15803d;
+
+  font-size: 20px;
 
   cursor: pointer;
 
@@ -69,23 +55,84 @@
 }
 
 
-.customer-menu-button:hover {
+.customer-topbar-menu-button:hover {
   background: #bbf7d0;
 
-  transform: scale(1.03);
+  transform: translateY(-1px);
 }
 
 
-.customer-menu-button:active {
-  transform: scale(0.96);
-}
-
-
-/* =========================================
+/* =========================================================
    TITLE
-========================================= */
+========================================================= */
 
-.customer-page-title {
+.customer-topbar-title {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.customer-topbar-title h2 {
+  margin: 0 0 4px 0;
+
+  color: #111827;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 19px;
+  font-weight: 700;
+}
+
+
+.customer-topbar-title p {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   CUSTOMER PROFILE
+========================================================= */
+
+.customer-topbar-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 6px 8px;
+
+  border-radius: 10px;
+}
+
+
+.customer-topbar-avatar {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #dcfce7;
+
+  color: #15803d;
+
+  border-radius: 50%;
+
+  font-size: 27px;
+}
+
+
+.customer-topbar-user {
+  min-width: 110px;
+
   display: flex;
   flex-direction: column;
 
@@ -93,187 +140,105 @@
 }
 
 
-.customer-page-title h2 {
-  margin: 0;
-
-  color: #111827;
-
-  font-size: 20px;
-
-  font-weight: 700;
-}
-
-
-.customer-page-title span {
-  color: #9ca3af;
-
-  font-size: 12px;
-}
-
-
-/* =========================================
-   RIGHT
-========================================= */
-
-.customer-topbar-right {
-  display: flex;
-  align-items: center;
-}
-
-
-/* =========================================
-   PROFILE
-========================================= */
-
-.customer-topbar-profile {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 6px 9px;
-
-  border-radius: 10px;
-
-  cursor: pointer;
-
-  transition: background 0.2s ease;
-}
-
-
-.customer-topbar-profile:hover {
-  background: #f8fafc;
-}
-
-
-/* =========================================
-   AVATAR
-========================================= */
-
-.customer-topbar-avatar {
-  width: 44px;
-  height: 44px;
-
-  border-radius: 50%;
-
-  background: #dcfce7;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 21px;
-}
-
-
-/* =========================================
-   USER
-========================================= */
-
-.customer-topbar-user {
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-
-  min-width: 115px;
-}
-
-
 .customer-topbar-user strong {
   color: #111827;
 
-  font-size: 14px;
+  font-family: Arial, sans-serif;
 
+  font-size: 13px;
   font-weight: 700;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
 
 .customer-topbar-user span {
+  color: #94a3b8;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 11px;
+}
+
+
+.customer-topbar-arrow {
+  margin-left: 3px;
+
   color: #9ca3af;
 
   font-size: 12px;
 }
 
 
-/* =========================================
-   ARROW
-========================================= */
-
-.customer-profile-arrow {
-  color: #9ca3af;
-
-  font-size: 10px;
-}
-
-
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 900px) {
-
-  .customer-topbar {
-    height: 70px;
-
-    padding: 0 20px;
-  }
-
-
-  .customer-page-title h2 {
-    font-size: 18px;
-  }
-
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 600px) {
 
   .customer-topbar {
-    padding: 0 14px;
+    height: 70px;
+
+    padding: 0 15px;
   }
 
+  .customer-topbar-menu-button {
+    width: 40px;
+    height: 40px;
 
-  .customer-topbar-left {
-    gap: 10px;
+    margin-right: 10px;
+
+    font-size: 18px;
   }
 
-
-  .customer-menu-button {
-    width: 42px;
-    height: 42px;
-
-    font-size: 22px;
-  }
-
-
-  .customer-page-title h2 {
+  .customer-topbar-title h2 {
     font-size: 16px;
   }
 
-
-  .customer-page-title span {
+  .customer-topbar-title p {
     display: none;
   }
 
+  .customer-topbar-avatar {
+    width: 38px;
+    height: 38px;
+
+    font-size: 24px;
+  }
+
+  .customer-topbar-user {
+    min-width: 70px;
+  }
+
+  .customer-topbar-user strong {
+    max-width: 90px;
+
+    font-size: 12px;
+  }
+
+  .customer-topbar-arrow {
+    display: none;
+  }
+
+}
+
+
+@media (max-width: 420px) {
+
+  .customer-topbar {
+    padding: 0 10px;
+  }
+
+  .customer-topbar-title h2 {
+    font-size: 14px;
+  }
 
   .customer-topbar-user {
     display: none;
-  }
-
-
-  .customer-profile-arrow {
-    display: none;
-  }
-
-
-  .customer-topbar-avatar {
-    width: 40px;
-    height: 40px;
   }
 
 }
