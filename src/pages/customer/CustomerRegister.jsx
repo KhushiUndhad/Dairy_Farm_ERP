@@ -1,46 +1,82 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
 import { registerCustomer } from "../../api/customerApi";
+
 import "./CustomerRegister.css";
-function CustomerRegister() {
+
+const CustomerRegister = () => {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [formData, setFormData] =
+    useState({
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] =
+    useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const [error, setError] =
+    useState("");
 
-    setFormData((prev) => ({
-      ...prev,
+  const [success, setSuccess] =
+    useState("");
+
+  // ==================================================
+  // HANDLE CHANGE
+  // ==================================================
+
+  const handleChange = (event) => {
+    const {
+      name,
+      value,
+    } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // ==================================================
+  // HANDLE REGISTER
+  // ==================================================
+
+  const handleSubmit = async (
+    event
+  ) => {
+    event.preventDefault();
 
     setError("");
     setSuccess("");
 
-    const name = formData.name.trim();
-    const email = formData.email.trim().toLowerCase();
-    const phone = formData.phone.trim();
-    const password = formData.password;
-    const confirmPassword = formData.confirmPassword;
+    const name =
+      formData.name.trim();
 
-    // ------------------------------------------
+    const email =
+      formData.email
+        .trim()
+        .toLowerCase();
+
+    const phone =
+      formData.phone.trim();
+
+    const password =
+      formData.password;
+
+    const confirmPassword =
+      formData.confirmPassword;
+
+    // ----------------------------------------------
     // VALIDATION
-    // ------------------------------------------
+    // ----------------------------------------------
 
     if (
       !name ||
@@ -49,12 +85,38 @@ function CustomerRegister() {
       !password ||
       !confirmPassword
     ) {
-      setError("Please fill all fields.");
+      setError(
+        "Please fill all fields."
+      );
       return;
     }
 
     if (name.length < 2) {
-      setError("Name must contain at least 2 characters.");
+      setError(
+        "Name must contain at least 2 characters."
+      );
+      return;
+    }
+
+    if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+      )
+    ) {
+      setError(
+        "Please enter a valid email address."
+      );
+      return;
+    }
+
+    if (
+      !/^[0-9]{10}$/.test(
+        phone
+      )
+    ) {
+      setError(
+        "Phone number must contain exactly 10 digits."
+      );
       return;
     }
 
@@ -65,52 +127,44 @@ function CustomerRegister() {
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+    if (
+      password !==
+      confirmPassword
+    ) {
+      setError(
+        "Passwords do not match."
+      );
       return;
     }
 
-    // ------------------------------------------
-    // SEND CUSTOMER DATA TO BACKEND
-    // ------------------------------------------
+    // ----------------------------------------------
+    // SEND TO BACKEND
+    // ----------------------------------------------
 
     try {
       setLoading(true);
 
-      const customerData = {
-        name,
-        email,
-        phone,
-        password,
-        confirmPassword,
-      };
+      const response =
+        await registerCustomer({
+          name,
+          email,
+          phone,
+          password,
+          confirmPassword,
+        });
 
-      const data =
-        await registerCustomer(customerData);
-
-      // ------------------------------------------
-      // CHECK BACKEND RESPONSE
-      // ------------------------------------------
-
-      if (!data) {
+      if (
+        !response ||
+        response.success !== true
+      ) {
         throw new Error(
-          "No response received from server."
+          response?.message ||
+            "Customer registration failed."
         );
       }
-
-      if (data.success === false) {
-        throw new Error(
-          data.message ||
-            "Registration failed."
-        );
-      }
-
-      // ------------------------------------------
-      // SUCCESS
-      // ------------------------------------------
 
       setSuccess(
-        data.message ||
+        response.message ||
           "Customer registered successfully."
       );
 
@@ -122,25 +176,26 @@ function CustomerRegister() {
         confirmPassword: "",
       });
 
-      // ------------------------------------------
+      // ----------------------------------------------
       // REDIRECT TO LOGIN
-      // ------------------------------------------
+      // ----------------------------------------------
 
       setTimeout(() => {
-        navigate("/customer/login", {
-          replace: true,
-        });
+        navigate(
+          "/customer/login",
+          {
+            replace: true,
+          }
+        );
       }, 1500);
-
-    } catch (err) {
+    } catch (error) {
       console.error(
-        "Customer Registration Error:",
-        err
+        "CUSTOMER REGISTER ERROR:",
+        error
       );
 
       setError(
-        err.response?.data?.message ||
-          err.message ||
+        error.message ||
           "Registration failed. Please try again."
       );
     } finally {
@@ -150,52 +205,46 @@ function CustomerRegister() {
 
   return (
     <div className="customer-register-page">
-
       <div className="customer-register-card">
 
-        {/* ------------------------------------------
-            HEADER
-        ------------------------------------------ */}
+        {/* HEADER */}
 
         <div className="customer-register-header">
-
           <div className="customer-register-icon">
             🐄
           </div>
 
-          <h1>Create Customer Account</h1>
+          <h1>
+            Create Customer Account
+          </h1>
 
           <p>
-            Register to order fresh dairy products
+            Register to order fresh
+            dairy products
           </p>
-
         </div>
 
-        {/* ------------------------------------------
-            ERROR
-        ------------------------------------------ */}
+        {/* ERROR */}
 
         {error && (
           <div className="customer-register-error">
             <span>⚠</span>
+
             <p>{error}</p>
           </div>
         )}
 
-        {/* ------------------------------------------
-            SUCCESS
-        ------------------------------------------ */}
+        {/* SUCCESS */}
 
         {success && (
           <div className="customer-register-success">
             <span>✓</span>
+
             <p>{success}</p>
           </div>
         )}
 
-        {/* ------------------------------------------
-            FORM
-        ------------------------------------------ */}
+        {/* FORM */}
 
         <form
           onSubmit={handleSubmit}
@@ -205,7 +254,6 @@ function CustomerRegister() {
           {/* NAME */}
 
           <div className="customer-register-form-group">
-
             <label htmlFor="name">
               Full Name
             </label>
@@ -221,13 +269,11 @@ function CustomerRegister() {
               disabled={loading}
               required
             />
-
           </div>
 
           {/* EMAIL */}
 
           <div className="customer-register-form-group">
-
             <label htmlFor="email">
               Email Address
             </label>
@@ -243,13 +289,11 @@ function CustomerRegister() {
               disabled={loading}
               required
             />
-
           </div>
 
           {/* PHONE */}
 
           <div className="customer-register-form-group">
-
             <label htmlFor="phone">
               Phone Number
             </label>
@@ -258,20 +302,19 @@ function CustomerRegister() {
               id="phone"
               type="tel"
               name="phone"
-              placeholder="Enter your phone number"
+              placeholder="Enter 10 digit phone number"
               value={formData.phone}
               onChange={handleChange}
+              maxLength="10"
               autoComplete="tel"
               disabled={loading}
               required
             />
-
           </div>
 
           {/* PASSWORD */}
 
           <div className="customer-register-form-group">
-
             <label htmlFor="password">
               Password
             </label>
@@ -280,24 +323,18 @@ function CustomerRegister() {
               id="password"
               type="password"
               name="password"
-              placeholder="Create a password"
+              placeholder="Minimum 6 characters"
               value={formData.password}
               onChange={handleChange}
               autoComplete="new-password"
               disabled={loading}
               required
             />
-
-            <small>
-              Password must contain at least 6 characters.
-            </small>
-
           </div>
 
           {/* CONFIRM PASSWORD */}
 
           <div className="customer-register-form-group">
-
             <label htmlFor="confirmPassword">
               Confirm Password
             </label>
@@ -307,57 +344,43 @@ function CustomerRegister() {
               type="password"
               name="confirmPassword"
               placeholder="Confirm your password"
-              value={formData.confirmPassword}
+              value={
+                formData.confirmPassword
+              }
               onChange={handleChange}
               autoComplete="new-password"
               disabled={loading}
               required
             />
-
           </div>
 
-          {/* REGISTER BUTTON */}
+          {/* BUTTON */}
 
           <button
             type="submit"
-            className="customer-register-submit"
             disabled={loading}
           >
             {loading
               ? "Creating Account..."
               : "Create Account"}
           </button>
-
         </form>
 
-        {/* ------------------------------------------
-            LOGIN
-        ------------------------------------------ */}
+        {/* LOGIN */}
 
         <div className="customer-register-login">
-
           <p>
             Already have an account?
           </p>
 
           <Link to="/customer/login">
-            Login to your account
+            Login here
           </Link>
-
-        </div>
-
-        {/* ------------------------------------------
-            FOOTER
-        ------------------------------------------ */}
-
-        <div className="customer-register-footer">
-          © 2026 Dairy Farm Management System
         </div>
 
       </div>
-
     </div>
   );
-}
+};
 
 export default CustomerRegister;

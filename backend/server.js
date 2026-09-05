@@ -1,42 +1,46 @@
+
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
+
 // ======================================================
 // DATABASE CONNECTIONS
 // ======================================================
 
-// Admin Panel Database
-// Database Name: dairy_farm_erp
+// Admin Database
+// dairy_farm_erp
 const connectDB = require("./config/db");
 
 // Customer Panel Database
-// Database Name: user
+// user
 const {
   connectCustomerPanelDB,
 } = require("./config/customerPanelDb");
 
-// ======================================================
-// CREATE EXPRESS APP
-// ======================================================
 
 const app = express();
 
+
 // ======================================================
-// MIDDLEWARE
+// CORS
 // ======================================================
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+    ],
 
     methods: [
       "GET",
       "POST",
       "PUT",
       "DELETE",
+      "PATCH",
       "OPTIONS",
     ],
 
@@ -49,7 +53,14 @@ app.use(
   })
 );
 
-app.use(express.json());
+
+// ======================================================
+// BODY PARSER
+// ======================================================
+
+app.use(
+  express.json()
+);
 
 app.use(
   express.urlencoded({
@@ -57,18 +68,28 @@ app.use(
   })
 );
 
+
 // ======================================================
 // HOME / SERVER TEST
 // ======================================================
 
 app.get("/", (req, res) => {
+
   res.status(200).json({
     success: true,
-    message: "Dairy Farm ERP Backend Running",
-    adminDatabase: "dairy_farm_erp",
-    customerPanelDatabase: "user",
+
+    message:
+      "Dairy Farm ERP Backend Running",
+
+    adminDatabase:
+      "dairy_farm_erp",
+
+    customerPanelDatabase:
+      "user",
   });
+
 });
+
 
 // ======================================================
 // ADMIN / EMPLOYEE AUTHENTICATION
@@ -79,6 +100,7 @@ app.use(
   require("./routes/authRoutes")
 );
 
+
 // ======================================================
 // COW MANAGEMENT
 // ======================================================
@@ -87,6 +109,7 @@ app.use(
   "/api/cows",
   require("./routes/cowRoutes")
 );
+
 
 // ======================================================
 // MILK PRODUCTION
@@ -97,6 +120,7 @@ app.use(
   require("./routes/milkRoutes")
 );
 
+
 // ======================================================
 // EMPLOYEE MANAGEMENT
 // ======================================================
@@ -106,8 +130,9 @@ app.use(
   require("./routes/employeeRoutes")
 );
 
+
 // ======================================================
-// ADMIN CUSTOMER MANAGEMENT
+// CUSTOMER MANAGEMENT
 // ======================================================
 
 app.use(
@@ -115,14 +140,16 @@ app.use(
   require("./routes/customerRoutes")
 );
 
+
 // ======================================================
-// ADMIN SALES
+// SALES
 // ======================================================
 
 app.use(
   "/api/sales",
   require("./routes/salesRoutes")
 );
+
 
 // ======================================================
 // ATTENDANCE
@@ -133,6 +160,7 @@ app.use(
   require("./routes/attendanceRoutes")
 );
 
+
 // ======================================================
 // LEAVE
 // ======================================================
@@ -141,6 +169,7 @@ app.use(
   "/api/leaves",
   require("./routes/leaveRoutes")
 );
+
 
 // ======================================================
 // SALARY
@@ -151,6 +180,7 @@ app.use(
   require("./routes/salaryRoutes")
 );
 
+
 // ======================================================
 // WORK
 // ======================================================
@@ -159,6 +189,7 @@ app.use(
   "/api/work",
   require("./routes/workRoutes")
 );
+
 
 // ======================================================
 // ADMIN ORDERS
@@ -169,6 +200,7 @@ app.use(
   require("./routes/orderRoutes")
 );
 
+
 // ======================================================
 // ADMIN PAYMENTS
 // ======================================================
@@ -177,6 +209,7 @@ app.use(
   "/api/payments",
   require("./routes/paymentRoutes")
 );
+
 
 // ======================================================
 // ADMIN DASHBOARD
@@ -187,6 +220,7 @@ app.use(
   require("./routes/dashboardRoutes")
 );
 
+
 // ======================================================
 // EMPLOYEE PROFILE
 // ======================================================
@@ -196,27 +230,9 @@ app.use(
   require("./routes/profileRoutes")
 );
 
-// ======================================================
-//                  CUSTOMER PANEL
-// ======================================================
-//
-// Customer Panel uses:
-//
-// 1. user
-//    Customer login account
-//
-// 2. dairy_farm_erp
-//    Customer business data
-//
-// ======================================================
 
 // ======================================================
 // CUSTOMER AUTHENTICATION
-// ======================================================
-//
-// POST /api/customer-auth/register
-// POST /api/customer-auth/login
-//
 // ======================================================
 
 app.use(
@@ -224,18 +240,9 @@ app.use(
   require("./routes/customerAuthRoutes")
 );
 
+
 // ======================================================
 // CUSTOMER PRODUCTS
-// ======================================================
-//
-// GET /api/products
-//
-// Customer can view available dairy products.
-//
-// IMPORTANT:
-// This route is required by:
-// CustomerProducts.jsx
-//
 // ======================================================
 
 app.use(
@@ -243,13 +250,9 @@ app.use(
   require("./routes/productRoutes")
 );
 
+
 // ======================================================
 // CUSTOMER PROFILE
-// ======================================================
-//
-// GET /api/customer/profile
-// PUT /api/customer/profile
-//
 // ======================================================
 
 app.use(
@@ -257,12 +260,9 @@ app.use(
   require("./routes/customerProfileRoutes")
 );
 
+
 // ======================================================
 // CUSTOMER DASHBOARD
-// ======================================================
-//
-// GET /api/customer-panel/dashboard
-//
 // ======================================================
 
 app.use(
@@ -270,13 +270,9 @@ app.use(
   require("./routes/customerPanelRoutes")
 );
 
+
 // ======================================================
 // CUSTOMER SALES
-// ======================================================
-//
-// GET /api/customer/sales
-// GET /api/customer/sales/:id
-//
 // ======================================================
 
 app.use(
@@ -284,13 +280,9 @@ app.use(
   require("./routes/customerSaleRoutes")
 );
 
+
 // ======================================================
 // CUSTOMER PAYMENTS
-// ======================================================
-//
-// GET /api/customer/payments
-// GET /api/customer/payments/:id
-//
 // ======================================================
 
 app.use(
@@ -298,14 +290,9 @@ app.use(
   require("./routes/customerPaymentRoutes")
 );
 
+
 // ======================================================
 // CUSTOMER ORDERS
-// ======================================================
-//
-// GET /api/customer/orders
-// POST /api/customer/orders
-// GET /api/customer/orders/:id
-//
 // ======================================================
 
 app.use(
@@ -313,138 +300,171 @@ app.use(
   require("./routes/customerOrderRoutes")
 );
 
-// ======================================================
-// 404 API HANDLER
-// ======================================================
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message:
-      `API route not found: ${req.method} ${req.originalUrl}`,
-  });
-});
 
 // ======================================================
-// ERROR HANDLER
+// 404 HANDLER
+// ======================================================
+
+app.use(
+  (req, res) => {
+
+    res.status(404).json({
+
+      success: false,
+
+      message:
+        `API route not found: ${req.method} ${req.originalUrl}`,
+
+    });
+
+  }
+);
+
+
+// ======================================================
+// GLOBAL ERROR HANDLER
 // ======================================================
 
 app.use(
   (err, req, res, next) => {
+
     console.error(
       "SERVER ERROR:",
       err
     );
 
     res.status(500).json({
+
       success: false,
-      message: "Internal server error",
-      error: err.message,
+
+      message:
+        "Internal server error",
+
+      error:
+        err.message,
+
     });
+
   }
 );
 
+
 // ======================================================
-// SERVER PORT
+// PORT
 // ======================================================
 
 const PORT =
   process.env.PORT || 5000;
 
+
 // ======================================================
 // START SERVER
 // ======================================================
 
-const startServer = async () => {
-  try {
+const startServer =
+  async () => {
 
-    // --------------------------------------------------
-    // Connect Admin Database
-    // --------------------------------------------------
+    try {
 
-    await connectDB();
+      // -----------------------------------------------
+      // ADMIN DATABASE
+      // -----------------------------------------------
 
-    // --------------------------------------------------
-    // Connect Customer Panel Database
-    // --------------------------------------------------
+      await connectDB();
 
-    await connectCustomerPanelDB();
 
-    // --------------------------------------------------
-    // Start Express Server
-    // --------------------------------------------------
+      // -----------------------------------------------
+      // CUSTOMER DATABASE
+      // -----------------------------------------------
 
-    app.listen(
-      PORT,
-      () => {
+      await connectCustomerPanelDB();
 
-        console.log("");
 
-        console.log(
-          "=========================================="
-        );
+      // -----------------------------------------------
+      // START EXPRESS
+      // -----------------------------------------------
 
-        console.log(
-          "     DAIRY FARM ERP BACKEND STARTED"
-        );
+      app.listen(
+        PORT,
+        () => {
 
-        console.log(
-          "=========================================="
-        );
+          console.log("");
 
-        console.log(
-          `Server: http://localhost:${PORT}`
-        );
+          console.log(
+            "=========================================="
+          );
 
-        console.log(
-          "Admin Database: dairy_farm_erp"
-        );
+          console.log(
+            "     DAIRY FARM ERP BACKEND STARTED"
+          );
 
-        console.log(
-          "Customer Panel Database: user"
-        );
+          console.log(
+            "=========================================="
+          );
 
-        console.log(
-          "Customer Products: /api/products"
-        );
+          console.log(
+            `Server: http://localhost:${PORT}`
+          );
 
-        console.log(
-          "Customer Auth: /api/customer-auth"
-        );
+          console.log(
+            "Admin Database: dairy_farm_erp"
+          );
 
-        console.log(
-          "=========================================="
-        );
+          console.log(
+            "Customer Database: user"
+          );
 
-        console.log("");
-      }
-    );
+          console.log(
+            "Employee Register: /api/auth/employee-register"
+          );
 
-  } catch (error) {
+          console.log(
+            "Employee Login: /api/auth/employee-login"
+          );
 
-    console.error("");
+          console.log(
+            "Customer Register: /api/customer-auth/register"
+          );
 
-    console.error(
-      "=========================================="
-    );
+          console.log(
+            "Customer Login: /api/customer-auth/login"
+          );
 
-    console.error(
-      "     SERVER START ERROR"
-    );
+          console.log(
+            "=========================================="
+          );
 
-    console.error(
-      "=========================================="
-    );
+          console.log("");
 
-    console.error(
-      error.message
-    );
+        }
+      );
 
-    console.error("");
+    } catch (error) {
 
-    process.exit(1);
-  }
-};
+      console.error("");
+
+      console.error(
+        "=========================================="
+      );
+
+      console.error(
+        "     SERVER START ERROR"
+      );
+
+      console.error(
+        "=========================================="
+      );
+
+      console.error(
+        error.message
+      );
+
+      console.error("");
+
+      process.exit(1);
+    }
+  };
+
 
 // ======================================================
 // RUN SERVER

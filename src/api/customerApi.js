@@ -1,119 +1,194 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL =
+  "http://localhost:5000/api";
 
 // ======================================================
-// COMMON API REQUEST
+// COMMON CUSTOMER API REQUEST
 // ======================================================
 
 const apiRequest = async (
   endpoint,
   options = {}
 ) => {
-  const token =
-    localStorage.getItem("customerToken");
-
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}`,
-    {
-      ...options,
-      headers,
-    }
-  );
-
-  let data = {};
-
   try {
-    data = await response.json();
-  } catch {
-    data = {};
-  }
+    const token =
+      localStorage.getItem(
+        "customerToken"
+      );
 
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        data.error ||
-        `Request failed with status ${response.status}`
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    };
+
+    if (token) {
+      headers.Authorization =
+        `Bearer ${token}`;
+    }
+
+    const response =
+      await fetch(
+        `${API_BASE_URL}${endpoint}`,
+        {
+          ...options,
+          headers,
+        }
+      );
+
+    let data = {};
+
+    const contentType =
+      response.headers.get(
+        "content-type"
+      ) || "";
+
+    if (
+      contentType.includes(
+        "application/json"
+      )
+    ) {
+      data = await response.json();
+    } else {
+      const text =
+        await response.text();
+
+      data = {
+        message: text,
+      };
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          data.error ||
+          `Request failed with status ${response.status}`
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error(
+      "CUSTOMER API ERROR:",
+      error
     );
-  }
 
-  return data;
+    throw error;
+  }
 };
 
 // ======================================================
 // CUSTOMER REGISTER
 // ======================================================
 
-export const registerCustomer = async (
-  customerData
-) => {
-  return apiRequest(
-    "/customer-auth/register",
-    {
-      method: "POST",
-      body: JSON.stringify(customerData),
-    }
-  );
-};
+export const registerCustomer =
+  async (customerData) => {
+    return apiRequest(
+      "/customer-auth/register",
+      {
+        method: "POST",
+
+        body: JSON.stringify({
+          name:
+            customerData.name
+              ?.trim() || "",
+
+          email:
+            customerData.email
+              ?.trim()
+              .toLowerCase() || "",
+
+          phone:
+            customerData.phone
+              ?.trim() || "",
+
+          password:
+            customerData.password || "",
+
+          confirmPassword:
+            customerData.confirmPassword ||
+            "",
+        }),
+      }
+    );
+  };
 
 // ======================================================
 // CUSTOMER LOGIN
 // ======================================================
 
-export const loginCustomer = async (
-  email,
-  password
-) => {
-  const data = await apiRequest(
-    "/customer-auth/login",
-    {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+export const loginCustomer =
+  async (
+    email,
+    password
+  ) => {
+    const data =
+      await apiRequest(
+        "/customer-auth/login",
+        {
+          method: "POST",
+
+          body: JSON.stringify({
+            email:
+              email
+                ?.trim()
+                .toLowerCase() || "",
+
+            password:
+              password || "",
+          }),
+        }
+      );
+
+    const token =
+      data.token ||
+      data.accessToken ||
+      data.jwt;
+
+    if (token) {
+      localStorage.setItem(
+        "customerToken",
+        token
+      );
     }
+
+    const customer =
+      data.customer ||
+      data.user ||
+      data.data;
+
+    if (customer) {
+      localStorage.setItem(
+        "customerUser",
+        JSON.stringify(
+          customer
+        )
+      );
+    }
+
+    localStorage.setItem(
+      "customerLoggedIn",
+      "true"
+    );
+
+    return data;
+  };
+
+// ======================================================
+// CUSTOMER LOGOUT
+// ======================================================
+
+export const logoutCustomer = () => {
+  localStorage.removeItem(
+    "customerToken"
   );
 
-  // Save token
-  const token =
-    data.token ||
-    data.accessToken ||
-    data.jwt;
-
-  if (token) {
-    localStorage.setItem(
-      "customerToken",
-      token
-    );
-  }
-
-  // Save customer
-  const customer =
-    data.customer ||
-    data.user ||
-    data.data;
-
-  if (customer) {
-    localStorage.setItem(
-      "customerUser",
-      JSON.stringify(customer)
-    );
-  }
-
-  localStorage.setItem(
-    "customerLoggedIn",
-    "true"
+  localStorage.removeItem(
+    "customerUser"
   );
 
-  return data;
+  localStorage.removeItem(
+    "customerLoggedIn"
+  );
 };
 
 // ======================================================
@@ -131,7 +206,7 @@ export const getCustomerDashboard =
   };
 
 // ======================================================
-// PRODUCTS
+// CUSTOMER PRODUCTS
 // ======================================================
 
 export const getCustomerProducts =
@@ -164,6 +239,7 @@ export const updateCustomerProfile =
       "/customer/profile",
       {
         method: "PUT",
+
         body: JSON.stringify(
           profileData
         ),
@@ -191,6 +267,7 @@ export const createCustomerOrder =
       "/customer/orders",
       {
         method: "POST",
+
         body: JSON.stringify(
           orderData
         ),
@@ -253,60 +330,5 @@ export const getCustomerSaleById =
       {
         method: "GET",
       }
-    );
-  };
-
-// ======================================================
-// CUSTOMER LOGOUT
-// ======================================================
-
-export const logoutCustomer = () => {
-  localStorage.removeItem(
-    "customerToken"
-  );
-
-  localStorage.removeItem(
-    "customerUser"
-  );
-
-  localStorage.removeItem(
-    "customerLoggedIn"
-  );
-
-  window.location.href =
-    "/customer/login";
-};
-
-// ======================================================
-// GET LOGGED-IN CUSTOMER
-// ======================================================
-
-export const getLoggedInCustomer = () => {
-  const customer =
-    localStorage.getItem(
-      "customerUser"
-    );
-
-  if (!customer) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(customer);
-  } catch {
-    return null;
-  }
-};
-
-// ======================================================
-// CHECK CUSTOMER LOGIN
-// ======================================================
-
-export const isCustomerLoggedIn =
-  () => {
-    return Boolean(
-      localStorage.getItem(
-        "customerToken"
-      )
     );
   };

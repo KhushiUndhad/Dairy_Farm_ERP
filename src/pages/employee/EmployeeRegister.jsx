@@ -1,22 +1,12 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import {
-  FaUser,
-  FaEnvelope,
-  FaPhone,
-  FaLock,
-  FaBriefcase,
-  FaArrowRight,
-  FaCow,
-} from "react-icons/fa6";
 
 import { employeeRegister } from "../../services/api";
 
 import "./EmployeeRegister.css";
 
-const EmployeeRegister = () => {
-
+function EmployeeRegister() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -29,204 +19,183 @@ const EmployeeRegister = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // --------------------------------
+  // =====================================================
   // HANDLE INPUT CHANGE
-  // --------------------------------
+  // =====================================================
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setError("");
+    setSuccess("");
   };
 
-  // --------------------------------
-  // HANDLE REGISTER
-  // --------------------------------
+  // =====================================================
+  // HANDLE SUBMIT
+  // =====================================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // --------------------------------
-    // CHECK ALL FIELDS
-    // --------------------------------
+    setError("");
+    setSuccess("");
+
+    const name = formData.name.trim();
+    const email = formData.email.trim().toLowerCase();
+    const phone = formData.phone.trim();
+    const department = formData.department.trim();
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
+
+    // ===================================================
+    // VALIDATION
+    // ===================================================
 
     if (
-      !formData.name.trim() ||
-      !formData.email.trim() ||
-      !formData.phone.trim() ||
-      !formData.department ||
-      !formData.password ||
-      !formData.confirmPassword
+      !name ||
+      !email ||
+      !phone ||
+      !department ||
+      !password ||
+      !confirmPassword
     ) {
-      alert("Please fill all fields");
+      setError("Please fill all fields.");
       return;
     }
 
-    // --------------------------------
-    // CHECK PASSWORD
-    // --------------------------------
-
-    if (
-      formData.password !==
-      formData.confirmPassword
-    ) {
-      alert("Passwords do not match");
+    if (name.length < 2) {
+      setError("Name must contain at least 2 characters.");
       return;
     }
 
-    // --------------------------------
-    // PASSWORD LENGTH
-    // --------------------------------
-
-    if (formData.password.length < 6) {
-      alert(
-        "Password must be at least 6 characters"
-      );
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+      setError("Phone number must contain exactly 10 digits.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    // ===================================================
+    // API CALL
+    // ===================================================
 
     try {
-
       setLoading(true);
 
-      console.log(
-        "================================"
-      );
+      const response = await employeeRegister({
+        name,
+        email,
+        phone,
+        department,
+        password,
+        confirmPassword,
+      });
 
-      console.log(
-        "EMPLOYEE REGISTER REQUEST"
-      );
+      console.log("Employee Registration Response:", response);
 
-      console.log(formData);
-
-      console.log(
-        "================================"
-      );
-
-      // --------------------------------
-      // CALL BACKEND API
-      // --------------------------------
-
-      const response =
-        await employeeRegister(formData);
-
-      console.log(
-        "================================"
-      );
-
-      console.log(
-        "EMPLOYEE REGISTER RESPONSE"
-      );
-
-      console.log(response);
-
-      console.log(
-        "================================"
-      );
-
-      // --------------------------------
-      // CHECK SUCCESS
-      // --------------------------------
-
-      if (
-        response &&
-        response.success === true
-      ) {
-
-        alert(
-          response.message ||
-            "Employee registered successfully!"
-        );
-
-        // --------------------------------
-        // CLEAR FORM
-        // --------------------------------
-
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          department: "",
-          password: "",
-          confirmPassword: "",
-        });
-
-        // --------------------------------
-        // GO TO LOGIN
-        // --------------------------------
-
-        navigate("/employee/login", {
-          replace: true,
-        });
-
-      } else {
-
-        alert(
-          response?.message ||
-            response?.error ||
-            "Employee registration failed"
+      if (!response || response.success !== true) {
+        throw new Error(
+          response?.message || "Employee registration failed."
         );
       }
 
+      setSuccess(
+        response.message ||
+          "Employee registered successfully."
+      );
+
+      // Clear form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        department: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+      // Redirect to employee login
+      setTimeout(() => {
+        navigate("/employee/login");
+      }, 1500);
     } catch (error) {
+      console.error("Employee Registration Error:", error);
 
-      console.error(
-        "Employee Registration Error:",
-        error
+      setError(
+        error.message ||
+          "Something went wrong. Please try again."
       );
-
-      alert(
-        error?.message ||
-          "Unable to register employee. Please try again."
-      );
-
     } finally {
-
       setLoading(false);
-
     }
   };
 
   return (
-
     <div className="employee-register-page">
-
       <div className="employee-register-card">
 
-        {/* HEADER */}
+        {/* =================================================
+            HEADER
+        ================================================== */}
 
         <div className="employee-register-header">
-
           <div className="employee-register-icon">
-            <FaCow />
+            👨‍🌾
           </div>
 
-          <div>
-            <h1>Dairy Farm</h1>
-
-            <p>
-              Employee Registration
-            </p>
-          </div>
-
-        </div>
-
-        {/* TITLE */}
-
-        <div className="employee-register-title">
-
-          <h2>
-            Create Employee Account
-          </h2>
+          <h1>Employee Registration</h1>
 
           <p>
-            Register your employee account to access
-            the employee panel.
+            Create your Dairy Farm ERP employee account
           </p>
-
         </div>
+
+        {/* =================================================
+            ERROR MESSAGE
+        ================================================== */}
+
+        {error && (
+          <div className="employee-register-error">
+            <span>⚠</span>
+            <p>{error}</p>
+          </div>
+        )}
+
+        {/* =================================================
+            SUCCESS MESSAGE
+        ================================================== */}
+
+        {success && (
+          <div className="employee-register-success">
+            <span>✓</span>
+            <p>{success}</p>
+          </div>
+        )}
+
+        {/* =================================================
+            FORM
+        ================================================== */}
 
         <form
           className="employee-register-form"
@@ -235,216 +204,181 @@ const EmployeeRegister = () => {
 
           {/* NAME */}
 
-          <div className="employee-register-field">
-
-            <label>
+          <div className="employee-form-group">
+            <label htmlFor="name">
               Full Name
             </label>
 
-            <div className="employee-register-input">
-
-              <FaUser />
-
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter full name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-
-            </div>
-
+            <input
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Enter your full name"
+              value={formData.name}
+              onChange={handleChange}
+              disabled={loading}
+              autoComplete="name"
+              required
+            />
           </div>
 
           {/* EMAIL */}
 
-          <div className="employee-register-field">
-
-            <label>
+          <div className="employee-form-group">
+            <label htmlFor="email">
               Email Address
             </label>
 
-            <div className="employee-register-input">
-
-              <FaEnvelope />
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-
-            </div>
-
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Enter your email address"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={loading}
+              autoComplete="email"
+              required
+            />
           </div>
 
           {/* PHONE */}
 
-          <div className="employee-register-field">
-
-            <label>
+          <div className="employee-form-group">
+            <label htmlFor="phone">
               Phone Number
             </label>
 
-            <div className="employee-register-input">
-
-              <FaPhone />
-
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Enter phone number"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-
-            </div>
-
+            <input
+              id="phone"
+              type="tel"
+              name="phone"
+              placeholder="Enter 10 digit phone number"
+              value={formData.phone}
+              onChange={handleChange}
+              disabled={loading}
+              maxLength="10"
+              inputMode="numeric"
+              autoComplete="tel"
+              required
+            />
           </div>
 
           {/* DEPARTMENT */}
 
-          <div className="employee-register-field">
-
-            <label>
+          <div className="employee-form-group">
+            <label htmlFor="department">
               Department
             </label>
 
-            <div className="employee-register-input">
+            <select
+              id="department"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              disabled={loading}
+              required
+            >
+              <option value="">
+                Select Department
+              </option>
 
-              <FaBriefcase />
+              <option value="Farm Manager">
+                Farm Manager
+              </option>
 
-              <select
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                required
-              >
+              <option value="Cow Caretaker">
+                Cow Caretaker
+              </option>
 
-                <option value="">
-                  Select Department
-                </option>
+              <option value="Milking Staff">
+                Milking Staff
+              </option>
 
-                <option value="Dairy Production">
-                  Dairy Production
-                </option>
+              <option value="Farm Worker">
+                Farm Worker
+              </option>
 
-                <option value="Animal Care">
-                  Animal Care
-                </option>
+              <option value="Driver">
+                Driver
+              </option>
 
-                <option value="Sales">
-                  Sales
-                </option>
-
-                <option value="Inventory">
-                  Inventory
-                </option>
-
-                <option value="Delivery">
-                  Delivery
-                </option>
-
-                <option value="Administration">
-                  Administration
-                </option>
-
-              </select>
-
-            </div>
-
+              <option value="Veterinary Assistant">
+                Veterinary Assistant
+              </option>
+            </select>
           </div>
 
           {/* PASSWORD */}
 
-          <div className="employee-register-field">
-
-            <label>
+          <div className="employee-form-group">
+            <label htmlFor="password">
               Password
             </label>
 
-            <div className="employee-register-input">
-
-              <FaLock />
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Create password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-
-            </div>
-
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Minimum 6 characters"
+              value={formData.password}
+              onChange={handleChange}
+              disabled={loading}
+              autoComplete="new-password"
+              required
+            />
           </div>
 
           {/* CONFIRM PASSWORD */}
 
-          <div className="employee-register-field">
-
-            <label>
+          <div className="employee-form-group">
+            <label htmlFor="confirmPassword">
               Confirm Password
             </label>
 
-            <div className="employee-register-input">
-
-              <FaLock />
-
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-
-            </div>
-
+            <input
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              disabled={loading}
+              autoComplete="new-password"
+              required
+            />
           </div>
 
-          {/* REGISTER BUTTON */}
+          {/* SUBMIT BUTTON */}
 
           <button
             type="submit"
             className="employee-register-button"
             disabled={loading}
           >
-
             {loading
               ? "Creating Account..."
-              : "Create Account"}
-
-            {!loading && <FaArrowRight />}
-
+              : "Create Employee Account"}
           </button>
-
         </form>
 
-        {/* LOGIN */}
+        {/* =================================================
+            LOGIN LINK
+        ================================================== */}
 
-        <div className="employee-login-bottom">
-
-          Already have an account?
+        <div className="employee-register-login">
+          <p>
+            Already have an employee account?
+          </p>
 
           <Link to="/employee/login">
-            Login
+            Login here
           </Link>
-
         </div>
 
       </div>
-
     </div>
   );
-};
+}
 
 export default EmployeeRegister;

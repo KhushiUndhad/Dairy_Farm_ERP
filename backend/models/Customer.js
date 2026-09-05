@@ -5,31 +5,39 @@ const customerSchema = new mongoose.Schema(
     customerId: {
       type: String,
       required: true,
+      unique: true,
+      trim: true,
     },
 
     name: {
       type: String,
       required: true,
+      trim: true,
     },
 
     phone: {
       type: String,
       required: true,
+      trim: true,
     },
 
     email: {
       type: String,
       default: "",
+      lowercase: true,
+      trim: true,
     },
 
     address: {
       type: String,
       default: "",
+      trim: true,
     },
 
     customerType: {
       type: String,
       default: "Regular",
+      trim: true,
     },
 
     balance: {
@@ -39,8 +47,8 @@ const customerSchema = new mongoose.Schema(
     },
 
     joiningDate: {
-      type: String,
-      required: true,
+      type: Date,
+      default: Date.now,
     },
 
     status: {
@@ -54,4 +62,7 @@ const customerSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Customer", customerSchema);
+module.exports = mongoose.model(
+  "Customer",
+  customerSchema
+);

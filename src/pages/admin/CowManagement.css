@@ -1,172 +1,270 @@
-/* =========================================
+/* =========================================================
    COW MANAGEMENT PAGE
-========================================= */
+========================================================= */
 
 .cow-management {
   width: 100%;
   min-height: 100%;
-  padding: 28px;
-  background: #f5f7f6;
+  padding: 30px 28px;
   box-sizing: border-box;
+  background: #f5f8f6;
 }
 
-
-/* =========================================
+/* =========================================================
    PAGE HEADER
-========================================= */
+========================================================= */
 
-.page-header {
+.cow-management .page-header {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 25px;
+  gap: 20px;
+  margin-bottom: 28px;
 }
 
-.page-header h1 {
+.cow-management .page-header h1 {
   margin: 0;
-  color: #2e7d32;
-  font-size: 28px;
+  color: #24752c;
+  font-size: 30px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
-.page-header p {
-  margin: 7px 0 0;
-  color: #777;
+.cow-management .page-header p {
+  margin: 8px 0 0;
+  color: #68766d;
   font-size: 14px;
+  line-height: 1.5;
 }
 
-
-/* =========================================
+/* =========================================================
    ADD COW BUTTON
-========================================= */
+========================================================= */
 
-.add-cow-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.cow-management .add-cow-btn {
+  width: 115px !important;
+  min-width: 115px !important;
+  height: 40px !important;
 
-  padding: 11px 18px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
 
-  border: none;
-  border-radius: 7px;
+  padding: 0 !important;
+  margin: 0 !important;
 
-  background: #2e7d32;
-  color: white;
+  border: none !important;
+  border-radius: 8px !important;
 
-  font-size: 14px;
-  font-weight: 600;
+  background: #2e7d32 !important;
+  color: #ffffff !important;
 
-  cursor: pointer;
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
 
-  transition: 0.2s ease;
+  cursor: pointer !important;
+
+  white-space: nowrap !important;
+
+  box-shadow: none;
+
+  transition: all 0.2s ease;
 }
 
-.add-cow-btn:hover {
-  background: #256b29;
+.cow-management .add-cow-btn:hover {
+  background: #256b2a !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.18);
 }
 
-.add-cow-btn svg {
-  font-size: 14px;
+.cow-management .add-cow-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+  flex-shrink: 0 !important;
 }
 
-
-/* =========================================
+/* =========================================================
    TABLE CONTAINER
-========================================= */
+========================================================= */
 
-.cow-table-container {
+.cow-management .cow-table-container {
   width: 100%;
-  background: white;
-
-  border-radius: 10px;
-
   overflow-x: auto;
 
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.06);
+
+  border: 1px solid #edf1ee;
 }
 
-
-/* =========================================
+/* =========================================================
    TABLE
-========================================= */
+========================================================= */
 
-.cow-table {
+.cow-management .cow-table {
   width: 100%;
-  border-collapse: collapse;
-  min-width: 700px;
+
+  /*
+     IMPORTANT:
+     fixed layout prevents Action column from shrinking
+  */
+  table-layout: fixed;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  background: #ffffff;
 }
 
+/* =========================================================
+   COLUMN WIDTHS
+========================================================= */
 
-/* TABLE HEADER */
+/* ID */
+.cow-management .cow-table th:nth-child(1),
+.cow-management .cow-table td:nth-child(1) {
+  width: 9%;
+}
 
-.cow-table thead {
+/* NAME */
+.cow-management .cow-table th:nth-child(2),
+.cow-management .cow-table td:nth-child(2) {
+  width: 20%;
+}
+
+/* BREED */
+.cow-management .cow-table th:nth-child(3),
+.cow-management .cow-table td:nth-child(3) {
+  width: 18%;
+}
+
+/* AGE */
+.cow-management .cow-table th:nth-child(4),
+.cow-management .cow-table td:nth-child(4) {
+  width: 18%;
+}
+
+/* MILK */
+.cow-management .cow-table th:nth-child(5),
+.cow-management .cow-table td:nth-child(5) {
+  width: 15%;
+}
+
+/*
+   ACTION
+   Give enough fixed space for:
+   Edit + gap + Delete
+*/
+.cow-management .cow-table th:nth-child(6),
+.cow-management .cow-table td:nth-child(6) {
+  width: 20% !important;
+  min-width: 170px !important;
+}
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.cow-management .cow-table thead th {
+  height: 46px;
+
+  padding: 0 16px;
+
+  box-sizing: border-box;
+
   background: #2e7d32;
-}
-
-.cow-table th {
-  padding: 15px 18px;
-
-  color: white;
+  color: #ffffff;
 
   text-align: left;
 
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  border: none;
+}
+
+.cow-management .cow-table thead th:first-child {
+  border-top-left-radius: 11px;
+}
+
+.cow-management .cow-table thead th:last-child {
+  border-top-right-radius: 11px;
+}
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+.cow-management .cow-table tbody td {
+  height: 62px;
+
+  padding: 10px 16px;
+
+  box-sizing: border-box;
+
+  color: #45534a;
+
   font-size: 14px;
-  font-weight: 600;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #edf1ee;
+
+  vertical-align: middle;
 
   white-space: nowrap;
 }
 
+/* =========================================================
+   TABLE ROW
+========================================================= */
 
-/* TABLE BODY */
-
-.cow-table td {
-  padding: 15px 18px;
-
-  color: #444;
-
-  font-size: 14px;
-
-  border-bottom: 1px solid #eeeeee;
+.cow-management .cow-table tbody tr {
+  transition: background 0.2s ease;
 }
 
-
-/* ROW HOVER */
-
-.cow-table tbody tr {
-  transition: 0.2s ease;
+.cow-management .cow-table tbody tr:hover td {
+  background: #fafcfb;
 }
 
-.cow-table tbody tr:hover {
-  background: #f8fbf8;
-}
-
-
-/* LAST ROW */
-
-.cow-table tbody tr:last-child td {
+.cow-management .cow-table tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* =========================================================
+   NAME
+========================================================= */
 
-/* =========================================
-   COW NAME
-========================================= */
-
-.cow-table td strong {
-  color: #333;
-  font-weight: 600;
+.cow-management .cow-table td strong {
+  color: #1f2d23;
+  font-size: 14px;
+  font-weight: 700;
 }
 
-
-/* =========================================
+/* =========================================================
    BREED BADGE
-========================================= */
+========================================================= */
 
-.breed-badge {
-  display: inline-block;
+.cow-management .breed-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  padding: 5px 10px;
+  min-width: 42px;
+  height: 25px;
+
+  padding: 0 10px;
+
+  box-sizing: border-box;
 
   border-radius: 20px;
 
@@ -175,401 +273,616 @@
 
   font-size: 12px;
   font-weight: 600;
+
+  white-space: nowrap;
 }
 
-
-/* =========================================
+/* =========================================================
    MILK VALUE
-========================================= */
+========================================================= */
 
-.milk-value {
-  color: #2e7d32;
+.cow-management .milk-value {
+  color: #23782d;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ACTION BUTTON CONTAINER
+========================================================= */
+
+.cow-management .action-buttons {
+  width: auto !important;
+  min-width: 120px !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  gap: 9px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  flex-wrap: nowrap !important;
+
+  white-space: nowrap !important;
+
+  overflow: visible !important;
+}
+
+/* =========================================================
+   EDIT BUTTON
+========================================================= */
+
+.cow-management .action-buttons .edit-btn {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+
+  flex: 0 0 70px !important;
+
+  box-sizing: border-box !important;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 6px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border: 1px solid #cde3d0 !important;
+  border-radius: 8px !important;
+
+  background: #f1f8f2 !important;
+  color: #2e7d32 !important;
+
+  font-family: Arial, sans-serif !important;
+
+  font-size: 13px !important;
+  font-weight: 600 !important;
+
+  line-height: 1 !important;
+
+  white-space: nowrap !important;
+
+  overflow: visible !important;
+
+  cursor: pointer !important;
+
+  transition: all 0.2s ease;
+}
+
+/* EDIT ICON */
+
+.cow-management .action-buttons .edit-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+
+  min-width: 13px !important;
+  max-width: 13px !important;
+
+  flex: 0 0 13px !important;
+
+  display: block !important;
+
+  margin: 0 !important;
+}
+
+/* EDIT HOVER */
+
+.cow-management .action-buttons .edit-btn:hover {
+  background: #2e7d32 !important;
+  border-color: #2e7d32 !important;
+
+  color: #ffffff !important;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 9px rgba(46, 125, 50, 0.2);
+}
+
+/* =========================================================
+   DELETE BUTTON
+========================================================= */
+
+.cow-management .action-buttons .delete-btn {
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+
+  flex: 0 0 36px !important;
+
+  box-sizing: border-box !important;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border: 1px solid #f2caca !important;
+  border-radius: 8px !important;
+
+  background: #fff5f5 !important;
+  color: #dc2626 !important;
+
+  line-height: 1 !important;
+
+  cursor: pointer !important;
+
+  transition: all 0.2s ease;
+}
+
+/* DELETE ICON */
+
+.cow-management .action-buttons .delete-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+
+  min-width: 14px !important;
+  max-width: 14px !important;
+
+  min-height: 14px !important;
+  max-height: 14px !important;
+
+  flex: 0 0 14px !important;
+
+  display: block !important;
+
+  margin: 0 !important;
+}
+
+/* DELETE HOVER */
+
+.cow-management .action-buttons .delete-btn:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+
+  color: #ffffff !important;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 9px rgba(220, 38, 38, 0.2);
+}
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.cow-management .empty-table {
+  height: 160px !important;
+
+  text-align: center !important;
+  vertical-align: middle !important;
+
+  color: #8a968e !important;
+
+  font-size: 14px !important;
+
+  white-space: normal !important;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.cow-management .modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  background: rgba(20, 35, 24, 0.55);
+
+  backdrop-filter: blur(3px);
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.cow-management .cow-modal {
+  width: 100%;
+  max-width: 500px;
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.2);
+
+  animation: cowModalOpen 0.2s ease;
+}
+
+@keyframes cowModalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.cow-management .modal-header {
+  height: 64px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 22px;
+
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #e7ece8;
+
+  background: #ffffff;
+}
+
+.cow-management .modal-header h2 {
+  margin: 0;
+
+  color: #26352b;
+
+  font-size: 20px;
   font-weight: 700;
 }
 
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
 
-/* =========================================
-   ACTION BUTTONS
-========================================= */
+.cow-management .close-btn {
+  width: 34px !important;
+  height: 34px !important;
 
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  min-width: 34px !important;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+
+  border: none !important;
+  border-radius: 7px !important;
+
+  background: #f3f5f4 !important;
+  color: #68756d !important;
+
+  cursor: pointer !important;
+
+  transition: all 0.2s ease;
 }
 
+.cow-management .close-btn:hover {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
 
-/* EDIT BUTTON */
+.cow-management .close-btn svg {
+  width: 13px;
+  height: 13px;
+}
 
-.edit-btn {
+/* =========================================================
+   FORM
+========================================================= */
+
+.cow-management .cow-form {
+  padding: 24px;
+
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.cow-management .form-group {
+  margin-bottom: 18px;
+}
+
+.cow-management .form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #37463c;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   FORM INPUT
+========================================================= */
+
+.cow-management .form-group input {
+  width: 100% !important;
+  height: 42px !important;
+
+  box-sizing: border-box !important;
+
+  padding: 0 13px !important;
+
+  border: 1px solid #d5ddd7 !important;
+  border-radius: 8px !important;
+
+  outline: none !important;
+
+  background: #ffffff !important;
+  color: #26352b !important;
+
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+
+  transition: all 0.2s ease;
+}
+
+.cow-management .form-group input::placeholder {
+  color: #9aa49e;
+}
+
+.cow-management .form-group input:focus {
+  border-color: #2e7d32 !important;
+
+  box-shadow:
+    0 0 0 3px rgba(46, 125, 50, 0.1) !important;
+}
+
+/* =========================================================
+   FORM ACTIONS
+========================================================= */
+
+.cow-management .form-actions {
   display: flex;
+
   align-items: center;
-  gap: 6px;
+  justify-content: flex-end;
 
-  padding: 7px 12px;
+  gap: 10px;
 
-  border: 1px solid #2e7d32;
-  border-radius: 6px;
+  margin-top: 24px;
+  padding-top: 20px;
 
-  background: white;
-  color: #2e7d32;
+  border-top: 1px solid #e8ece9;
+}
+
+/* =========================================================
+   CANCEL BUTTON
+========================================================= */
+
+.cow-management .cancel-btn {
+  height: 40px;
+
+  min-width: 90px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 15px;
+
+  border: 1px solid #d4dbd6;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #58655d;
 
   font-size: 13px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.edit-btn:hover {
-  background: #2e7d32;
-  color: white;
+.cow-management .cancel-btn:hover {
+  background: #f5f7f6;
+  border-color: #b9c2bc;
 }
 
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
 
-/* DELETE BUTTON */
+.cow-management .save-btn {
+  height: 40px;
 
-.delete-btn {
-  width: 32px;
-  height: 32px;
+  min-width: 105px;
 
-  display: flex;
+  display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
-  border: none;
-  border-radius: 6px;
-
-  background: #ffebee;
-  color: #d32f2f;
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
-}
-
-.delete-btn:hover {
-  background: #d32f2f;
-  color: white;
-}
-
-
-/* =========================================
-   EMPTY TABLE
-========================================= */
-
-.empty-table {
-  padding: 40px !important;
-
-  text-align: center !important;
-
-  color: #999 !important;
-
-  font-size: 15px !important;
-}
-
-
-/* =========================================
-   MODAL OVERLAY
-========================================= */
-
-.modal-overlay {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(0, 0, 0, 0.45);
-
-  z-index: 1000;
-
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-
-/* =========================================
-   MODAL
-========================================= */
-
-.cow-modal {
-  width: 100%;
-  max-width: 480px;
-
-  background: white;
-
-  border-radius: 12px;
-
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
-
-  overflow: hidden;
-
-  animation: modalOpen 0.2s ease;
-}
-
-@keyframes modalOpen {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* =========================================
-   MODAL HEADER
-========================================= */
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 18px 22px;
-
-  background: #2e7d32;
-}
-
-.modal-header h2 {
-  margin: 0;
-
-  color: white;
-
-  font-size: 20px;
-  font-weight: 600;
-}
-
-
-/* CLOSE BUTTON */
-
-.close-btn {
-  width: 32px;
-  height: 32px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-
-/* =========================================
-   FORM
-========================================= */
-
-.cow-form {
-  padding: 22px;
-}
-
-
-/* FORM GROUP */
-
-.form-group {
-  margin-bottom: 17px;
-}
-
-.form-group label {
-  display: block;
-
-  margin-bottom: 7px;
-
-  color: #333;
-
-  font-size: 14px;
-  font-weight: 600;
-}
-
-
-/* INPUT */
-
-.form-group input {
-  width: 100%;
-
-  padding: 11px 12px;
-
-  box-sizing: border-box;
-
-  border: 1px solid #d8d8d8;
-  border-radius: 6px;
-
-  outline: none;
-
-  color: #333;
-
-  font-size: 14px;
-
-  transition: 0.2s ease;
-}
-
-.form-group input:focus {
-  border-color: #2e7d32;
-
-  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
-}
-
-.form-group input::placeholder {
-  color: #aaa;
-}
-
-
-/* =========================================
-   FORM ACTIONS
-========================================= */
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-
-  gap: 10px;
-
-  margin-top: 22px;
-}
-
-
-/* CANCEL */
-
-.cancel-btn {
-  display: flex;
-  align-items: center;
   gap: 7px;
 
-  padding: 10px 16px;
-
-  border: 1px solid #ddd;
-  border-radius: 6px;
-
-  background: white;
-  color: #555;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
-}
-
-.cancel-btn:hover {
-  background: #f5f5f5;
-}
-
-
-/* SAVE */
-
-.save-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-
-  padding: 10px 17px;
+  padding: 0 16px;
 
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
 
   background: #2e7d32;
-  color: white;
+  color: #ffffff;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.save-btn:hover {
-  background: #256b29;
+.cow-management .save-btn:hover {
+  background: #256b2a;
+
+  box-shadow:
+    0 4px 10px rgba(46, 125, 50, 0.18);
 }
 
+.cow-management .save-btn:disabled,
+.cow-management .cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+/* =========================================================
+   SCROLLBAR
+========================================================= */
 
-@media (max-width: 768px) {
+.cow-management .cow-table-container::-webkit-scrollbar {
+  height: 7px;
+}
+
+.cow-management .cow-table-container::-webkit-scrollbar-track {
+  background: #f0f3f1;
+}
+
+.cow-management .cow-table-container::-webkit-scrollbar-thumb {
+  background: #b9c5bc;
+  border-radius: 10px;
+}
+
+.cow-management .cow-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cow-management .cow-modal::-webkit-scrollbar-thumb {
+  background: #c1cbc3;
+  border-radius: 10px;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
 
   .cow-management {
-    padding: 20px;
+    padding: 24px 20px;
   }
 
-  .page-header {
+  .cow-management .page-header h1 {
+    font-size: 26px;
+  }
+
+  .cow-management .cow-table {
+    min-width: 900px;
+  }
+
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+  .cow-management {
+    padding: 18px 14px;
+  }
+
+  .cow-management .page-header {
+    flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
   }
 
-  .page-header h1 {
-    font-size: 23px;
+  .cow-management .page-header h1 {
+    font-size: 24px;
   }
 
-  .page-header p {
-    font-size: 13px;
+  .cow-management .add-cow-btn {
+    width: 100% !important;
+    min-width: 100% !important;
   }
 
-  .add-cow-btn {
-    padding: 10px 13px;
+  .cow-management .cow-table {
+    min-width: 900px;
+  }
+
+  .cow-management .cow-modal {
+    max-height: 94vh;
+  }
+
+  .cow-management .cow-form {
+    padding: 18px;
+  }
+
+  .cow-management .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cow-management .cancel-btn,
+  .cow-management .save-btn {
+    width: 100%;
   }
 
 }
 
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 400px) {
 
   .cow-management {
-    padding: 15px;
+    padding: 14px 10px;
   }
 
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .add-cow-btn {
-    width: 100%;
-
-    justify-content: center;
-  }
-
-  .cow-table-container {
-    border-radius: 7px;
-  }
-
-  .cow-modal {
-    max-width: 100%;
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .cancel-btn,
-  .save-btn {
-    width: 100%;
-    justify-content: center;
+  .cow-management .page-header h1 {
+    font-size: 22px;
   }
 
 }
