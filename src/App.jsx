@@ -1,8 +1,10 @@
 
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import Home from "./pages/home/Home";
+
 // ======================================================
-// ADMIN
+// ADMIN IMPORTS
 // ======================================================
 
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -15,7 +17,7 @@ import CustomerManagement from "./pages/admin/CustomerManagement";
 import Sales from "./pages/admin/Sales";
 
 // ======================================================
-// EMPLOYEE
+// EMPLOYEE IMPORTS
 // ======================================================
 
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
@@ -29,7 +31,7 @@ import EmployeeSalary from "./pages/employee/EmployeeSalary";
 import EmployeeProfile from "./pages/employee/EmployeeProfile";
 
 // ======================================================
-// CUSTOMER
+// CUSTOMER IMPORTS
 // ======================================================
 
 import CustomerLogin from "./pages/customer/CustomerLogin";
@@ -49,9 +51,11 @@ function ProtectedAdmin({ children }) {
   const loggedIn =
     localStorage.getItem("adminLoggedIn") === "true";
 
-  return loggedIn ? (
-    children
-  ) : (
+  if (loggedIn) {
+    return children;
+  }
+
+  return (
     <Navigate
       to="/admin/login"
       replace
@@ -67,9 +71,11 @@ function ProtectedEmployee({ children }) {
   const loggedIn =
     localStorage.getItem("employeeLoggedIn") === "true";
 
-  return loggedIn ? (
-    children
-  ) : (
+  if (loggedIn) {
+    return children;
+  }
+
+  return (
     <Navigate
       to="/employee/login"
       replace
@@ -85,9 +91,11 @@ function ProtectedCustomer({ children }) {
   const loggedIn =
     localStorage.getItem("customerLoggedIn") === "true";
 
-  return loggedIn ? (
-    children
-  ) : (
+  if (loggedIn) {
+    return children;
+  }
+
+  return (
     <Navigate
       to="/customer/login"
       replace
@@ -118,21 +126,17 @@ function App() {
     <Routes>
 
       {/* ==================================================
-          HOME
+          HOME / COVER PAGE
       ================================================== */}
 
       <Route
         path="/"
-        element={
-          <Navigate
-            to="/employee/login"
-            replace
-          />
-        }
+        element={<Home />}
       />
 
+
       {/* ==================================================
-          ADMIN
+          ADMIN ROUTES
       ================================================== */}
 
       {/* ADMIN LOGIN */}
@@ -141,6 +145,7 @@ function App() {
         path="/admin/login"
         element={<AdminLogin />}
       />
+
 
       {/* ADMIN DASHBOARD */}
 
@@ -152,6 +157,7 @@ function App() {
           </AdminPage>
         }
       />
+
 
       {/* ADMIN DEFAULT */}
 
@@ -165,6 +171,7 @@ function App() {
         }
       />
 
+
       {/* COW MANAGEMENT */}
 
       <Route
@@ -175,6 +182,7 @@ function App() {
           </AdminPage>
         }
       />
+
 
       {/* MILK PRODUCTION */}
 
@@ -187,7 +195,8 @@ function App() {
         }
       />
 
-      {/* EMPLOYEES */}
+
+      {/* EMPLOYEE MANAGEMENT */}
 
       <Route
         path="/admin/employees"
@@ -198,7 +207,8 @@ function App() {
         }
       />
 
-      {/* CUSTOMERS */}
+
+      {/* CUSTOMER MANAGEMENT */}
 
       <Route
         path="/admin/customers"
@@ -208,6 +218,7 @@ function App() {
           </AdminPage>
         }
       />
+
 
       {/* SALES */}
 
@@ -220,8 +231,9 @@ function App() {
         }
       />
 
+
       {/* ==================================================
-          EMPLOYEE
+          EMPLOYEE ROUTES
       ================================================== */}
 
       {/* EMPLOYEE LOGIN */}
@@ -231,12 +243,14 @@ function App() {
         element={<EmployeeLogin />}
       />
 
+
       {/* EMPLOYEE REGISTER */}
 
       <Route
         path="/employee/register"
         element={<EmployeeRegister />}
       />
+
 
       {/* EMPLOYEE PROTECTED LAYOUT */}
 
@@ -249,12 +263,13 @@ function App() {
         }
       >
 
-        {/* DASHBOARD */}
+        {/* EMPLOYEE DASHBOARD */}
 
         <Route
           index
           element={<EmployeeDashboard />}
         />
+
 
         {/* MY WORK */}
 
@@ -263,12 +278,14 @@ function App() {
           element={<EmployeeMyWork />}
         />
 
+
         {/* ATTENDANCE */}
 
         <Route
           path="attendance"
           element={<EmployeeAttendance />}
         />
+
 
         {/* LEAVE */}
 
@@ -277,12 +294,14 @@ function App() {
           element={<EmployeeLeave />}
         />
 
+
         {/* SALARY */}
 
         <Route
           path="salary"
           element={<EmployeeSalary />}
         />
+
 
         {/* PROFILE */}
 
@@ -293,8 +312,9 @@ function App() {
 
       </Route>
 
+
       {/* ==================================================
-          CUSTOMER
+          CUSTOMER ROUTES
       ================================================== */}
 
       {/* CUSTOMER LOGIN */}
@@ -304,12 +324,14 @@ function App() {
         element={<CustomerLogin />}
       />
 
+
       {/* CUSTOMER REGISTER */}
 
       <Route
         path="/customer/register"
         element={<CustomerRegister />}
       />
+
 
       {/* CUSTOMER PROTECTED LAYOUT */}
 
@@ -329,12 +351,14 @@ function App() {
           element={<CustomerDashboard />}
         />
 
+
         {/* PRODUCTS */}
 
         <Route
           path="products"
           element={<CustomerProducts />}
         />
+
 
         {/* ORDERS */}
 
@@ -343,12 +367,14 @@ function App() {
           element={<CustomerOrders />}
         />
 
+
         {/* PAYMENTS */}
 
         <Route
           path="payments"
           element={<CustomerPayments />}
         />
+
 
         {/* PROFILE */}
 
@@ -359,18 +385,14 @@ function App() {
 
       </Route>
 
+
       {/* ==================================================
-          404
+          UNKNOWN URL
       ================================================== */}
 
       <Route
         path="*"
-        element={
-          <Navigate
-            to="/employee/login"
-            replace
-          />
-        }
+        element={<Home />}
       />
 
     </Routes>
